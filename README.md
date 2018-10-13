@@ -1,2 +1,2 @@
-# golang-app-starter
-Golang application starter
+## Golang application starter
+Golang application starter template
