@@ -43,7 +43,7 @@ func main() {
 		Msg("Starting application")
 
 	// Application startup
-	if err := router.Run("localhost:8080"); err != nil {
+	if err := router.Run("0.0.0.0:8080"); err != nil {
 		log.Fatal().Err(err).Msg("Startup failed")
 	}
 }
