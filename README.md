@@ -15,7 +15,7 @@ Strict-Transport-Security: max-age=94608000 ;includeSubDomains; preload
 ```
 Expires: 0
 Pragma: no-cache
-Cache-Contro: no-store
+Cache-Control: no-store
 ```
 
 * Console request logging middleware using rs/zerolog
