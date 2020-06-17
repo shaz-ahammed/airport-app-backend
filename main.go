@@ -35,11 +35,16 @@ func main() {
 		c.String(200, "pong "+fmt.Sprint(time.Now().Unix()))
 	})
 
+	var memStats runtime.MemStats
+	runtime.ReadMemStats(&memStats)
+
 	log.Info().
 		Int("pid", os.Getpid()).
 		Int("parent-pid", os.Getppid()).
 		Int("num-cpu", runtime.NumCPU()).
 		Int("GOMAXPROCS", runtime.GOMAXPROCS(-1)).
+		Uint64("total-memory-obtained-from-sys-MB", memStats.Sys/1024/1024).
+		Uint64("total-memory-allocated-heap-MB", memStats.TotalAlloc/1024/1024).
 		Msg("Starting application")
 
 	// Application startup
