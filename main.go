@@ -63,7 +63,11 @@ func main() {
 func setupGinMiddleware(ginRouter *gin.Engine) {
 	log.Info().Msg("Configuring GIN middleware")
 	ginRouter.Use(gin.Recovery()) // Default recovery middleware
-	ginRouter.Use(middleware.ZerologConsoleRequestLogging())
+
 	ginRouter.Use(middleware.DisableCache())
 	ginRouter.Use(middleware.AddSecurityHeaders(true))
+
+	if detailedLogging := os.Getenv("DETAILED_LOGGING"); detailedLogging != "false" {
+		ginRouter.Use(middleware.ZerologConsoleRequestLogging())
+	}
 }
