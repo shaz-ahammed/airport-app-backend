@@ -68,6 +68,7 @@ func setupGinMiddleware(ginRouter *gin.Engine) {
 	ginRouter.Use(middleware.AddSecurityHeaders(true))
 
 	if detailedLogging := os.Getenv("DETAILED_LOGGING"); detailedLogging != "false" {
+		log.Info().Msg("Enabling request logging middleware")
 		ginRouter.Use(middleware.ZerologConsoleRequestLogging())
 	}
 }
