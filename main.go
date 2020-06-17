@@ -60,5 +60,5 @@ func setupGinMiddleware(ginRouter *gin.Engine) {
 	ginRouter.Use(gin.Recovery()) // Default recovery middleware
 	ginRouter.Use(middleware.ZerologConsoleRequestLogging())
 	ginRouter.Use(middleware.DisableCache())
-	ginRouter.Use(middleware.AddSecurityHeaders(false))
+	ginRouter.Use(middleware.AddSecurityHeaders(true))
 }
