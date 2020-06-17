@@ -15,8 +15,6 @@ var consoleLogger = zerolog.New(os.Stderr).Output(zerolog.ConsoleWriter{
 	TimeFormat: time.RFC1123Z,
 })
 
-var detailedLogging = os.Getenv("DETAILED_LOGGING")
-
 func ZerologConsoleRequestLogging() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		startTime := time.Now()
@@ -53,9 +51,7 @@ func ZerologConsoleRequestLogging() gin.HandlerFunc {
 		} else if context.Writer.Status() >= http.StatusBadRequest && context.Writer.Status() < http.StatusInternalServerError {
 			subLogger.Warn().Msg(logMsg)
 		} else {
-			if detailedLogging != "false" {
-				subLogger.Info().Msg(logMsg)
-			}
+			subLogger.Info().Msg(logMsg)
 		}
 	}
 }
