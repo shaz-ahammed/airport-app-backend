@@ -43,7 +43,14 @@ func main() {
 		Msg("Starting application")
 
 	// Application startup
-	if err := router.Run("0.0.0.0:8080"); err != nil {
+
+	// For this app to work on Heroku we need to read PORT value from env variable. For local it will be set to predefined value.
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	if err := router.Run(fmt.Sprintf("0.0.0.0:%s", port)); err != nil {
 		log.Fatal().Err(err).Msg("Startup failed")
 	}
 }
