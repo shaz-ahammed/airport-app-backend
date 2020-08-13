@@ -1,5 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+cert.pem
+key.pem
+
 ### Go template
 # Binaries for programs and plugins
 *.exe
