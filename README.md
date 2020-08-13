@@ -6,6 +6,8 @@ Uses some ideas from:
 * https://youtu.be/rWBSMsLG8po
 
 ### Features
+* Uses Go modules
+
 * Automated generation of self-signed certs (if enabled)
 
 * Some basic, exemplary api endpoints (/health, /ping and index)
