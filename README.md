@@ -1,12 +1,28 @@
 ## Golang application starter
 Golang web application starter template using Gin framework (https://github.com/gin-gonic/gin). Aims to provide secure default configuration.
 
+Uses some ideas from:
+* https://pace.dev/blog/2018/05/09/how-I-write-http-services-after-eight-years.html
+* https://youtu.be/rWBSMsLG8po
+
 ### Features
+* Uses Go modules
+
+* Automated generation of self-signed certs (if enabled)
+
+* Some basic, exemplary api endpoints (/health, /ping and index)
+
+* Some basic tests using testify
+
+* Basic configuration using environment variables
+
+* Automated builds and releases on 3 major operating systems using GitHub workflows
+
 * Middleware to add security headers in response including strict CSP policy. If isTlsEnabled flag is set to true HSTS header will be added as well
 ```
 X-Frame-Options: DENY
 X-Content-Type-Options: nosniff
-Content-Security-Policy: default-src 'none';
+Content-Security-Policy: default-src 'none'; upgrade-insecure-requests;
 Referrer-Policy: no-referrer
 Strict-Transport-Security: max-age=94608000 ;includeSubDomains; preload
 ```
@@ -17,6 +33,8 @@ Expires: 0
 Pragma: no-cache
 Cache-Control: no-store
 ```
+
+* Example middleware to handle favicon.ico requests and return HTTP 204 No Content
 
 * Console request logging middleware using rs/zerolog
 ```
