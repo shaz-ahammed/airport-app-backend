@@ -6,6 +6,12 @@ Uses some ideas from:
 * https://youtu.be/rWBSMsLG8po
 
 ### Features
+* Automated generation of self-signed certs (if enabled)
+
+* Some basic, exemplary api endpoints (/health, /ping and index)
+
+* Some basic tests using testify
+
 * Middleware to add security headers in response including strict CSP policy. If isTlsEnabled flag is set to true HSTS header will be added as well
 ```
 X-Frame-Options: DENY
