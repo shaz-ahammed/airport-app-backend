@@ -16,14 +16,14 @@ func TestHandleFaviconRequests(t *testing.T) {
 	normalRequest, _ := http.NewRequest("GET", "/test", nil)
 	router.ServeHTTP(responseRecorder, normalRequest)
 
-	assert.Equal(t, 200, responseRecorder.Code)
+	assert.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.Equal(t, "test", responseRecorder.Body.String())
 
 	faviconResponseRecorder := httptest.NewRecorder()
 	faviconRequest, _ := http.NewRequest("GET", "/favicon.ico", nil)
 	router.ServeHTTP(faviconResponseRecorder, faviconRequest)
 
-	assert.Equal(t, 204, faviconResponseRecorder.Code)
+	assert.Equal(t, http.StatusNoContent, faviconResponseRecorder.Code)
 	assert.Equal(t, "", faviconResponseRecorder.Body.String())
 }
 
@@ -32,7 +32,7 @@ func setupRouterFavicon() *gin.Engine {
 	router.Use(HandleFaviconRequests())
 
 	router.GET("/test", func(ctx *gin.Context) {
-		ctx.String(200, "test")
+		ctx.String(http.StatusOK, "test")
 	})
 
 	return router
