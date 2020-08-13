@@ -14,6 +14,8 @@ Uses some ideas from:
 
 * Basic configuration using environment variables
 
+* Automated builds and releases on 3 major operating systems using GitHub workflows
+
 * Middleware to add security headers in response including strict CSP policy. If isTlsEnabled flag is set to true HSTS header will be added as well
 ```
 X-Frame-Options: DENY
