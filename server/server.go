@@ -1,8 +1,6 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
 	"golang-app-starter/certs"
 	"golang-app-starter/config"
 
@@ -10,6 +8,9 @@ import (
 	"errors"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 )
 
 type AppServer struct {
