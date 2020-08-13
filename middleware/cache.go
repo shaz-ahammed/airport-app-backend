@@ -2,13 +2,14 @@ package middleware
 
 import "github.com/gin-gonic/gin"
 
+// Middleware to add cache control headers to server responses disabling client cache.
 func DisableCache() gin.HandlerFunc {
-	return func(context *gin.Context) {
-		context.Writer.Header().Add("Expires", "0")
-		context.Writer.Header().Add("Pragma", "no-cache")
+	return func(ctx *gin.Context) {
+		ctx.Writer.Header().Add("Expires", "0")
+		ctx.Writer.Header().Add("Pragma", "no-cache")
 		// For Cache-Control header only no-store directive is needed
 		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-		context.Writer.Header().Add("Cache-Control", "no-store")
-		context.Next()
+		ctx.Writer.Header().Add("Cache-Control", "no-store")
+		ctx.Next()
 	}
 }
