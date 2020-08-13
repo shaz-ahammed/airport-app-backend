@@ -16,7 +16,7 @@ func TestDisableCache(t *testing.T) {
 	request, _ := http.NewRequest("GET", "/test", nil)
 	router.ServeHTTP(responseRecorder, request)
 
-	assert.Equal(t, 200, responseRecorder.Code)
+	assert.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.Equal(t, "test", responseRecorder.Body.String())
 
 	assert.Equal(t, "0", responseRecorder.Header().Get("Expires"))
@@ -29,7 +29,7 @@ func setupRouterCache() *gin.Engine {
 	router.Use(DisableCache())
 
 	router.GET("/test", func(ctx *gin.Context) {
-		ctx.String(200, "test")
+		ctx.String(http.StatusOK, "test")
 	})
 
 	return router

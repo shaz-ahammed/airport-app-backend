@@ -16,7 +16,7 @@ func TestAddSecurityHeadersNoTls(t *testing.T) {
 	request, _ := http.NewRequest("GET", "/test", nil)
 	router.ServeHTTP(responseRecorder, request)
 
-	assert.Equal(t, 200, responseRecorder.Code)
+	assert.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.Equal(t, "test", responseRecorder.Body.String())
 
 	assert.Equal(t, "DENY", responseRecorder.Header().Get("X-Frame-Options"))
@@ -32,7 +32,7 @@ func TestAddSecurityHeadersWithTlsEnabled(t *testing.T) {
 	request, _ := http.NewRequest("GET", "/test", nil)
 	router.ServeHTTP(responseRecorder, request)
 
-	assert.Equal(t, 200, responseRecorder.Code)
+	assert.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.Equal(t, "test", responseRecorder.Body.String())
 
 	assert.Equal(t, "DENY", responseRecorder.Header().Get("X-Frame-Options"))
@@ -47,7 +47,7 @@ func setupRouterSecurityHeaders(shouldEnableTls bool) *gin.Engine {
 	router.Use(AddSecurityHeaders(shouldEnableTls))
 
 	router.GET("/test", func(ctx *gin.Context) {
-		ctx.String(200, "test")
+		ctx.String(http.StatusOK, "test")
 	})
 
 	return router
