@@ -12,6 +12,8 @@ Uses some ideas from:
 
 * Some basic tests using testify
 
+* Basic configuration using environment variables
+
 * Middleware to add security headers in response including strict CSP policy. If isTlsEnabled flag is set to true HSTS header will be added as well
 ```
 X-Frame-Options: DENY
