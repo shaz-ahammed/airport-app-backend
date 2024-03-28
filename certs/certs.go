@@ -1,7 +1,7 @@
 package certs
 
 import (
-	"golang-app-starter/config"
+	"airport-app-backend/config"
 
 	"crypto/ecdsa"
 	"crypto/elliptic"

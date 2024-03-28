@@ -1,8 +1,8 @@
 package main
 
 import (
-	"golang-app-starter/config"
-	"golang-app-starter/server"
+	"airport-app-backend/config"
+	"airport-app-backend/server"
 
 	"os"
 	"time"

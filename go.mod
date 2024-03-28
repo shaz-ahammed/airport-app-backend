@@ -1,4 +1,4 @@
-module golang-app-starter
+module airport-app-backend
 
 go 1.15
 
