@@ -44,6 +44,6 @@ Wed, 17 Jun 2020 20:14:17 +0200 WRN Request client-ip=127.0.0.1 content-length=0
 Wed, 17 Jun 2020 20:14:17 +0200 WRN Request client-ip=127.0.0.1 content-length=0 http-status=404 latency=0 method=GET request-path=/ user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0"
 ```
 ## Automated builds
-![Build, test and create release from version tag](https://github.com/jpiechowka/golang-app-starter/workflows/Build,%20test%20and%20create%20release%20from%20version%20tag/badge.svg)
+![Build, test and create release from version tag](https://github.com/shaz-ahammed/airport-app-backend/workflows/Build,%20test%20and%20create%20release%20from%20version%20tag/badge.svg)
 
-![Build and test from latest commit on master](https://github.com/jpiechowka/golang-app-starter/workflows/Build%20and%20test%20from%20latest%20commit%20on%20master/badge.svg)
+![Build and test from latest commit on master](https://github.com/shaz-ahammed/airport-app-backend/workflows/Build%20and%20test%20from%20latest%20commit%20on%20master/badge.svg)

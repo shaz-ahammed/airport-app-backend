@@ -1,8 +1,8 @@
 package server
 
 import (
-	"golang-app-starter/config"
-	"golang-app-starter/middleware"
+	"airport-app-backend/config"
+	"airport-app-backend/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"

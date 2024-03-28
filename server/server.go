@@ -1,8 +1,8 @@
 package server
 
 import (
-	"golang-app-starter/certs"
-	"golang-app-starter/config"
+	"airport-app-backend/certs"
+	"airport-app-backend/config"
 
 	"crypto/tls"
 	"errors"
