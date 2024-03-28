@@ -6,10 +6,15 @@ Docker-compose
 
 ## Contributing to the codebase
 
-- Install required dependencies: `go mod tidy`
+- Install required dependencies: `go get .`
 - Create an executable file: `go build`
-- Run the app locally: `go run main.go`
+- Run the executable file : `./airport-app-backend`
+- Run the app locally without creating a build: `go run main.go`
 - Access the running app on [local](https://0.0.0.0:8080/)
+
+## Run the test files
+- Go to folder that contains the test files. Here: `cd middleware`
+- Run the command `go test` to run all the test files
 
 ### Steps to setup postgres db locally using docker-compose
 
