@@ -378,5 +378,7 @@ $RECYCLE.BIN/
 
 cert.pem
 key.pem
+airport-app-backend
+golang-app-starter
 
 .env
