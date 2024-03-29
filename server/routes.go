@@ -6,11 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+	"airport-app-backend/controllers"
+
 )
 
 // Main API routes
 func (srv *AppServer) setupRoutesAndMiddleware() {
-	srv.router.GET("/health/", srv.handleHealth)
+	srv.router.GET("/health/", controllers.HandleHealth)
 	srv.router.GET("/ping", srv.handlePing)
 	srv.router.GET("/", srv.handleIndex)
 

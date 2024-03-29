@@ -1,34 +1,15 @@
-package server
+package services
+
 
 import (
-	"net/http"
 	"os"
 	"runtime"
 	"sync"
 
-	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+
+	"airport-app-backend/models"
 )
-
-type AppHealth struct {
-	Goroutines      int         `json:"goroutines"`
-	CGoCalls        int64       `json:"cgoCalls"`
-	Gomaxprocs      int         `json:"gomaxprocs"`
-	NumCpu          int         `json:"numCpu"`
-	Pid             int         `json:"pid"`
-	PPid            int         `json:"ppid"`
-	OperatingSystem string      `json:"os"`
-	Arch            string      `json:"arch"`
-	MemStats        MemoryStats `json:"memStats"`
-}
-
-type MemoryStats struct {
-	TotalMemObtainedFromSysMb uint64 `json:"totalMemObtainedFromSysMb"`
-	TotalMemAllocatedMb       uint64 `json:"totalMemAllocatedMb"`
-	MemAllocatedMb            uint64 `json:"memAllocatedMb"`
-	LastGcEpoch               uint64 `json:"lastGcEpoch"`
-	NumGc                     uint32 `json:"numGc"`
-}
 
 var doOnce sync.Once
 
@@ -41,13 +22,7 @@ var arch string
 
 var memStats runtime.MemStats
 
-func (srv *AppServer) handleHealth(ctx *gin.Context) {
-	log.Debug().Msg("Getting application health information")
-	appHealth := getAppHealth()
-	ctx.JSON(http.StatusOK, appHealth)
-}
-
-func getAppHealth() AppHealth {
+func GetAppHealth() models.AppHealth {
 	doOnce.Do(func() {
 		log.Debug().Msg("Performing one-time lookup of constant runtime information")
 
@@ -61,7 +36,7 @@ func getAppHealth() AppHealth {
 
 	log.Debug().Msg("Getting runtime information")
 
-	appHealth := AppHealth{
+	appHealth := models.AppHealth{
 		Goroutines:      runtime.NumGoroutine(),
 		CGoCalls:        runtime.NumCgoCall(),
 		Gomaxprocs:      gomaxprocs,
@@ -76,12 +51,12 @@ func getAppHealth() AppHealth {
 	return appHealth
 }
 
-func getMemStats() MemoryStats {
+func getMemStats() models.MemoryStats {
 	log.Debug().Msg("Getting memory stats")
 
 	runtime.ReadMemStats(&memStats)
 
-	memStats := MemoryStats{
+	memStats := models.MemoryStats{
 		TotalMemObtainedFromSysMb: bytesToMB(memStats.Sys),
 		TotalMemAllocatedMb:       bytesToMB(memStats.TotalAlloc),
 		MemAllocatedMb:            bytesToMB(memStats.Alloc),
