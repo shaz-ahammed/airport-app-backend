@@ -13,8 +13,6 @@ import (
 // Main API routes
 func (srv *AppServer) setupRoutesAndMiddleware() {
 	srv.router.GET("/health/", controllers.HandleHealth)
-	srv.router.GET("/ping", srv.handlePing)
-	srv.router.GET("/", srv.handleIndex)
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")
