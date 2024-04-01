@@ -10,7 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 )
+
+var Database *gorm.DB
 
 func main() {
 	// Gin set mode release / debug
@@ -36,6 +39,8 @@ func main() {
 
 func runServer() {
 	log.Info().Msg("Starting application")
+
+	
 	srv := server.NewServer(gin.New())
 
 	// Application startup
@@ -43,4 +48,5 @@ func runServer() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Application startup failed")
 	}
+
 }

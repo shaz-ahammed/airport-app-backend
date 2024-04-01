@@ -1,16 +1,18 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+
+	"airport-app-backend/services"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	"airport-app-backend/services"
-
 )
 
-func  HandleHealth(ctx *gin.Context) {
+func (r *Repository) HandleHealth(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
 	appHealth := services.GetAppHealth()
+	fmt.Println(r.db)
 	ctx.JSON(http.StatusOK, appHealth)
 }
