@@ -27,6 +27,9 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 		log.Info().Err(err).Msg("Database migration failed")
 		return
 	}
+	log.Info().Msg("Database migration Successful")
+
+
 
 
 	serviceRepo := services.NewServiceRepository(DB)
