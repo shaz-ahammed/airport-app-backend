@@ -3,6 +3,7 @@ package server
 import (
 	"airport-app-backend/config"
 	"airport-app-backend/middleware"
+	"airport-app-backend/services"
 
 	"airport-app-backend/controllers"
 
@@ -28,9 +29,11 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 	}
 
 
-	repo := controllers.Controllers(DB)
+	serviceRepo := services.NewServiceRepository(DB)
+	controllerRepo := controllers.NewControllerRepository(serviceRepo)
 
-	srv.router.GET("/health/", repo.HandleHealth)
+
+	srv.router.GET("/health/", controllerRepo.HandleHealth)
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")

@@ -21,7 +21,7 @@ var arch string
 
 var memStats runtime.MemStats
 
-func GetAppHealth() models.AppHealth {
+func (repo ServiceRepository) GetAppHealth() models.AppHealth {
 	doOnce.Do(func() {
 		log.Debug().Msg("Performing one-time lookup of constant runtime information")
 
