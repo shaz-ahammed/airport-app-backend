@@ -18,7 +18,15 @@ Docker-compose
 ### Steps to setup postgres db locally using docker-compose
 
 - Create a `.env` file in the project folder
-- Create `POSTGRES_USER=<postgres_username>` and `POSTGRES_PASSWORD=<postgres_password>` in that `.env` file
+- Add the following attributes in the `.env` file
+     ```
+        POSTGRES_USER=<postgres-username>
+        POSTGRES_PASSWORD=<postgres-password>
+        HOST=localhost
+        DB_NAME=postgres
+        PORT=5432
+        SSL_MODE=disable
+        
 - Run `docker-compose -f docker-compose.yaml up`
 
 ## Steps to run Makefile

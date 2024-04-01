@@ -38,8 +38,6 @@ dist/
 # Flycheck
 flycheck_*.el
 
-# server auth directory
-/server/
 
 # projectiles files
 .projectile
@@ -121,6 +119,7 @@ go.work
 cmake-build-*/
 
 # Mongo Explorer plugin
+.idea/
 .idea/**/mongoSettings.xml
 
 # File-based project format

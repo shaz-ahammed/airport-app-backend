@@ -3,6 +3,7 @@ package server
 import (
 	"airport-app-backend/config"
 	"airport-app-backend/middleware"
+	"airport-app-backend/services"
 
 	"airport-app-backend/controllers"
 
@@ -26,11 +27,12 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 		log.Info().Err(err).Msg("Database migration failed")
 		return
 	}
+	log.Info().Msg("Database migration Successful")
 
+	serviceRepo := services.NewServiceRepository(DB)
+	controllerRepo := controllers.NewControllerRepository(serviceRepo)
 
-	repo := controllers.Controllers(DB)
-
-	srv.router.GET("/health/", repo.HandleHealth)
+	srv.router.GET("/health/", controllerRepo.HandleHealth)
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")

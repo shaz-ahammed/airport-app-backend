@@ -1,18 +1,25 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
-
 	"airport-app-backend/services"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
-func (r *Repository) HandleHealth(ctx *gin.Context) {
+type HealthControllerRepository struct {
+	service services.IHealthRepository
+}
+
+func NewControllerRepository(service services.IHealthRepository) *HealthControllerRepository {
+	return &HealthControllerRepository{
+		service: service,
+	}
+}
+
+func (repo *HealthControllerRepository) HandleHealth(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
-	appHealth := services.GetAppHealth()
-	fmt.Println(r.db)
+	appHealth := repo.service.GetAppHealth()
 	ctx.JSON(http.StatusOK, appHealth)
 }

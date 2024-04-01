@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 
 	"airport-app-backend/models"
 )
@@ -21,7 +22,22 @@ var arch string
 
 var memStats runtime.MemStats
 
-func GetAppHealth() models.AppHealth {
+type ServiceRepository struct {
+	db *gorm.DB
+}
+
+func NewServiceRepository(db *gorm.DB) *ServiceRepository {
+	return &ServiceRepository{
+		db: db,
+	}
+}
+
+type IHealthRepository interface {
+	GetAppHealth() models.AppHealth
+	Hello() string
+}
+
+func (repo *ServiceRepository) GetAppHealth() models.AppHealth {
 	doOnce.Do(func() {
 		log.Debug().Msg("Performing one-time lookup of constant runtime information")
 
@@ -68,4 +84,8 @@ func getMemStats() models.MemoryStats {
 
 func bytesToMB(bytes uint64) uint64 {
 	return bytes / 1024 / 1024
+}
+
+func (repo *ServiceRepository) Hello() string {
+	return "Hello world"
 }
