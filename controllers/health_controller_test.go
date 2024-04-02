@@ -18,8 +18,10 @@ func TestHandleHealthControllerSample(t *testing.T) {
 
 	mockService := mocks.NewMockIHealthRepository(mockCtrl)
 	controllerRepo := NewControllerRepository(mockService)
-
-	mockService.EXPECT().Hello().Return("response")
+  response := models.AppHealth {
+    Goroutines: 5,
+  }
+	mockService.EXPECT().GetAppHealth().Return(response)
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
 
