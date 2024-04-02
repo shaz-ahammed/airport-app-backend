@@ -11,7 +11,26 @@ import (
 
 // Main API routes
 func (srv *AppServer) setupRoutesAndMiddleware() {
-	srv.router.GET("/health/", controllers.HandleHealth)
+
+	log.Info().Msg("Connecting to postgres database")
+
+	DB, err := ConnectToDB()
+	if err != nil {
+		log.Info().Err(err).Msg("Database connection failed")
+		return
+	}
+
+	err = MigrateAll(DB)
+	if err != nil {
+		log.Info().Err(err).Msg("Database migration failed")
+		return
+	}
+	log.Info().Msg("Database migration Successful")
+
+	serviceRepo := services.NewServiceRepository(DB)
+	controllerRepo := controllers.NewControllerRepository(serviceRepo)
+
+	srv.router.GET("/health/", controllerRepo.HandleHealth)
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")
