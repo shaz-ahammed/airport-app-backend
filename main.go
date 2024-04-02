@@ -40,7 +40,6 @@ func main() {
 func runServer() {
 	log.Info().Msg("Starting application")
 
-	
 	srv := server.NewServer(gin.New())
 
 	// Application startup
