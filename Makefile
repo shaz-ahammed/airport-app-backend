@@ -1,3 +1,8 @@
+bootrun:
+	make clean
+	make docker
+	make test
+	make run
 all:
 	make clean
 	make test
@@ -13,3 +18,5 @@ build:
 	go build main.go
 install:
 	go get .
+docker:
+	docker-compose -f docker-compose.yaml up -d
