@@ -1,7 +1,7 @@
 all:
 	make clean
 	make test
-	make build
+	make run
 clean:
 	go clean
 	go mod tidy
