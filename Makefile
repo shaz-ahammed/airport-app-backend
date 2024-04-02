@@ -11,3 +11,5 @@ test:
 	go test ./...
 build:
 	go build main.go
+install:
+	go get .

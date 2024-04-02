@@ -6,16 +6,14 @@ Docker-compose
 
 ## Contributing to the codebase
 
-- Install required dependencies: `go get .`
-- Create an executable file: `go build`
+- Install required dependencies: `make install`
+- Create an executable file: `make build`
 - Run the executable file : `./airport-app-backend`
-- Run the app locally without creating a build: `go run main.go`
+- Run the app locally without creating a build: `make run`
 - Access the running app on [local](https://0.0.0.0:8080/)
 
 ## Run the test files
-- Go to folder that contains the test files. Eg: `cd middleware`
-- Run the command `go test` to run all the test files present in that particular directory
-- To run all the tests run, run the command `go test ./...`
+- Run the command `make test`
 
 ### Steps to setup postgres db locally using docker-compose
 
@@ -25,5 +23,5 @@ Docker-compose
 
 ## Steps to run Makefile
 
-- run command `make` in the terminal to run all the commands in sequence listed in the `Makefile`
+- run command `make all` in the terminal to clean, test and build in sequence.
 - When editing the `Makefile` ensure to have appropriate indentation.
