@@ -1,7 +1,8 @@
 package controllers
 
 import (
-	mocker "airport-app-backend/mocks/mocks"
+	"airport-app-backend/mocks"
+	"airport-app-backend/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -11,17 +12,40 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestHandleHealthControllerSample(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockService := mocks.NewMockIHealthRepository(mockCtrl)
+	controllerRepo := NewControllerRepository(mockService)
+
+	mockService.EXPECT().Hello().Return("response")
+	recorder := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(recorder)
+
+	ctx.Request, _ = http.NewRequest("GET", "/health", nil)
+
+	controllerRepo.HandleHealth(ctx)
+	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
+
+}
+
 func TestHandleHealthController(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
-	mockService := mocker.NewServiceRepository(mockCtrl)
+	defer mockCtrl.Finish()
+
+	mockService := mocks.NewMockIHealthRepository(mockCtrl)
 	controllerRepo := NewControllerRepository(mockService)
-	router := gin.Default()
-	router.GET("/health", controllerRepo.HandleHealth)
-	req, err := http.NewRequest("GET", "/health", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	rr := httptest.NewRecorder()
-	router.ServeHTTP(rr, req)
-	assert.Equal(t, http.StatusOK, rr.Code)
+
+	appHealthMock := models.AppHealth{Goroutines: 5}
+
+	mockService.EXPECT().GetAppHealth().Return(appHealthMock)
+	recorder := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(recorder)
+
+	ctx.Request, _ = http.NewRequest("GET", "/health", nil)
+
+	controllerRepo.HandleHealth(ctx)
+	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
+
 }
