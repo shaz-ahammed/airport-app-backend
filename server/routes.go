@@ -4,6 +4,8 @@ import (
 	"airport-app-backend/config"
 	"airport-app-backend/middleware"
 	"airport-app-backend/services"
+	"airport-app-backend/database"
+
 
 	"airport-app-backend/controllers"
 
@@ -16,13 +18,13 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 
 	log.Info().Msg("Connecting to postgres database")
 
-	DB, err := ConnectToDB()
+	DB, err := database.ConnectToDB()
 	if err != nil {
 		log.Info().Err(err).Msg("Database connection failed")
 		return
 	}
 
-	err = MigrateAll(DB)
+	err = database.MigrateAll(DB)
 	if err != nil {
 		log.Info().Err(err).Msg("Database migration failed")
 		return

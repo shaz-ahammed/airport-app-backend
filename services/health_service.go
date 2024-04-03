@@ -34,7 +34,6 @@ func NewServiceRepository(db *gorm.DB) *ServiceRepository {
 
 type IHealthRepository interface {
 	GetAppHealth() models.AppHealth
-	Hello() string
 }
 
 func (repo *ServiceRepository) GetAppHealth() models.AppHealth {
@@ -84,8 +83,4 @@ func getMemStats() models.MemoryStats {
 
 func bytesToMB(bytes uint64) uint64 {
 	return bytes / 1024 / 1024
-}
-
-func (repo *ServiceRepository) Hello() string {
-	return "Hello world"
 }
