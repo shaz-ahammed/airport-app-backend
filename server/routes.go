@@ -31,10 +31,13 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 	}
 	log.Info().Msg("Database migration Successful")
 
-	serviceRepo := services.NewServiceRepository(DB)
-	controllerRepo := controllers.NewControllerRepository(serviceRepo)
 
-	srv.router.GET("/health/", controllerRepo.HandleHealth)
+	healthService := services.NewServiceRepository(DB)
+	healthController := controllers.NewControllerRepository(healthService)
+	srv.router.GET("/health/", healthController.HandleHealth)
+
+	srv.router.GET("/", healthController.Home)
+
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")
