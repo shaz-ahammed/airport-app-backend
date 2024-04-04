@@ -15,7 +15,15 @@ Docker-compose
         DB_NAME=postgres
         PORT=5432
         SSL_MODE=disable
-```      
+``` 
+- Create a `flyway.conf` file in `/flyway/conf`
+- Add the following attributes in `flyway.conf`:
+```
+        flyway.url=jdbc:postgresql://127.0.0.1:5432/airport
+        flyway.baselineOnMigrate=true
+        flyway.user=<postgres-username>
+        flyway.password=postgres-password>
+```
 ## Contributing to the codebase
 
 - To initiate the database: `make docker`
