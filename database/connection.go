@@ -52,10 +52,3 @@ func ConnectToDB() (*gorm.DB, error) {
 
 }
 
-func MigrateAll(db *gorm.DB) error {
-	err := Aircrafts(db)
-	if err != nil {
-		return err
-	}
-	return nil
-}

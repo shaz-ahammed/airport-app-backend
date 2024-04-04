@@ -1,5 +1,16 @@
 version: "3.8"
 services:
+  flyway:
+    image: flyway/flyway:10
+    container_name: flyway-cont
+    command: ["-configFiles=/flyway/conf/flyway.conf", "migrate"]
+    network_mode: host
+    volumes:
+      - ./flyway/conf:/flyway/conf
+      - ./flyway/sql:/flyway/sql
+    environment:
+      - FLYWAY_CONFIG_FILES=/flyway/conf/flyway.conf
+    
   db:
     image: postgres:16.2-alpine
     container_name: postgres-cont

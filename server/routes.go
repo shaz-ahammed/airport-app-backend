@@ -20,13 +20,6 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 		return
 	}
 
-	err = database.MigrateAll(DB)
-	if err != nil {
-		log.Info().Err(err).Msg("Database migration failed")
-		return
-	}
-	log.Info().Msg("Database migration Successful")
-
 	srv.HealthRouter(DB)
 
 	// Middleware
