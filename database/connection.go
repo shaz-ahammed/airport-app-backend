@@ -20,7 +20,6 @@ type Config struct {
 }
 
 func ConnectToDB() (*gorm.DB, error) {
-
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Error loading .env file:", err)
@@ -51,4 +50,3 @@ func ConnectToDB() (*gorm.DB, error) {
 	return DB, err
 
 }
-
