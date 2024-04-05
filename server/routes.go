@@ -31,8 +31,4 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 	srv.router.Use(middleware.AddSecurityHeaders(config.EnableTls))
 	srv.router.Use(middleware.HandleFaviconRequests())
 
-	if config.EnableDetailedRequestLogging {
-		log.Info().Msg("Enabling request logging middleware")
-		srv.router.Use(middleware.ZerologConsoleRequestLogging())
-	}
 }
