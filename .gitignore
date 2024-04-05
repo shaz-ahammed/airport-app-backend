@@ -381,4 +381,3 @@ airport-app-backend
 golang-app-starter
 
 .env
-flyway/conf/flyway.conf
