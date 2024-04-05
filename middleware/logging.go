@@ -11,6 +11,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// Setup logging to both console and file.
 func setupLogger() zerolog.Logger {
 	logFile, err := os.OpenFile("requests.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
