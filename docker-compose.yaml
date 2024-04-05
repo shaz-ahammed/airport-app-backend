@@ -4,8 +4,6 @@ services:
     image: flyway/flyway:10
     container_name: flyway-cont
     network_mode: host
-    env_file:
-      - .env
     environment:
       - FLYWAY_BASELINE_ON_MIGRATE=true
     entrypoint:

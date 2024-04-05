@@ -1,3 +1,6 @@
+include .env
+export
+
 bootrun:
 	make clean
 	make docker
