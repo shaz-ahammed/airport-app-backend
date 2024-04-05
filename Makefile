@@ -1,8 +1,6 @@
-include .env
-export
-
 bootrun:
 	make clean
+	direnv allow
 	make docker
 	make test
 	make run
