@@ -10,10 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"gorm.io/gorm"
 )
-
-var Database *gorm.DB
 
 func main() {
 	// Gin set mode release / debug
@@ -47,5 +44,4 @@ func runServer() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Application startup failed")
 	}
-
 }
