@@ -2,10 +2,8 @@ package server
 
 import (
 	"airport-app-backend/config"
+	"airport-app-backend/database"
 	"airport-app-backend/middleware"
-	"airport-app-backend/services"
-
-	"airport-app-backend/controllers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -16,23 +14,13 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 
 	log.Info().Msg("Connecting to postgres database")
 
-	DB, err := ConnectToDB()
+	DB, err := database.ConnectToDB()
 	if err != nil {
 		log.Info().Err(err).Msg("Database connection failed")
 		return
 	}
 
-	err = MigrateAll(DB)
-	if err != nil {
-		log.Info().Err(err).Msg("Database migration failed")
-		return
-	}
-	log.Info().Msg("Database migration Successful")
-
-	serviceRepo := services.NewServiceRepository(DB)
-	controllerRepo := controllers.NewControllerRepository(serviceRepo)
-
-	srv.router.GET("/health/", controllerRepo.HandleHealth)
+	srv.HealthRouter(DB)
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")

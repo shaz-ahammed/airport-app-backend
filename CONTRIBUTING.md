@@ -9,13 +9,13 @@ Docker-compose
 - Create a `.env` file in the project folder
 - Add the following attributes in the `.env` file
 ```
-        POSTGRES_USER=<postgres-username>
-        POSTGRES_PASSWORD=<postgres-password>
-        HOST=localhost
-        DB_NAME=postgres
-        PORT=5432
-        SSL_MODE=disable
-```      
+        export POSTGRES_USER=<postgres-username>
+        export POSTGRES_PASSWORD=<postgres-password>
+        export HOST=localhost
+        export DB_NAME=<postgres-dbname>
+        export PORT=5432
+        export SSL_MODE=disable
+``` 
 ## Contributing to the codebase
 
 - To initiate the database: `make docker`

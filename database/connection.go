@@ -1,7 +1,6 @@
-package server
+package database
 
 import (
-	"airport-app-backend/models"
 	"fmt"
 	"os"
 
@@ -10,7 +9,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
 
 type Config struct {
 	host     string
@@ -21,8 +19,7 @@ type Config struct {
 	sslmode  string
 }
 
-func ConnectToDB() (*gorm.DB,error) {
-
+func ConnectToDB() (*gorm.DB, error) {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Error loading .env file:", err)
@@ -53,12 +50,3 @@ func ConnectToDB() (*gorm.DB,error) {
 	return DB, err
 
 }
-
-func MigrateAll(db *gorm.DB) error {
-	err := models.AircraftsTable(db)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-

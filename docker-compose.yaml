@@ -1,5 +1,22 @@
 version: "3.8"
 services:
+  migration:
+    image: flyway/flyway:10
+    container_name: flyway-cont
+    network_mode: host
+    environment:
+      - FLYWAY_BASELINE_ON_MIGRATE=true
+    entrypoint:
+      - flyway
+      - -url=jdbc:postgresql://localhost:5432/${AIRPORT_DB_NAME}
+      - -user=${AIRPORT_POSTGRES_USER}
+      - -password=${AIRPORT_POSTGRES_PASSWORD}
+      - migrate
+    volumes:
+      - ./database/db_migration:/flyway/sql
+    depends_on:
+      - db
+      
   db:
     image: postgres:16.2-alpine
     container_name: postgres-cont
