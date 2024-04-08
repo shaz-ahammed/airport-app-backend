@@ -1,11 +1,9 @@
 package main
 
 import (
-	"airport-app-backend/config"
-	"airport-app-backend/server"
-
-	"os"
-	"time"
+    "os"
+    "time"
+    "net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
@@ -13,23 +11,39 @@ import (
 )
 
 func main() {
-	// Gin set mode release / debug
-	if config.ProductionMode {
-		gin.SetMode(gin.ReleaseMode)
-	}
+    // Initialize Jaeger exporter and tracing
+    initTracing()
 
-	// Global rs/zerolog config
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+    router := gin.New()
 
-	if gin.IsDebugging() {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	}
+    router.GET("/books", handleGetBooks)
 
-	log.Logger = log.Output(zerolog.ConsoleWriter{
-		Out:        os.Stderr,
-		NoColor:    false,
-		TimeFormat: time.RFC1123Z,
-	})
+    server := &http.Server{
+        Addr:         ":8080",
+        Handler:      router,
+        ReadTimeout:  5 * time.Second,
+        WriteTimeout: 10 * time.Second,
+    }
+
+    // Start HTTP server
+    go func() {
+        if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+            log.Fatal().Err(err).Msg("Failed to start HTTP server")
+        }
+    }()
+
+  // Global rs/zerolog config
+  zerolog.SetGlobalLevel(zerolog.InfoLevel)
+
+  if gin.IsDebugging() {
+    zerolog.SetGlobalLevel(zerolog.DebugLevel)
+  }
+
+  log.Logger = log.Output(zerolog.ConsoleWriter{
+  Out:        os.Stderr,
+  NoColor:    false,
+  TimeFormat: time.RFC1123Z,
+  })
 
 	runServer()
 }

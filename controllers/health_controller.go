@@ -6,6 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+  "go.opencensus.io/trace"
+
 )
 
 type HealthControllerRepository struct {
