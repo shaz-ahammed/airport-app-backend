@@ -13,7 +13,7 @@ services:
       - -password=${AIRPORT_POSTGRES_PASSWORD}
       - migrate
     volumes:
-      - ./database/migration:/flyway/sql
+      - ./database/db_migration:/flyway/sql
     depends_on:
       - db
       
