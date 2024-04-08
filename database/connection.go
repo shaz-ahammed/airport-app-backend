@@ -27,12 +27,12 @@ func ConnectToDB() (*gorm.DB, error) {
 		return nil, err
 	}
 	config := Config{
-		host:     os.Getenv("HOST"),
-		user:     os.Getenv("POSTGRES_USER"),
-		password: os.Getenv("POSTGRES_PASSWORD"),
-		dbname:   os.Getenv("DB_NAME"),
-		port:     os.Getenv("PORT"),
-		sslmode:  os.Getenv("SSL_MODE"),
+		host:     os.Getenv("AIRPORT_HOST"),
+		user:     os.Getenv("AIRPORT_POSTGRES_USER"),
+		password: os.Getenv("AIRPORT_POSTGRES_PASSWORD"),
+		dbname:   os.Getenv("AIRPORT_DB_NAME"),
+		port:     os.Getenv("AIRPORT_PORT"),
+		sslmode:  os.Getenv("AIRPORT_SSL_MODE"),
 	}
 
 	dsn := fmt.Sprintf(
