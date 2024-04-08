@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/rs/zerolog/log"
-	"gorm.io/gorm"
 
 	"airport-app-backend/models"
 )
@@ -21,16 +20,6 @@ var operatingSystem string
 var arch string
 
 var memStats runtime.MemStats
-
-type ServiceRepository struct {
-	db *gorm.DB
-}
-
-func NewServiceRepository(db *gorm.DB) *ServiceRepository {
-	return &ServiceRepository{
-		db: db,
-	}
-}
 
 type IHealthRepository interface {
 	GetAppHealth() models.AppHealth
