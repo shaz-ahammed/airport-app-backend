@@ -50,12 +50,3 @@ func ConnectToDB() (*gorm.DB, error) {
 	return DB, err
 
 }
-
-func MigrateAll(db *gorm.DB) error {
-	err := models.AircraftsTable(db)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
