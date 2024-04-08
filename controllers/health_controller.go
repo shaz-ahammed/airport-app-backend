@@ -18,8 +18,12 @@ func NewControllerRepository(service services.IHealthRepository) *HealthControll
 	}
 }
 
-func (repo *HealthControllerRepository) HandleHealth(ctx *gin.Context) {
+func (hcr *HealthControllerRepository) HandleHealth(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
-	appHealth := repo.service.GetAppHealth()
+	appHealth := hcr.service.GetAppHealth()
 	ctx.JSON(http.StatusOK, appHealth)
+}
+
+func (hcr *HealthControllerRepository) Home(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, "Home page : AIRPORT MANAGEMENT SYSTEM")
 }
