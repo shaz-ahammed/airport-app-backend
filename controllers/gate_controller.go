@@ -25,8 +25,8 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	pageStr := ctx.Query("page")
 	floorStr := ctx.Query("floor")
 	page, err := strconv.Atoi(pageStr)
-	if err != nil || page < 0 {
-		page = -1
+	if err != nil || page < 1 {
+		page = 1
 	}
 	floor, err := strconv.Atoi(floorStr)
         if err != nil {
