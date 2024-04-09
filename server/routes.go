@@ -20,8 +20,10 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 		return
 	}
 
+	srv.router.Use(middleware.ZerologConsoleRequestLogging())
 	srv.HealthRouter(DB)
 	srv.GateRouter(DB)
+
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")
