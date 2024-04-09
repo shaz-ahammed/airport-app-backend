@@ -20,19 +20,8 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 		return
 	}
 
-	err = MigrateAll(DB)
-	if err != nil {
-		log.Info().Err(err).Msg("Database migration failed")
-		return
-	}
-	log.Info().Msg("Database migration Successful")
-
-	serviceRepo := services.NewServiceRepository(DB)
-	controllerRepo := controllers.NewControllerRepository(serviceRepo)
-
 	srv.router.Use(middleware.ZerologConsoleRequestLogging())
-
-	srv.router.GET("/health/", controllerRepo.HandleHealth)
+	srv.HealthRouter(DB)
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")
