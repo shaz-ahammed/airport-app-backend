@@ -14,11 +14,11 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 
   log.Info().Msg("Connecting to postgres database")
 
-	DB, err := database.ConnectToDB()
-	if err != nil {
-		log.Info().Err(err).Msg("Database connection failed")
-		return
-	}
+  DB, err := database.ConnectToDB()
+  if err != nil {
+    log.Info().Err(err).Msg("Database connection failed")
+    return
+  }
 
 	srv.router.Use(middleware.ZerologConsoleRequestLogging())
   
