@@ -7,14 +7,16 @@ import (
 )
 
 type IGateRepository interface {
-	GetGates() []models.Gates
+	GetGates() []models.Gate
 }
 
-func (sr *ServiceRepository) GetGates() []models.Gates {
+func (sr *ServiceRepository) GetGates() []models.Gate {
 	log.Debug().Msg("Fetching list of gates")
-	listOfGates := make([]models.Gates, 3)
-	listOfGates = append(listOfGates, models.Gates{GateNumber: 1, FloorNumber: 1})
-	listOfGates = append(listOfGates, models.Gates{GateNumber: 2, FloorNumber: 2})
-	listOfGates = append(listOfGates, models.Gates{GateNumber: 3, FloorNumber: 3})
-	return listOfGates
+	var gates []models.Gate
+	// Query all gates from the database
+	if err := sr.db.Find(&gates).Error; err != nil {
+		log.Printf("Failed to fetch gates: %v", err)
+		return nil
+	}
+	return gates
 }
