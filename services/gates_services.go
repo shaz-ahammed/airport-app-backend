@@ -2,6 +2,7 @@ package services
 
 import (
 	"airport-app-backend/models"
+	"fmt"
 
 	"github.com/rs/zerolog/log"
 )
@@ -15,8 +16,9 @@ type IGateRepository interface {
 func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
 	log.Debug().Msg("Fetching list of gates")
 	var gates []models.Gate
-    offset := page * DEFAULT_PAGE_SIZE
+    offset := (page - 1) * DEFAULT_PAGE_SIZE
     query := sr.db.Offset(offset).Limit(DEFAULT_PAGE_SIZE)
+	fmt.Printf("offset : %v page : %v floor: %v", offset,page,floor)
     if floor != -1 {
         query = query.Where("floor_number = ?", floor)
     }

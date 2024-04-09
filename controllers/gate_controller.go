@@ -29,9 +29,9 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 		page = 1
 	}
 	floor, err := strconv.Atoi(floorStr)
-        if err != nil {
-            floor = 0
-        }
+	if err != nil || floor < 0 {
+		floor = -1
+	}
 	gates, err := gcr.service.GetGates(page, floor)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gates"})
