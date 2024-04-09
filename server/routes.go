@@ -22,7 +22,6 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 
 	srv.HealthRouter(DB)
 	srv.router.Use(middleware.ZerologConsoleRequestLogging())
-
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")
 	srv.router.Use(gin.Recovery()) // Default recovery middleware
