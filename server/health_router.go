@@ -10,7 +10,7 @@ import (
 func (srv *AppServer) HealthRouter(db *gorm.DB) {
 	healthService := services.NewServiceRepository(db)
 	healthController := controllers.NewControllerRepository(healthService)
-	srv.router.GET("/health/", healthController.HandleHealth)
+	srv.router.GET("/health", healthController.HandleHealth)
 
 	srv.router.GET("/", healthController.Home)
 

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -21,6 +22,15 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 
 func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	log.Debug().Msg("Getting list of gates")
-	gates := gcr.service.GetGates()
+	pageStr := ctx.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
+	gates, err := gcr.service.GetGates(page)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gates"})
+		return
+	}
 	ctx.JSON(http.StatusOK, gates)
 }
