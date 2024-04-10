@@ -20,6 +20,7 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 		return
 	}
 
+	srv.HealthRouter(DB)
 	srv.router.Use(middleware.ZerologConsoleRequestLogging())
 	srv.HealthRouter(DB)
 	srv.GateRouter(DB)
