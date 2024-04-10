@@ -19,9 +19,8 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 		log.Info().Err(err).Msg("Database connection failed")
 		return
 	}
-
-	srv.HealthRouter(DB)
 	srv.router.Use(middleware.ZerologConsoleRequestLogging())
+	srv.HealthRouter(DB)
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")
 	srv.router.Use(gin.Recovery()) // Default recovery middleware
