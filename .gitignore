@@ -381,3 +381,4 @@ airport-app-backend
 golang-app-starter
 
 .env
+/mocks/
