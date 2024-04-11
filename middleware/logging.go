@@ -11,7 +11,6 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// Setup logging to both console and file.
 func setupLogger() zerolog.Logger {
 	logFile, err := os.OpenFile("requests.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -31,33 +30,34 @@ func ZerologConsoleRequestLogging() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		startTime := time.Now()
 
+		var requestPath string
+
+		if requestRawQuery := ctx.Request.URL.RawQuery; requestRawQuery == "" {
+			requestPath = ctx.Request.URL.Path
+		} else {
+			requestPath = fmt.Sprintf("%s?%s", ctx.Request.URL.Path, requestRawQuery)
+		}
+
 		ctx.Next()
 
 		latency := time.Since(startTime)
+
+		subLogger := consoleLogger.With().Timestamp().
+			Int("http-status", ctx.Writer.Status()).
+			Str("method", ctx.Request.Method).
+			Str("request-path", requestPath).
+			Str("client-ip", ctx.ClientIP()).
+			Str("user-agent", ctx.Request.UserAgent()).
+			Int64("content-length", ctx.Request.ContentLength).
+			Dur("latency", latency).
+			Logger()
 
 		logMsg := "Request"
 		if len(ctx.Errors) > 0 {
 			logMsg = ctx.Errors.String()
 		}
 
-		status := ctx.Writer.Status()
-		method := ctx.Request.Method
-		requestPath := ctx.Request.URL.Path + "?" + ctx.Request.URL.RawQuery
-		clientIP := ctx.ClientIP()
-		userAgent := ctx.Request.UserAgent()
-		contentLength := ctx.Request.ContentLength
-
-		subLogger := logger.With().
-			Int("http-status", status).
-			Str("method", method).
-			Str("request-path", requestPath).
-			Str("client-ip", clientIP).
-			Str("user-agent", userAgent).
-			Int64("content-length", contentLength).
-			Dur("latency", latency).
-			Logger()
-
-		if status >= http.StatusInternalServerError {
+		if ctx.Writer.Status() >= http.StatusInternalServerError {
 			subLogger.Error().Msg(logMsg)
 		} else if status >= http.StatusBadRequest && status < http.StatusInternalServerError {
 			subLogger.Warn().Msg(logMsg)
