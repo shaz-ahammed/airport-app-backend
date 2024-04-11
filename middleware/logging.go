@@ -30,6 +30,16 @@ func ZerologConsoleRequestLogging() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		startTime := time.Now()
 
+		ctx.Next()
+
+		latency := time.Since(startTime)
+
+		logMsg := "Request"
+		if len(ctx.Errors) > 0 {
+			logMsg = ctx.Errors.String()
+		}
+
+		status := ctx.Writer.Status()
 		var requestPath string
 
 		if requestRawQuery := ctx.Request.URL.RawQuery; requestRawQuery == "" {
@@ -38,26 +48,16 @@ func ZerologConsoleRequestLogging() gin.HandlerFunc {
 			requestPath = fmt.Sprintf("%s?%s", ctx.Request.URL.Path, requestRawQuery)
 		}
 
-		ctx.Next()
-
-		latency := time.Since(startTime)
-
-		subLogger := consoleLogger.With().Timestamp().
+		subLogger := logger.With().
 			Int("http-status", ctx.Writer.Status()).
 			Str("method", ctx.Request.Method).
 			Str("request-path", requestPath).
 			Str("client-ip", ctx.ClientIP()).
 			Str("user-agent", ctx.Request.UserAgent()).
-			Int64("content-length", ctx.Request.ContentLength).
 			Dur("latency", latency).
 			Logger()
 
-		logMsg := "Request"
-		if len(ctx.Errors) > 0 {
-			logMsg = ctx.Errors.String()
-		}
-
-		if ctx.Writer.Status() >= http.StatusInternalServerError {
+		if status >= http.StatusInternalServerError {
 			subLogger.Error().Msg(logMsg)
 		} else if status >= http.StatusBadRequest && status < http.StatusInternalServerError {
 			subLogger.Warn().Msg(logMsg)
