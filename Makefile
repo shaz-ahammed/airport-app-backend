@@ -7,7 +7,6 @@ bootrun:
 	make run
 all:
 	make clean
-	make mock
 	make test
 	make build
 clean:
