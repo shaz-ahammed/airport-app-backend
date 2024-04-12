@@ -1,8 +1,9 @@
 bootrun:
 	make clean
 	direnv allow
-	make docker
+	make mock
 	make test
+	make docker
 	make run
 all:
 	make clean
@@ -21,3 +22,6 @@ install:
 	go get .
 docker:
 	docker-compose -f docker-compose.yaml up -d
+mock:
+	mockgen -destination=mocks/gate_service_mock.go -package=mocks airport-app-backend/services IGateRepository
+	mockgen -destination=mocks/health_service_mock.go -package=mocks airport-app-backend/services IHealthRepository
