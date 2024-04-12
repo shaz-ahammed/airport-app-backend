@@ -5,8 +5,8 @@ import (
 	"airport-app-backend/services"
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
-  "go.opencensus.io/trace"
+	//"github.com/rs/zerolog/log"
+	"go.opencensus.io/trace"
 	"net/http"
 )
 

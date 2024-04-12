@@ -2,10 +2,8 @@ package server
 
 import (
 	"airport-app-backend/config"
-	"airport-app-backend/controllers"
 	"airport-app-backend/database"
 	"airport-app-backend/middleware"
-	"airport-app-backend/services"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )

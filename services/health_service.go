@@ -36,7 +36,6 @@ func NewServiceRepository(db *gorm.DB) *ServiceRepository {
 
 type IHealthRepository interface {
 	GetAppHealth(c context.Context, ctx *gin.Context) models.AppHealth
-	Hello() string
 }
 
 func (repo *ServiceRepository) GetAppHealth(c context.Context, ctx *gin.Context) models.AppHealth {
