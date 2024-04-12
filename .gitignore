@@ -382,5 +382,4 @@ golang-app-starter
 
 .env
 requests.log
-/mocks/
 *.log
