@@ -13,6 +13,7 @@ import (
 func (srv *AppServer) setupRoutesAndMiddleware() {
 
   log.Info().Msg("Connecting to postgres database")
+  log.Info().Msg("Connecting to postgres database")
 
 	DB, err := database.ConnectToDB()
 	if err != nil {
@@ -20,9 +21,11 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 		return
 	}
 
+
 	srv.router.Use(middleware.ZerologConsoleRequestLogging())
 
 	srv.HealthRouter(DB)
+	srv.GateRouter(DB)
 	srv.GateRouter(DB)
 	srv.AirlineRouter(DB)
 
@@ -30,6 +33,9 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 	log.Info().Msg("Configuring GIN middleware")
 	srv.router.Use(gin.Recovery()) // Default recovery middleware
 
+  srv.router.Use(middleware.DisableCache())
+  srv.router.Use(middleware.AddSecurityHeaders(config.EnableTls))
+  srv.router.Use(middleware.HandleFaviconRequests())
   srv.router.Use(middleware.DisableCache())
   srv.router.Use(middleware.AddSecurityHeaders(config.EnableTls))
   srv.router.Use(middleware.HandleFaviconRequests())

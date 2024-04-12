@@ -62,6 +62,5 @@ func (m *MockIHealthRepository) Hello() string {
 // Hello indicates an expected call of Hello.
 func (mr *MockIHealthRepositoryMockRecorder) Hello() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hello", reflect.TypeOf((*MockIHealthRepository)(nil).Hello))
-
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAppHealth", reflect.TypeOf((*MockIHealthRepository)(nil).GetAppHealth), arg0, arg1)
 }
