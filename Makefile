@@ -1,9 +1,9 @@
 bootrun:
 	make clean
 	direnv allow
-	make docker
 	make mock
 	make test
+	make docker
 	make run
 all:
 	make clean
