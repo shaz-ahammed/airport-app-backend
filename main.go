@@ -1,50 +1,54 @@
 package main
 
 import (
-    "os"
-    "time"
-    "net/http"
+	"airport-app-backend/config"
+	"airport-app-backend/server"
+	"os"
+	"time"
 
+	"contrib.go.opencensus.io/exporter/jaeger"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"go.opencensus.io/trace"
+	"gorm.io/gorm"
 )
 
+var Database *gorm.DB
+
+func initTracing() {
+	// Create Jaeger exporter
+	exporter, err := jaeger.NewExporter(jaeger.Options{
+		CollectorEndpoint: "http://localhost:14268/api/traces",
+		ServiceName:       "airport-service",
+	})
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create Jaeger exporter")
+	}
+
+	// Register exporter
+	trace.RegisterExporter(exporter)
+	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+}
+
 func main() {
-    // Initialize Jaeger exporter and tracing
-    initTracing()
-
-    router := gin.New()
-
-    router.GET("/books", handleGetBooks)
-
-    server := &http.Server{
-        Addr:         ":8080",
-        Handler:      router,
-        ReadTimeout:  5 * time.Second,
-        WriteTimeout: 10 * time.Second,
-    }
-
-    // Start HTTP server
-    go func() {
-        if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-            log.Fatal().Err(err).Msg("Failed to start HTTP server")
-        }
-    }()
-
-  // Global rs/zerolog config
-  zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	initTracing()
+	// Gin set mode release / debug
+	if config.ProductionMode {
+		gin.SetMode(gin.ReleaseMode)
+	}
+	// Global rs/zerolog config
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
   if gin.IsDebugging() {
     zerolog.SetGlobalLevel(zerolog.DebugLevel)
   }
 
-  log.Logger = log.Output(zerolog.ConsoleWriter{
-  Out:        os.Stderr,
-  NoColor:    false,
-  TimeFormat: time.RFC1123Z,
-  })
-
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:        os.Stderr,
+		NoColor:    false,
+		TimeFormat: time.RFC1123Z,
+	})
 	runServer()
 }
 

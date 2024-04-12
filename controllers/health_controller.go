@@ -1,13 +1,13 @@
 package controllers
 
 import (
+	"airport-app-backend/middleware"
 	"airport-app-backend/services"
-	"net/http"
-
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
   "go.opencensus.io/trace"
-
+	"net/http"
 )
 
 type HealthControllerRepository struct {
@@ -20,9 +20,12 @@ func NewControllerRepository(service services.IHealthRepository) *HealthControll
 	}
 }
 
-func (hcr *HealthControllerRepository) HandleHealth(ctx *gin.Context) {
-	log.Debug().Msg("Getting application health information")
-	appHealth := hcr.service.GetAppHealth()
+func (repo *HealthControllerRepository) HandleHealth(ctx *gin.Context) {
+	c, span := trace.StartSpan(context.Background(), "handle_get_health")
+	defer span.End()
+
+	middleware.TraceSpanTags(span)(ctx)
+	appHealth := repo.service.GetAppHealth(c, ctx)
 	ctx.JSON(http.StatusOK, appHealth)
 }
 
