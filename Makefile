@@ -16,6 +16,7 @@ run:
 	go run main.go
 test:
 	go test ./...
+	go test ./... -json | go-test-report 
 build:
 	go build main.go
 install:
