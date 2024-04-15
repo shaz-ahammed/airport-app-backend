@@ -46,11 +46,15 @@ jobs:
           - name: Install curl
             run: sudo apt-get update && sudo apt-get install -y curl
 
+          - name: Install Homebrew
+            run: |
+                sudo apt-get update
+                sudo apt-get install -y curl
+                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+                eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
           - name: Install Snyk CLI
-            run: bash -c 'curl -sL https://snyk.io/install | sh'
-
-
+            run: brew install snyk
 
           - name: Run Snyk Test
             run: snyk test --all-projects
