@@ -44,14 +44,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Move test report to root
-        run: |
-          mv $GITHUB_WORKSPACE/test_report.html $GITHUB_WORKSPACE/index.html
-        shell: bash
+      - name: Download test report artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: test-report
+          path: test_report
 
       - name: Publish Test Report
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: .
+          folder: test_report
           clean: true
