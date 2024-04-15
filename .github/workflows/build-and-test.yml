@@ -48,8 +48,8 @@ jobs:
 
 
           - name: Install Snyk CLI
-            run:  |
-                curl -sL https://snyk.io/install | sh
+            run: bash -c 'curl -sL https://snyk.io/install | sh'
+
 
 
           - name: Run Snyk Test
