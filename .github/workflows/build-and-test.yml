@@ -39,8 +39,9 @@ jobs:
 
       - name: Run Snyk Monitor
         run: |
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            $snapshot_link = snyk monitor --all-projects | Select-String -Pattern "Explore this snapshot at" | ForEach-Object { $_ -replace "Explore this snapshot at ", "" }
+          run: |
+          if "${{ runner.os }}" == "Windows" ; then
+            snyk monitor --all-projects | findstr "Explore this snapshot at" | ForEach-Object { $snapshot_link = $_.ToString() -replace "Explore this snapshot at ", "" }
             echo "Snapshot link: $snapshot_link"
           else
             snapshot_link=$(snyk monitor --all-projects | grep "Explore this snapshot at" | sed 's/Explore this snapshot at //')
