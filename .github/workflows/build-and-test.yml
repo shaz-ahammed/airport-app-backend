@@ -65,7 +65,3 @@ jobs:
           branch: gh-pages
           folder: build/reports/go-test-report
           clean: true
-
-
-
-
