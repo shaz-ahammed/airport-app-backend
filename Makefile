@@ -15,7 +15,7 @@ clean:
 run:
 	go run main.go
 test:
-	go test ./... -json | go-test-report 
+	mkdir -p build/reports/go-test-report && go test ./... -json | go-test-report -o build/reports/go-test-report/index.html
 build:
 	go build main.go
 install:

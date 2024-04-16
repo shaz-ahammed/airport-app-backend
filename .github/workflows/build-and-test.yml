@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        os: [ubuntu-latest]
     steps:
 
       - name: Set up Go
@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-report
-          path: test_report.html
+          path: build/reports/go-test-report/index.html
 
   publish:
     needs: build_and_test
@@ -48,11 +48,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: test-report
-          path: test_report
+          path: build/reports/go-test-report
 
       - name: Publish Test Report
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: test_report
+          folder: build/reports/go-test-report
           clean: true

@@ -383,4 +383,5 @@ golang-app-starter
 .env
 requests.log
 test_report.html
+build
 *.log
