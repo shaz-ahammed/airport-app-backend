@@ -30,9 +30,6 @@ jobs:
         run: |
           npm install -g snyk@1.1288.0
 
-
-
-
       - name: Run Snyk security scan
         run: |
           snyk auth ${{ secrets.SNYK_TOKEN }}
