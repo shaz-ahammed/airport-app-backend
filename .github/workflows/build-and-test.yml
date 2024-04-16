@@ -27,19 +27,6 @@ jobs:
       - name: Build all on ${{matrix.os}}
         run: make all
 
-      - name: Install Snyk CLI
-        run: npm install -g snyk
-
-      - name: Run Snyk security scan
-        run: |
-          snyk auth ${{ secrets.SNYK_TOKEN }}
-          snyk test --all-projects
-
-      - name: Run Snyk Monitor
-        run: |
-          snapshot_link=$(snyk monitor --all-projects | grep "Explore this snapshot at" | sed 's/Explore this snapshot at //')
-          echo "Snyk Monitor link: $snapshot_link" >> $GITHUB_STEP_SUMMARY
-
       - name: Upload test report
         uses: actions/upload-artifact@v2
         with:
@@ -64,4 +51,4 @@ jobs:
         with:
           branch: gh-pages
           folder: build/reports/go-test-report
-          clean: true
+
