@@ -39,7 +39,7 @@ jobs:
       - name: Run Snyk Monitor
         run: |
           snapshot_link=$(snyk monitor --all-projects | grep "Explore this snapshot at" | sed 's/Explore this snapshot at //')
-          echo "Snyk Monitor link: $snapshot_link" >> $GITHUB_STEP_SUMMARY
+          echo "[Snyk Monitor link]($snapshot_link)" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload test report
         uses: actions/upload-artifact@v2
