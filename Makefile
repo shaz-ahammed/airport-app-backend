@@ -4,6 +4,7 @@ bootrun:
 	make mock
 	make test
 	make docker
+	make sonar-scan
 	make run
 all:
 	make clean
