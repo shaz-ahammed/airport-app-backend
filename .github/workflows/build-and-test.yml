@@ -27,7 +27,7 @@ jobs:
 
 
       - name: Install Snyk CLI
-        run: npm install -g snyk@1.1100.0
+        run: npm install -g snyk
 
 
       - name: Run Snyk security scan
