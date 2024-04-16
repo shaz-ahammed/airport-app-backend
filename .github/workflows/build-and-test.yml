@@ -40,4 +40,4 @@ jobs:
       - name: Run Snyk Monitor
         run: |
           snapshot_link=$(snyk monitor --all-projects | grep "Explore this snapshot at" | sed 's/Explore this snapshot at //')
-          echo "Snapshot link: $snapshot_link" >> $GITHUB_STEP_SUMMARY
+          echo "Snyk Monitor link: $snapshot_link" >> $GITHUB_STEP_SUMMARY
