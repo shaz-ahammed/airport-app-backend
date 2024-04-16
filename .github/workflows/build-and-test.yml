@@ -46,13 +46,6 @@ jobs:
           name: test-report
           path: build/reports/go-test-report/index.html
 
-  publish:
-    needs: build_and_test
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Download test report artifact
         uses: actions/download-artifact@v2
         with:
