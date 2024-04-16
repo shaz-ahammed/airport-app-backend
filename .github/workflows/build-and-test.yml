@@ -34,7 +34,7 @@ jobs:
         run: |
           snyk auth ${{ secrets.SNYK_TOKEN }}
           snyk test --all-projects
-          
+
       - name: Run Snyk Monitor
         run: |
           snapshot_link=$(snyk monitor --all-projects | grep "Explore this snapshot at" | sed 's/Explore this snapshot at //')
@@ -65,3 +65,7 @@ jobs:
           branch: gh-pages
           folder: build/reports/go-test-report
           clean: true
+
+
+
+
