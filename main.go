@@ -17,7 +17,6 @@ import (
 var Database *gorm.DB
 
 func initTracing() {
-	// Create Jaeger exporter
 	exporter, err := jaeger.NewExporter(jaeger.Options{
 		CollectorEndpoint: "http://localhost:14268/api/traces",
 		ServiceName:       "airport-service",
@@ -26,7 +25,6 @@ func initTracing() {
 		log.Fatal().Err(err).Msg("Failed to create Jaeger exporter")
 	}
 
-	// Register exporter
 	trace.RegisterExporter(exporter)
 	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 }
@@ -40,9 +38,9 @@ func main() {
 	// Global rs/zerolog config
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-  if gin.IsDebugging() {
-    zerolog.SetGlobalLevel(zerolog.DebugLevel)
-  }
+	if gin.IsDebugging() {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
 
 	log.Logger = log.Output(zerolog.ConsoleWriter{
 		Out:        os.Stderr,

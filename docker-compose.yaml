@@ -33,11 +33,6 @@ services:
     ports:
       - "14268:14268"  # HTTP thrift compact format
       - "16686:16686"  # Web UI
-      - "5775:5775/udp"  # gRPC for example: Java
-      - "5778:5778"  # HTTP thrift binary format
-      - "6831:6831/udp"  # gRPC for example: Java
-      - "6832:6832/udp"  # gRPC for example: Go
-      - "9411:9411"  # Zipkin HTTP collector
 
 volumes:
   postgres_db:

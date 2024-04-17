@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"time"
@@ -12,16 +11,8 @@ import (
 )
 
 func setupLogger() zerolog.Logger {
-	logFile, err := os.OpenFile("requests.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		fmt.Printf("Failed to open log file: %v", err)
-		os.Exit(1)
-	}
-
 	consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC1123Z}
-	multiWriter := io.MultiWriter(consoleWriter, logFile)
-
-	return zerolog.New(multiWriter).With().Timestamp().Logger()
+	return zerolog.New(consoleWriter).With().Timestamp().Logger()
 }
 
 var logger = setupLogger()
