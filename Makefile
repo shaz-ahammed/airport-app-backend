@@ -1,15 +1,17 @@
+SONAR_TOKEN := $(shell grep '^sonar.login' sonar-project.properties | cut -d'=' -f2)
 bootrun:
 	make clean
 	direnv allow
 	make mock
 	make test
 	make docker
-	make sonar-scan
+	make sonar
 	make run
 all:
 	make clean
 	make test
 	make build
+	make sonar
 clean:
 	go clean
 	go mod tidy
@@ -34,4 +36,11 @@ sonar-scan:
       -Dsonar.projectKey=Airport \
       -Dsonar.sources=. \
       -Dsonar.host.url=http://localhost:9000 \
-      -Dsonar.token=sqp_fb1b47f12966b532e58d81b1e14527dd4017e641
+      -Dsonar.token=$(SONAR_TOKEN)
+sonar:
+ifeq ($(CI),)
+	make sonar-scan
+else
+	@echo "SonarQube scan skipped "
+endif
+
