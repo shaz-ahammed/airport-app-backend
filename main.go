@@ -38,9 +38,9 @@ func main() {
 	// Global rs/zerolog config
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-  if gin.IsDebugging() {
-    zerolog.SetGlobalLevel(zerolog.DebugLevel)
-  }
+	if gin.IsDebugging() {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
 
 	log.Logger = log.Output(zerolog.ConsoleWriter{
 		Out:        os.Stderr,
