@@ -29,3 +29,21 @@ func TestHandleGetGatesController(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
+
+
+func TestHandleGetGatesByIDController(t *testing.T) {
+	mockControl := gomock.NewController(t)
+	defer mockControl.Finish()
+	
+	mockService := mocks.NewMockIGateRepository(mockControl)
+	mockController := NewGateRepository(mockService)
+	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
+	mockService.EXPECT().GetGateByID(gomock.Any()).Return(&mockGates, nil)
+
+	recorder := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(recorder)
+	ctx.Request, _ = http.NewRequest("GET", "/gates/123", nil)
+	mockController.HandleGetGateByID(ctx)
+
+	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
+}
