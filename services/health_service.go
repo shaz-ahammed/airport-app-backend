@@ -24,16 +24,6 @@ var arch string
 
 var memStats runtime.MemStats
 
-type ServiceRepository struct {
-	db *gorm.DB
-}
-
-func NewServiceRepository(db *gorm.DB) *ServiceRepository {
-	return &ServiceRepository{
-		db: db,
-	}
-}
-
 type IHealthRepository interface {
 	GetAppHealth(c context.Context, ctx *gin.Context) models.AppHealth
 }

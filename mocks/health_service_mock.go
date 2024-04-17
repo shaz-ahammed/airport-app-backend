@@ -8,7 +8,6 @@ import (
 	models "airport-app-backend/models"
 	context "context"
 	reflect "reflect"
-
 	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -37,9 +36,11 @@ func (m *MockIHealthRepository) EXPECT() *MockIHealthRepositoryMockRecorder {
 }
 
 // GetAppHealth mocks base method.
+
 func (m *MockIHealthRepository) GetAppHealth(arg0 context.Context, arg1 *gin.Context) models.AppHealth {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAppHealth", arg0, arg1)
+
 	ret0, _ := ret[0].(models.AppHealth)
 	return ret0
 }
@@ -62,4 +63,5 @@ func (m *MockIHealthRepository) Hello() string {
 func (mr *MockIHealthRepositoryMockRecorder) Hello() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hello", reflect.TypeOf((*MockIHealthRepository)(nil).Hello))
+
 }

@@ -1,29 +1,49 @@
 name: Build and test from latest commit on master
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 jobs:
-
   build_and_test:
-    name: Build and test on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    steps:
+    name: Build and test on ubuntu-20.04
+    runs-on: ubuntu-20.04
 
+    steps:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.22.1
         id: go
 
+      - name: Install dependencies
+        run: go install github.com/vakenbolt/go-test-report@v0.9.3
+
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Build all on ${{matrix.os}}
+      - name: Build all on ubuntu-20.04
         run: make all
+
+
+      - name: Install Snyk CLI
+        run: |
+          npm install -g snyk@1.1288.0
+
+      - name: Run Snyk security scan
+        run: |
+          snyk auth ${{ secrets.SNYK_TOKEN }}
+          snyk test --all-projects
+
+      - name: Run Snyk Monitor
+        run: |
+          snapshot_link=$(snyk monitor --all-projects | grep "Explore this snapshot at" | sed 's/Explore this snapshot at //')
+          echo "[Snyk Monitor link]($snapshot_link)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Publish Test Report
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: build/reports/go-test-report
+          clean: true
+

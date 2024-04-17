@@ -31,13 +31,7 @@ func ZerologConsoleRequestLogging() gin.HandlerFunc {
 		}
 
 		status := ctx.Writer.Status()
-		var requestPath string
-
-		if requestRawQuery := ctx.Request.URL.RawQuery; requestRawQuery == "" {
-			requestPath = ctx.Request.URL.Path
-		} else {
-			requestPath = fmt.Sprintf("%s?%s", ctx.Request.URL.Path, requestRawQuery)
-		}
+		requestPath := ctx.Request.URL.Path + "?" + ctx.Request.URL.RawQuery
 
 		subLogger := logger.With().
 			Int("http-status", ctx.Writer.Status()).
