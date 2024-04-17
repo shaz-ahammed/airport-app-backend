@@ -11,10 +11,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"go.opencensus.io/trace"
-	"gorm.io/gorm"
 )
-
-var Database *gorm.DB
 
 func initTracing() {
 	exporter, err := jaeger.NewExporter(jaeger.Options{
