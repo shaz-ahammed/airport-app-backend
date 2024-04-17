@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"go.opencensus.io/trace"
-	"gorm.io/gorm"
 	"os"
 	"runtime"
 	"sync"
