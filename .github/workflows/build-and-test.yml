@@ -40,18 +40,6 @@ jobs:
           snapshot_link=$(snyk monitor --all-projects | grep "Explore this snapshot at" | sed 's/Explore this snapshot at //')
           echo "[Snyk Monitor link]($snapshot_link)" >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload test report
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-report
-          path: build/reports/go-test-report/index.html
-
-      - name: Download test report artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: test-report
-          path: build/reports/go-test-report
-
       - name: Publish Test Report
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
