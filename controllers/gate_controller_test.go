@@ -47,3 +47,9 @@ func TestHandleGetGatesByIDController(t *testing.T) {
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
 
+
+
+
+
+
+
