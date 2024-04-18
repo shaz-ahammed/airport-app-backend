@@ -3,7 +3,9 @@ package services
 import (
 	"airport-app-backend/middleware"
 	"airport-app-backend/models"
+	"context"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"go.opencensus.io/trace"
 )

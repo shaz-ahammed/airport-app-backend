@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"go.opencensus.io/trace"
 	"net/http"
 	"strconv"
 	"strings"
