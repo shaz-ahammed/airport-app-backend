@@ -23,7 +23,7 @@ func TestHandleAirlineController(t *testing.T) {
 	ctx, _ := gin.CreateTestContext(recorder)
 	mockService.EXPECT().GetAirline(gomock.Any(), gomock.Any(), ctx).Return(mockAirlines, nil)
 	ctx.Request, _ = http.NewRequest("GET", "/airline", nil)
-	controllerRepo.HandleAirline(ctx)
+	controllerRepo.HandleGetAirline(ctx)
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
@@ -38,7 +38,7 @@ func TestHandleAirlineByIdController(t *testing.T) {
 	mockAirlines := models.Airlines{Name: "Jet Airways"}
 	mockService.EXPECT().GetAirlineById(gomock.Any(), ctx, gomock.Any()).Return(&mockAirlines, nil)
 	ctx.Request, _ = http.NewRequest("GET", "airline/12332", nil)
-	controllerRepo.HandleAirlineById(ctx)
+	controllerRepo.HandleGetAirlineById(ctx)
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 
 }

@@ -22,7 +22,7 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 	}
 }
 
-func (acr *AirlineControllerRepository) HandleAirline(ctx *gin.Context) {
+func (acr *AirlineControllerRepository) HandleGetAirline(ctx *gin.Context) {
 	c, span := trace.StartSpan(context.Background(), "handle_get_airline")
 	defer span.End()
 	middleware.TraceSpanTags(span)(ctx)
@@ -39,7 +39,7 @@ func (acr *AirlineControllerRepository) HandleAirline(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, appAirline)
 }
 
-func (acr *AirlineControllerRepository) HandleAirlineById(ctx *gin.Context) {
+func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	c, span := trace.StartSpan(context.Background(), "handle_airline_by_id")
 	defer span.End()
 
