@@ -5,10 +5,12 @@ bootrun:
 	make test
 	make docker
 	make run
+	make sonar
 all:
 	make clean
 	make test
 	make build
+	make sonar
 clean:
 	go clean
 	go mod tidy
