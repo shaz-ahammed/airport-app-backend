@@ -37,18 +37,18 @@ func (m *MockIAirlineRepository) EXPECT() *MockIAirlineRepositoryMockRecorder {
 }
 
 // GetAirline mocks base method.
-func (m *MockIAirlineRepository) GetAirline(arg0 int) ([]models.Airlines, error) {
+func (m *MockIAirlineRepository) GetAirline(arg0 int, arg1 context.Context, arg2 *gin.Context) ([]models.Airlines, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAirline", arg0)
+	ret := m.ctrl.Call(m, "GetAirline", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]models.Airlines)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAirline indicates an expected call of GetAirline.
-func (mr *MockIAirlineRepositoryMockRecorder) GetAirline(arg0 interface{}) *gomock.Call {
+func (mr *MockIAirlineRepositoryMockRecorder) GetAirline(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirline", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirline), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirline", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirline), arg0, arg1, arg2)
 }
 
 // GetAirlineById mocks base method.

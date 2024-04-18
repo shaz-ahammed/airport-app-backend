@@ -22,6 +22,7 @@ func TestHandleAirlineController(t *testing.T) {
 	mockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirlines, nil)
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
+	mockService.EXPECT().GetAirline(gomock.Any(), gomock.Any(), ctx).Return(airlinesMock, nil)
 	ctx.Request, _ = http.NewRequest("GET", "/airline", nil)
 	controllerRepo.HandleAirline(ctx)
 

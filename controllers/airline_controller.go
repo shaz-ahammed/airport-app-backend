@@ -23,13 +23,16 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 }
 
 func (acr *AirlineControllerRepository) HandleAirline(ctx *gin.Context) {
-	log.Debug().Msg("Getting Airlines Details")
+	c, span := trace.StartSpan(context.Background(), "handle_get_airline")
+	defer span.End()
+	middleware.TraceSpanTags(span)(ctx)
+	log.Debug().Msg("Getting application health information")
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	if page < 0 {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
-	appAirline, err := acr.service.GetAirline(page)
+	appAirline, err := acr.service.GetAirline(page,c,ctx)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Airlines Details Not found"})
 	}
