@@ -18,9 +18,9 @@ func TestHandleHealthController(t *testing.T) {
 	mockService := mocks.NewMockIHealthRepository(mockCtrl)
 	controllerRepo := NewControllerRepository(mockService)
 	appHealthMock := models.AppHealth{Goroutines: 5}
-	mockService.EXPECT().GetAppHealth().Return(appHealthMock)
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
+	mockService.EXPECT().GetAppHealth(gomock.Any(), ctx).Return(appHealthMock)
 
 	ctx.Request, _ = http.NewRequest("GET", "/health", nil)
 	controllerRepo.HandleHealth(ctx)

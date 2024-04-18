@@ -16,7 +16,7 @@ services:
       - ./database/db_migration:/flyway/sql
     depends_on:
       - db
-      
+
   db:
     image: postgres:16.2-alpine
     container_name: postgres-cont
@@ -27,6 +27,13 @@ services:
       - "5432:5432"
     volumes:
       - postgres_db:/var/lib/postgresql/data
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.6
+    ports:
+      - "14268:14268"  # HTTP thrift compact format
+      - "16686:16686"  # Web UI
+
 volumes:
   postgres_db:
     driver: local
