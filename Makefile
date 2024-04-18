@@ -3,11 +3,13 @@ bootrun:
 	direnv allow
 	make mock
 	make test
+	make test-report
 	make docker
 	make run
 all:
 	make clean
 	make test
+	make test-report
 	make build
 clean:
 	go clean
@@ -15,6 +17,8 @@ clean:
 run:
 	go run main.go
 test:
+	go test ./...
+test-report:
 	mkdir -p build/reports/go-test-report && go test ./... -json | go-test-report -o build/reports/go-test-report/index.html
 build:
 	go build main.go
