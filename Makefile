@@ -27,3 +27,10 @@ mock:
 	mockgen -destination=mocks/health_service_mock.go -package=mocks airport-app-backend/services IHealthRepository
 	mockgen -destination=mocks/airline_service_mock.go -package=mocks airport-app-backend/services IAirlineRepository
 
+sonar-scan:
+	go test ./... -coverprofile=coverage.out
+	sonar-scanner \
+      -Dsonar.projectKey=Airport \
+      -Dsonar.sources=. \
+      -Dsonar.host.url=http://localhost:9000 \
+      -Dsonar.token=sqp_fb1b47f12966b532e58d81b1e14527dd4017e641
