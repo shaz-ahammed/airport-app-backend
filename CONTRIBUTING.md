@@ -40,15 +40,15 @@ Docker-compose
 ## Steps to setup SonarQube locally
 
 - run `make docker`
-- Hit this link: http://localhost:9000/
-- Create a local project. name: Airport, project key : Airport
+- Hit this [link](http://localhost:9000/) [Credentials --> Username : Admin, Password : Admin]
+- Create a local project with name as `Airport` and project key as `Airport`![img_2.png](Images/img_2.png)
 - Change `main` to `master`
 - Select an option of your choice for the second step
-- Click create project.
-- Select locally
-- Give a token name of  your choice and click generate (COPY THE TOKEN)
-- Select 'other' for Run analysis on your project
-- Create a file and name it as "sonar-project.properties" in the project root ,Paste the following lines
+- Click `create project`.
+- Select `locally`
+- Give a token name of  your choice and click `generate` (COPY THE TOKEN)  ![img_3.png](Images/img_3.png)
+- Select `other` for `Run analysis on your project`
+- Create a file and name it as `sonar-project.properties` in the project root ,Modify and paste the following lines
      `sonar.projectKey=Airport
       sonar.projectName=Airport
       sonar.sources=.
@@ -57,7 +57,7 @@ Docker-compose
       sonar.go.coverage.reportPaths=coverage.out
       sonar.coverage.exclusions=mocks/**,services/**,models/**,server/**,certs/**,config/**,database/**
       sonar.login=admin
-      sonar.password=<YOUR PASSWORD>
+      sonar.password= <YOUR PASSWORD>
       sonar.token=sqp_63263a4640298f92ecff4b59811e2f85ff587850 (REPLACE THIS VALUE WITH YOUR TOKEN COPIED PREVIOUSLY)`
 
 - Run `make sonar-scan` to do analysis.
