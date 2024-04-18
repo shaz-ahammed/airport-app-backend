@@ -19,14 +19,25 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 	}
 }
 
-
-func (hcr *AirlineControllerRepository) HandleAirline(ctx *gin.Context) {
-	log.Debug().Msg("Getting application health information")
-	page,_:=strconv.Atoi(ctx.Query("page"))
-	if(page<0){
-		ctx.JSON(400,gin.H{"msg":"Page number must be greater than 0"});
-		return;
+func (acr *AirlineControllerRepository) HandleAirline(ctx *gin.Context) {
+	log.Debug().Msg("Getting Airlines Details")
+	page, _ := strconv.Atoi(ctx.Query("page"))
+	if page < 0 {
+		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
+		return
 	}
-	appAirline,_ := hcr.service.GetAirline(page);
+	appAirline, err := acr.service.GetAirline(page)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Airlines Details Not found"})
+	}
+	ctx.JSON(http.StatusOK, appAirline)
+}
+
+func (acr *AirlineControllerRepository) HandleAirlineById(ctx *gin.Context) {
+	airline_id := ctx.Param(`id`)
+	appAirline, err := acr.service.GetAirlineById(airline_id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Incorrect Airlines Id"})
+	}
 	ctx.JSON(http.StatusOK, appAirline)
 }

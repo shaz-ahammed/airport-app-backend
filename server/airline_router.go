@@ -11,4 +11,6 @@ func (srv *AppServer) AirlineRouter(db *gorm.DB) {
 	airlineService := services.NewServiceRepository(db)
 	airlineController := controllers.NewAirlineControllerRepository(airlineService)
 	srv.router.GET("/airline/", airlineController.HandleAirline)
+	srv.router.GET("/airline/:id", airlineController.HandleAirlineById)
+
 }
