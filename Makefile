@@ -1,17 +1,14 @@
-SONAR_TOKEN := $(shell grep '^sonar.login' sonar-project.properties | cut -d'=' -f2)
 bootrun:
 	make clean
 	direnv allow
 	make mock
 	make test
 	make docker
-	make sonar
 	make run
 all:
 	make clean
 	make test
 	make build
-	make sonar
 clean:
 	go clean
 	go mod tidy
