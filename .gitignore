@@ -385,3 +385,4 @@ requests.log
 test_report.html
 build
 *.log
+/sonar-project.properties
