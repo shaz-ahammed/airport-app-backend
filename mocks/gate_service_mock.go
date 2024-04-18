@@ -6,8 +6,10 @@ package mocks
 
 import (
 	models "airport-app-backend/models"
+	context "context"
 	reflect "reflect"
 
+	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,18 +37,18 @@ func (m *MockIGateRepository) EXPECT() *MockIGateRepositoryMockRecorder {
 }
 
 // GetGateByID mocks base method.
-func (m *MockIGateRepository) GetGateByID(arg0 string) (*models.Gate, error) {
+func (m *MockIGateRepository) GetGateByID(arg0 context.Context, arg1 *gin.Context, arg2 string) (*models.Gate, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetGateByID", arg0)
+	ret := m.ctrl.Call(m, "GetGateByID", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*models.Gate)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetGateByID indicates an expected call of GetGateByID.
-func (mr *MockIGateRepositoryMockRecorder) GetGateByID(arg0 interface{}) *gomock.Call {
+func (mr *MockIGateRepositoryMockRecorder) GetGateByID(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGateByID", reflect.TypeOf((*MockIGateRepository)(nil).GetGateByID), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGateByID", reflect.TypeOf((*MockIGateRepository)(nil).GetGateByID), arg0, arg1, arg2)
 }
 
 // GetGates mocks base method.

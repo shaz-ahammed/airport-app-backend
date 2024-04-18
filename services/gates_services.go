@@ -1,16 +1,20 @@
 package services
 
 import (
+	"airport-app-backend/middleware"
 	"airport-app-backend/models"
+	"context"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+	"go.opencensus.io/trace"
 )
 
 var DEFAULT_PAGE_SIZE = 10
 
 type IGateRepository interface {
 	GetGates(int, int) ([]models.Gate, error)
-	GetGateByID(string) (*models.Gate, error)
+	GetGateByID(context.Context, *gin.Context, string) (*models.Gate, error)
 }
 
 func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
@@ -27,12 +31,17 @@ func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
 	return gates, nil
 }
 
-func (sr *ServiceRepository) GetGateByID(id string) (*models.Gate, error) {
-	log.Debug().Msg("Fetching details of gate by id")
+func (sr *ServiceRepository) GetGateByID(c context.Context, ctx *gin.Context, id string) (*models.Gate, error) {
+	log.Debug().Msg("service layer for retrieving gate details by id")
+	_, span := trace.StartSpan(c, "get_gate_by_id")
+	defer span.End()
+
+	middleware.TraceSpanTags(span)(ctx)
+
 	var gate models.Gate
 	if err := sr.db.Where("id = ?", id).First(&gate).Error; err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 	return &gate, nil
 
 }
