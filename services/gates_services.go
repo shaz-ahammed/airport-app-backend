@@ -5,6 +5,7 @@ import (
 	"airport-app-backend/models"
 	"context"
 
+
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"go.opencensus.io/trace"
@@ -13,11 +14,17 @@ import (
 var DEFAULT_PAGE_SIZE = 10
 
 type IGateRepository interface {
-	GetGates(int, int) ([]models.Gate, error)
+  
+  GetGates(page int, floor int, c context.Context, ctx *gin.Context) ([]models.Gate, error)
 	GetGateByID(context.Context, *gin.Context, string) (*models.Gate, error)
+	
 }
 
-func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
+func (sr *ServiceRepository) GetGates(page, floor int, c context.Context, ctx *gin.Context) ([]models.Gate, error) {
+	_, span := trace.StartSpan(c, "get_gates")
+	defer span.End()
+
+	middleware.TraceSpanTags(span)(ctx)
 	log.Debug().Msg("Fetching list of gates")
 	var gates []models.Gate
 	offset := (page - 1) * DEFAULT_PAGE_SIZE
@@ -43,5 +50,4 @@ func (sr *ServiceRepository) GetGateByID(c context.Context, ctx *gin.Context, id
 		return nil, err
 	}
 	return &gate, nil
-
 }

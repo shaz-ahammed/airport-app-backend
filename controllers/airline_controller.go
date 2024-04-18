@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"airport-app-backend/middleware"
 	"airport-app-backend/services"
+	"context"
+	"go.opencensus.io/trace"
 	"net/http"
 	"strconv"
 
@@ -19,14 +22,16 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 	}
 }
 
-
 func (hcr *AirlineControllerRepository) HandleAirline(ctx *gin.Context) {
+	c, span := trace.StartSpan(context.Background(), "handle_get_airline")
+	defer span.End()
+	middleware.TraceSpanTags(span)(ctx)
 	log.Debug().Msg("Getting application health information")
-	page,_:=strconv.Atoi(ctx.Query("page"))
-	if(page<0){
-		ctx.JSON(400,gin.H{"msg":"Page number must be greater than 0"});
-		return;
+	page, _ := strconv.Atoi(ctx.Query("page"))
+	if page < 0 {
+		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
+		return
 	}
-	appAirline,_ := hcr.service.GetAirline(page);
+	appAirline, _ := hcr.service.GetAirline(page, c, ctx)
 	ctx.JSON(http.StatusOK, appAirline)
 }

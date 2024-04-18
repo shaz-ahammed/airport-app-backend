@@ -35,3 +35,4 @@ Docker-compose
 - To run app without creating a build: `make bootrun`
 - Access the running app on [local](https://0.0.0.0:8080/)
 
+-Access the Jaeger UI in [local](http://localhost:16686)
