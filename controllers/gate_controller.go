@@ -1,15 +1,16 @@
 package controllers
 
 import (
-	"airport-app-backend/middleware"
 	"context"
-	"go.opencensus.io/trace"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+	"go.opencensus.io/trace"
 
+	"airport-app-backend/middleware"
 	"airport-app-backend/services"
 )
 
@@ -45,4 +46,25 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gates)
+}
+
+func (gcr *GateControllerRepository) HandleGetGateByID(ctx *gin.Context) {
+	log.Debug().Msg("controller layer for retrieving gate details by id")
+	c, span := trace.StartSpan(context.Background(), "handle_get_gate_by_id")
+	defer span.End()
+
+	middleware.TraceSpanTags(span)(ctx)
+
+	gateID := ctx.Param("id")
+	gate, err := gcr.service.GetGateByID(c, ctx, gateID)
+	if err != nil {
+		if strings.Contains(err.Error(), "SQLSTATE 22P02") {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "Gate not found"})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gate"})
+		return
+	}
+	ctx.JSON(http.StatusOK, gate)
+
 }
