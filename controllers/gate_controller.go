@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"airport-app-backend/middleware"
+	"context"
+	"go.opencensus.io/trace"
 	"net/http"
 	"strconv"
 
@@ -21,6 +24,10 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 }
 
 func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
+	c, span := trace.StartSpan(context.Background(), "handle_get_gates")
+	defer span.End()
+
+	middleware.TraceSpanTags(span)(ctx)
 	log.Debug().Msg("Getting list of gates")
 	pageStr := ctx.Query("page")
 	floorStr := ctx.Query("floor")
@@ -32,7 +39,7 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	if err != nil || floor < 0 {
 		floor = -1
 	}
-	gates, err := gcr.service.GetGates(page, floor)
+	gates, err := gcr.service.GetGates(page, floor, c, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gates"})
 		return
