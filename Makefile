@@ -26,3 +26,4 @@ mock:
 	mockgen -destination=mocks/gate_service_mock.go -package=mocks airport-app-backend/services IGateRepository
 	mockgen -destination=mocks/health_service_mock.go -package=mocks airport-app-backend/services IHealthRepository
 	mockgen -destination=mocks/airline_service_mock.go -package=mocks airport-app-backend/services IAirlineRepository
+
