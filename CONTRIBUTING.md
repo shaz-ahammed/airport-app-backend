@@ -36,3 +36,29 @@ Docker-compose
 - Access the running app on [local](https://0.0.0.0:8080/)
 
 -Access the Jaeger UI in [local](http://localhost:16686)
+
+## Steps to setup SonarQube locally
+
+- run `make docker`
+- Hit this link: http://localhost:9000/
+- Create a local project. name: Airport, project key : Airport
+- Change `main` to `master`
+- Select an option of your choice for the second step
+- Click create project.
+- Select locally
+- Give a token name of  your choice and click generate (COPY THE TOKEN)
+- Select 'other' for Run analysis on your project
+- Create a file and name it as "sonar-project.properties" in the project root ,Paste the following lines
+     `sonar.projectKey=Airport
+      sonar.projectName=Airport
+      sonar.sources=.
+      sonar.language=go
+      sonar.sourceEncoding=UTF-8
+      sonar.go.coverage.reportPaths=coverage.out
+      sonar.coverage.exclusions=mocks/**,services/**,models/**,server/**,certs/**,config/**,database/**
+      sonar.login=admin
+      sonar.password=<YOUR PASSWORD>
+      sonar.token=sqp_63263a4640298f92ecff4b59811e2f85ff587850 (REPLACE THIS VALUE WITH YOUR TOKEN COPIED PREVIOUSLY)`
+
+- Run `make sonar-scan` to do analysis.
+
