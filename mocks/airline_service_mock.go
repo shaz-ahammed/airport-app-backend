@@ -6,8 +6,10 @@ package mocks
 
 import (
 	models "airport-app-backend/models"
+	context "context"
 	reflect "reflect"
 
+	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -50,16 +52,16 @@ func (mr *MockIAirlineRepositoryMockRecorder) GetAirline(arg0 interface{}) *gomo
 }
 
 // GetAirlineById mocks base method.
-func (m *MockIAirlineRepository) GetAirlineById(arg0 string) (*models.Airlines, error) {
+func (m *MockIAirlineRepository) GetAirlineById(arg0 context.Context, arg1 *gin.Context, arg2 string) (*models.Airlines, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAirlineById", arg0)
+	ret := m.ctrl.Call(m, "GetAirlineById", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*models.Airlines)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAirlineById indicates an expected call of GetAirlineById.
-func (mr *MockIAirlineRepositoryMockRecorder) GetAirlineById(arg0 interface{}) *gomock.Call {
+func (mr *MockIAirlineRepositoryMockRecorder) GetAirlineById(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirlineById", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirlineById), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirlineById", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirlineById), arg0, arg1, arg2)
 }

@@ -33,10 +33,10 @@ func TestHandleAirlineByIdController(t *testing.T) {
 	defer mockCtrl.Finish()
 	mockService := mocks.NewMockIAirlineRepository(mockCtrl)
 	controllerRepo := NewAirlineControllerRepository(mockService)
-	mockAirlines := models.Airlines{Name: "Jet Airways"}
-	mockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirlines, nil)
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
+	mockAirlines := models.Airlines{Name: "Jet Airways"}
+	mockService.EXPECT().GetAirlineById(gomock.Any(), ctx, gomock.Any()).Return(&mockAirlines, nil)
 	ctx.Request, _ = http.NewRequest("GET", "airline/12332", nil)
 	controllerRepo.HandleAirlineById(ctx)
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
