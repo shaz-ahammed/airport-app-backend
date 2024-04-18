@@ -49,5 +49,7 @@ func (acr *AirlineControllerRepository) HandleAirlineById(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Incorrect Airlines Id"})
 	}
+	}
+	appAirline, _ := hcr.service.GetAirline(page, c, ctx)
 	ctx.JSON(http.StatusOK, appAirline)
 }

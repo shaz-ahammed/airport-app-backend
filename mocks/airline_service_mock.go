@@ -59,9 +59,3 @@ func (m *MockIAirlineRepository) GetAirlineById(arg0 context.Context, arg1 *gin.
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
-
-// GetAirlineById indicates an expected call of GetAirlineById.
-func (mr *MockIAirlineRepositoryMockRecorder) GetAirlineById(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirlineById", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirlineById), arg0, arg1, arg2)
-}
