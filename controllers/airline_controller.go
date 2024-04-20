@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"airport-app-backend/middleware"
+	"airport-app-backend/models"
 	"airport-app-backend/services"
 	"context"
 	"net/http"
@@ -32,7 +33,7 @@ func (acr *AirlineControllerRepository) HandleGetAirline(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
-	appAirline, err := acr.service.GetAirline(page,c,ctx)
+	appAirline, err := acr.service.GetAirline(page, c, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Airlines Details Not found"})
 	}
@@ -44,10 +45,33 @@ func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	defer span.End()
 
 	middleware.TraceSpanTags(span)(ctx)
-	airline_id := ctx.Param(`id`)
-	appAirline, err := acr.service.GetAirlineById(c, ctx, airline_id)
+	airlineId := ctx.Param(`id`)
+	appAirline, err := acr.service.GetAirlineById(c, ctx, airlineId)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "Incorrect Airlines Id"})
+		ctx.JSON(http.StatusNotFound, "Error :Incorrect Airlines Id")
 	}
 	ctx.JSON(http.StatusOK, appAirline)
+}
+
+func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
+	var payload models.Airlines
+	c, span := trace.StartSpan(context.Background(), "handle_airline_by_id")
+	defer span.End()
+	middleware.TraceSpanTags(span)(ctx)
+
+	err := ctx.BindJSON(&payload)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"Error": err.Error()})
+		return
+	}
+	airline := models.Airlines{
+		Name: payload.Name,
+	}
+	errorValue := acr.service.CreateNewAirline(c, ctx, &airline)
+	if errorValue != nil {
+		ctx.JSON(http.StatusOK, "error: Enter Valid Airlines details")
+		return
+	}
+	ctx.JSON(http.StatusCreated, "Created Successfully")
+
 }

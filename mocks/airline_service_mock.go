@@ -36,6 +36,20 @@ func (m *MockIAirlineRepository) EXPECT() *MockIAirlineRepositoryMockRecorder {
 	return m.recorder
 }
 
+// CreateNewAirline mocks base method.
+func (m *MockIAirlineRepository) CreateNewAirline(arg0 context.Context, arg1 *gin.Context, arg2 *models.Airlines) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNewAirline", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateNewAirline indicates an expected call of CreateNewAirline.
+func (mr *MockIAirlineRepositoryMockRecorder) CreateNewAirline(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNewAirline", reflect.TypeOf((*MockIAirlineRepository)(nil).CreateNewAirline), arg0, arg1, arg2)
+}
+
 // GetAirline mocks base method.
 func (m *MockIAirlineRepository) GetAirline(arg0 int, arg1 context.Context, arg2 *gin.Context) ([]models.Airlines, error) {
 	m.ctrl.T.Helper()
