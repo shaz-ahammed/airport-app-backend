@@ -3,7 +3,7 @@ SELECT
     floor(random() * 100) + 1,
     floor(random() * 10) + 1
 FROM generate_series(1, 100)
-    ON CONFLICT (gate_number) DO NOTHING;
+ON CONFLICT (gate_number) DO NOTHING;
 
 
 INSERT INTO airlines (name)
