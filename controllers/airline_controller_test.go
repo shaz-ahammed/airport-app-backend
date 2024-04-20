@@ -42,6 +42,7 @@ func TestHandleAirlineByIdController(t *testing.T) {
 	mockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirlines, nil)
 	ctx.Request, _ = http.NewRequest("GET", "airline/12332", nil)
 	controllerRepo.HandleGetAirlineById(ctx)
+	fmt.Println(ctx.Writer.Status())
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
 
