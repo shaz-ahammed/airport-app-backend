@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"airport-app-backend/middleware"
+	"airport-app-backend/models"
 	"airport-app-backend/services"
 	"net/http"
 	"strconv"
