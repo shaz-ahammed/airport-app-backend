@@ -10,6 +10,8 @@ import (
 func (srv *AppServer) AirlineRouter(db *gorm.DB) {
 	airlineService := services.NewServiceRepository(db)
 	airlineController := controllers.NewAirlineControllerRepository(airlineService)
+<<<<<<<
+=======
 
 	srv.router.GET("/airlines/", airlineController.HandleGetAirlines)
 	srv.router.GET("/airline/:id", airlineController.HandleGetAirlineById)
