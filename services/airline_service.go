@@ -53,11 +53,7 @@ func (sr *ServiceRepository) CreateNewAirline(c context.Context, ctx *gin.Contex
 		return errors.New("name should not contain Numbers")
 	}
 	result := sr.db.Save(airline)
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
+	return result.Error
 }
 
 func containsOnlyCharacters(s string) bool {
