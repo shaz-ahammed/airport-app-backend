@@ -10,7 +10,7 @@ type AppHealth struct {
 	OperatingSystem string      `json:"os"`
 	Arch            string      `json:"arch"`
 	MemStats        MemoryStats `json:"memStats"`
-  Status          string      `json:"status"`
+	Status          string      `json:"status"`
 }
 
 type MemoryStats struct {
