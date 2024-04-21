@@ -5,12 +5,14 @@ bootrun:
 	make test
 	make test-report
 	make docker
+	make sonar
 	make run
 all:
 	make clean
 	make test
 	make test-report
 	make build
+	make sonar
 	make sonar
 clean:
 	go clean
