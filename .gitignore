@@ -385,3 +385,6 @@ requests.log
 test_report.html
 build
 *.log
+.scannerwork
+coverage.out
+/sonar-project.properties
