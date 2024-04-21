@@ -41,13 +41,13 @@ Docker-compose
 
 - run `make docker`
 - Hit this [link](http://localhost:9000/) [Credentials --> Username : Admin, Password : Admin]
-- Create a local project with name as `Airport` and project key as `Airport` [Image](https://drive.google.com/file/d/1MTOFer7h9epf3UPkkE3qdIkVKaCG6bhb/view?usp=drive_link)
-- Change `main` to `master` [Image](https://drive.google.com/file/d/19CJ9URt4IAq-7z4vcHtQDnJwcdev5JHG/view?usp=drive_link)
-- Select an option of your choice for the second step  [Image](https://drive.google.com/file/d/1_m8kM31juTbdyo6o4mekxvoNvBDHvgEo/view?usp=drive_link)
+- Create a local project with name as `Airport` and project key as `Airport` ![Image](Images/FirstStep.png)
+- Change `main` to `master` ![Image](Images/LocalProject.png)
+- Select an option of your choice for the second step  ![Image](Images/SecondStep.png)
 - Click `create project`
-- Select `locally`  [Image](https://drive.google.com/file/d/12ReS7qxqTa_6Q_LCVaUQub7qfav5g0pr/view?usp=drive_link)
-- Give a token name of your choice and click `generate` (COPY THE TOKEN) [Image](https://drive.google.com/file/d/1b49pcNGCzIiPkkJrj4RNFiax7Ks7EvqZ/view?usp=drive_link)
-- Select `other` for `Run analysis on your project`  [Image](https://drive.google.com/file/d/1Ax-u0G0pbdusSwtPiZMaQhey1q9yjcB1/view?usp=drive_link)
+- Select `locally`  ![Image](Images/Locally.png)
+- Give a token name of your choice and click `generate` (COPY THE TOKEN)  ![Image](Images/Token.png)
+- Select `other` for `Run analysis on your project`  ![Image](Images/RunAnalysis.png)
 - Install `sonar-scanner` using brew
 - Create a file and name it as `sonar-project.properties` in the project root ,Modify and paste the following lines
      `sonar.projectKey=Airport
