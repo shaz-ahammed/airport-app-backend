@@ -5,6 +5,7 @@ bootrun:
 	make test
 	make test-report
 	make docker
+	make sonar
 	make run
 all:
 	make clean
