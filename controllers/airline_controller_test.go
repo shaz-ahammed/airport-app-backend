@@ -4,7 +4,6 @@ import (
 	"airport-app-backend/mocks"
 	"airport-app-backend/models"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -42,7 +41,6 @@ func TestHandleAirlineByIdController(t *testing.T) {
 	mockService.EXPECT().GetAirlineById(gomock.Any(), ctx, gomock.Any()).Return(&mockAirlines, nil)
 	ctx.Request, _ = http.NewRequest("GET", "airline/12332", nil)
 	controllerRepo.HandleGetAirlineById(ctx)
-	fmt.Println(ctx.Writer.Status())
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 
 }
@@ -63,7 +61,6 @@ func TestHandleCreateNewAirline(t *testing.T) {
 
 	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
 	controllerRepo.HandleCreateNewAirline(ctx)
-	fmt.Println(ctx.Writer.Status())
 	assert.Equal(t, http.StatusCreated, ctx.Writer.Status())
 
 	var response models.Airlines
