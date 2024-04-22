@@ -47,7 +47,7 @@ func containsOnlyCharacters(s string) bool {
 	return re.MatchString(s)
 }
 
-func (sr *ServiceRepository) CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airlines) error {
+func (sr *ServiceRepository) CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airline) error {
 	_, span := trace.StartSpan(c, "get_airline_by_id")
 	defer span.End()
 	middleware.TraceSpanTags(span)(ctx)

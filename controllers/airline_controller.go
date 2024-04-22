@@ -63,24 +63,20 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 }
 
 func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
-	var payload models.Airlines
+	var airline models.Airline
 	c, span := trace.StartSpan(context.Background(), "handle_airline_by_id")
 	defer span.End()
 	middleware.TraceSpanTags(span)(ctx)
-
-	err := ctx.BindJSON(&payload)
+	err := ctx.ShouldBindWith(&airline, binding.JSON)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"Error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}
-	airline := models.Airlines{
-		Name: payload.Name,
-	}
-	errorValue := acr.service.CreateNewAirline(c, ctx, &airline)
-	if errorValue != nil {
-		ctx.JSON(http.StatusOK, "error: Enter Valid Airlines details")
+
+	serviceError := acr.service.CreateNewAirline(c, ctx, &airline)
+	if serviceError != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": serviceError.Error()})
 		return
 	}
 	ctx.JSON(http.StatusCreated, "Created Successfully")
-
 }
