@@ -38,7 +38,6 @@ dist/
 # Flycheck
 flycheck_*.el
 
-
 # projectiles files
 .projectile
 
@@ -47,7 +46,6 @@ flycheck_*.el
 
 # network security
 /network-security.data
-
 
 ### Go ###
 # If you prefer the allow list template instead of the deny list, see community template:
@@ -283,7 +281,6 @@ fabric.properties
 
 # Icon must end with two \r
 Icon
-
 
 # Thumbnails
 ._*

@@ -6,10 +6,8 @@ package mocks
 
 import (
 	models "airport-app-backend/models"
-	context "context"
 	reflect "reflect"
 
-	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -37,31 +35,31 @@ func (m *MockIAirlineRepository) EXPECT() *MockIAirlineRepositoryMockRecorder {
 }
 
 // GetAirline mocks base method.
-func (m *MockIAirlineRepository) GetAirline(arg0 int, arg1 context.Context, arg2 *gin.Context) ([]models.Airlines, error) {
+func (m *MockIAirlineRepository) GetAirline(arg0 int) ([]models.Airlines, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAirline", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "GetAirline", arg0)
 	ret0, _ := ret[0].([]models.Airlines)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAirline indicates an expected call of GetAirline.
-func (mr *MockIAirlineRepositoryMockRecorder) GetAirline(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockIAirlineRepositoryMockRecorder) GetAirline(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirline", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirline), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirline", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirline), arg0)
 }
 
 // GetAirlineById mocks base method.
-func (m *MockIAirlineRepository) GetAirlineById(arg0 context.Context, arg1 *gin.Context, arg2 string) (*models.Airlines, error) {
+func (m *MockIAirlineRepository) GetAirlineById(arg0 string) (*models.Airlines, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAirlineById", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "GetAirlineById", arg0)
 	ret0, _ := ret[0].(*models.Airlines)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAirlineById indicates an expected call of GetAirlineById.
-func (mr *MockIAirlineRepositoryMockRecorder) GetAirlineById(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockIAirlineRepositoryMockRecorder) GetAirlineById(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirlineById", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirlineById), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAirlineById", reflect.TypeOf((*MockIAirlineRepository)(nil).GetAirlineById), arg0)
 }
