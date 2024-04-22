@@ -25,7 +25,7 @@ func TestHandleAirlineController(t *testing.T) {
 	mockAirline = append(mockAirline, models.Airline{Name: "Kingfisher"})
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
-	mockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirlines, nil)
+	mockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
 	ctx.Request, _ = http.NewRequest("GET", "/airline", nil)
 	controllerRepo.HandleGetAirline(ctx)
 
@@ -39,8 +39,8 @@ func TestHandleAirlineByIdController(t *testing.T) {
 	controllerRepo := NewAirlineControllerRepository(mockService)
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
-	mockAirlines := models.Airlines{Name: "Jet Airways"}
-	mockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirlines, nil)
+	mockAirline := models.Airline{Name: "Jet Airways"}
+	mockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
 	ctx.Request, _ = http.NewRequest("GET", "airline/12332", nil)
 	controllerRepo.HandleGetAirlineById(ctx)
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
@@ -57,7 +57,7 @@ func TestHandleCreateNewAirline(t *testing.T) {
 	airline := models.Airline{
 		Name: "XYZAirline",
 	}
-	mockService.EXPECT().CreateNewAirline(gomock.Any(), ctx, &airline).Return(nil)
+	mockService.EXPECT().CreateNewAirline(&airline).Return(nil)
 	reqBody := `{"name":"XYZAirline"}`
 
 	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
@@ -135,7 +135,7 @@ func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) 
 
 }
 
-func TestHandleCreateNewAirlineWherErrorIsThrownInServiceLayer(t *testing.T) {
+func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
 
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
@@ -147,7 +147,7 @@ func TestHandleCreateNewAirlineWherErrorIsThrownInServiceLayer(t *testing.T) {
 		Name: "Test",
 	}
 	reqBody := `{"name":"Test"}`
-	mockService.EXPECT().CreateNewAirline(gomock.Any(), ctx, &airline).Return(errors.New("invalid Request"))
+	mockService.EXPECT().CreateNewAirline(&airline).Return(errors.New("invalid Request"))
 	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
 	controllerRepo.HandleCreateNewAirline(ctx)
 	assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())

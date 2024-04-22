@@ -2,46 +2,40 @@ package services
 
 import (
 	"airport-app-backend/models"
-	"context"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"go.opencensus.io/trace"
 	"regexp"
 )
 
 type IAirlineRepository interface {
-	GetAirline(pageNum int, c context.Context, ctx *gin.Context) ([]models.Airline, error)
-	GetAirlineById(context.Context, *gin.Context, string) (*models.Airline, error)
-	CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airline) error
+	GetAirline(int) ([]models.Airline, error)
+	GetAirlineById(string) (*models.Airline, error)
+	CreateNewAirline(*models.Airline) error
 }
 
 var DEFAULT_PAGE_LIMIT int = 10
 
-func (sr *ServiceRepository) GetAirline(pageNum int) ([]models.Airlines, error) {
-	var airlines []models.Airlines
-	result := sr.db.Limit(DEFAULT_PAGE_LIMIT).Offset(pageNum * DEFAULT_PAGE_LIMIT).Find(&airlines)
+func (sr *ServiceRepository) GetAirline(pageNum int) ([]models.Airline, error) {
+	var airline []models.Airline
+	result := sr.db.Limit(DEFAULT_PAGE_LIMIT).Offset(pageNum * DEFAULT_PAGE_LIMIT).Find(&airline)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return airlines, nil
+	return airline, nil
 }
 
-func (sr *ServiceRepository) GetAirlineById(id string) (*models.Airlines, error) {
-	var airlines *models.Airlines
-	result := sr.db.First(&airlines, "id=?", id)
+func (sr *ServiceRepository) GetAirlineById(id string) (*models.Airline, error) {
+	var airline *models.Airline
+	result := sr.db.First(&airline, "id=?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return airlines, nil
+	return airline, nil
 }
 
-func (sr *ServiceRepository) CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airline) error {
-	_, span := trace.StartSpan(c, "get_airline_by_id")
-	defer span.End()
-	middleware.TraceSpanTags(span)(ctx)
+func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
 
 	if !(containsOnlyCharacters(airline.Name)) {
-		return errors.New("name should not contain Numbers")
+		return errors.New("name should not contain numbers")
 	}
 	result := sr.db.Save(airline)
 	if result.Error != nil {

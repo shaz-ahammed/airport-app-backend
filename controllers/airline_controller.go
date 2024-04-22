@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"airport-app-backend/middleware"
 	"airport-app-backend/models"
 	"airport-app-backend/services"
-	"context"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
@@ -31,7 +29,7 @@ func (acr *AirlineControllerRepository) HandleGetAirline(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
-	appAirline, err := acr.service.GetAirline(page)
+	airline, err := acr.service.GetAirline(page)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Airlines Details Not found"})
 	}
@@ -40,7 +38,7 @@ func (acr *AirlineControllerRepository) HandleGetAirline(ctx *gin.Context) {
 
 func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	airlineId := ctx.Param(`id`)
-	appAirline, err := acr.service.GetAirlineById(airlineId)
+	airline, err := acr.service.GetAirlineById(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "error: Incorrect Airlines Id")
 	}
@@ -49,16 +47,14 @@ func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 
 func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
 	var airline models.Airline
-	c, span := trace.StartSpan(context.Background(), "handle_airline_by_id")
-	defer span.End()
-	middleware.TraceSpanTags(span)(ctx)
+
 	err := ctx.ShouldBindWith(&airline, binding.JSON)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}
 
-	serviceError := acr.service.CreateNewAirline(c, ctx, &airline)
+	serviceError := acr.service.CreateNewAirline(&airline)
 	if serviceError != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": serviceError.Error()})
 		return
