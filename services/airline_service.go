@@ -3,6 +3,7 @@ package services
 import (
 	"airport-app-backend/models"
 	"errors"
+
 	"regexp"
 )
 
@@ -13,7 +14,6 @@ type IAirlineRepository interface {
 }
 
 var DEFAULT_PAGE_LIMIT int = 10
-
 
 func (sr *ServiceRepository) GetAirline(pageNum int) ([]models.Airline, error) {
 	var airline []models.Airline
@@ -37,27 +37,6 @@ func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
 
 	if !(containsOnlyCharacters(airline.Name)) {
 		return errors.New("name should not contain numbers")
-	}
-	result := sr.db.Save(airline)
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
-func containsOnlyCharacters(s string) bool {
-	re := regexp.MustCompile("^[A-Za-z ]+$")
-	return re.MatchString(s)
-}
-
-func (sr *ServiceRepository) CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airlines) error {
-	_, span := trace.StartSpan(c, "get_airline_by_id")
-	defer span.End()
-	middleware.TraceSpanTags(span)(ctx)
-
-	if !(containsOnlyCharacters(airline.Name)) {
-		return errors.New("name should not contain Numbers")
 	}
 	result := sr.db.Save(airline)
 	if result.Error != nil {
