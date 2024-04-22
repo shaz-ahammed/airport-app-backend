@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHandleHealthController(t *testing.T) {
+func TestHandleHealth(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 	mockService := mocks.NewMockIHealthRepository(mockCtrl)

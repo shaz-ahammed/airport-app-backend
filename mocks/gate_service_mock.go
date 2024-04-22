@@ -34,19 +34,19 @@ func (m *MockIGateRepository) EXPECT() *MockIGateRepositoryMockRecorder {
 	return m.recorder
 }
 
-// GetGateByID mocks base method.
-func (m *MockIGateRepository) GetGateByID(arg0 string) (*models.Gate, error) {
+// GetGateById mocks base method.
+func (m *MockIGateRepository) GetGateById(arg0 string) (*models.Gate, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetGateByID", arg0)
+	ret := m.ctrl.Call(m, "GetGateById", arg0)
 	ret0, _ := ret[0].(*models.Gate)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetGateByID indicates an expected call of GetGateByID.
-func (mr *MockIGateRepositoryMockRecorder) GetGateByID(arg0 interface{}) *gomock.Call {
+// GetGateById indicates an expected call of GetGateById.
+func (mr *MockIGateRepositoryMockRecorder) GetGateById(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGateByID", reflect.TypeOf((*MockIGateRepository)(nil).GetGateByID), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGateById", reflect.TypeOf((*MockIGateRepository)(nil).GetGateById), arg0)
 }
 
 // GetGates mocks base method.
