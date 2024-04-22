@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHandleGetGatesController(t *testing.T) {
+func TestHandleGetGates(t *testing.T) {
 	mockControl := gomock.NewController(t)
 	defer mockControl.Finish()
 
@@ -29,7 +29,7 @@ func TestHandleGetGatesController(t *testing.T) {
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
 
-func TestHandleGetGatesByIdController(t *testing.T) {
+func TestHandleGetGatesById(t *testing.T) {
 	mockControl := gomock.NewController(t)
 	defer mockControl.Finish()
 

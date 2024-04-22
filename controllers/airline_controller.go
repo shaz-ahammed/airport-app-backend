@@ -19,7 +19,7 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 	}
 }
 
-func (acr *AirlineControllerRepository) HandleGetAirline(ctx *gin.Context) {
+func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
 
 	page, _ := strconv.Atoi(ctx.Query("page"))
