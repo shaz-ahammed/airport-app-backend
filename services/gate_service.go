@@ -10,12 +10,12 @@ var DEFAULT_PAGE_SIZE = 10
 
 type IGateRepository interface {
 	GetGates(page int, floor int) ([]models.Gate, error)
-	GetGateByID(string) (*models.Gate, error)
+	GetGateById(string) (*models.Gate, error)
 }
 
 func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
 	log.Debug().Msg("Fetching list of gates")
-	
+
 	var gates []models.Gate
 	offset := (page - 1) * DEFAULT_PAGE_SIZE
 	query := sr.db.Offset(offset).Limit(DEFAULT_PAGE_SIZE)
@@ -28,7 +28,7 @@ func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
 	return gates, nil
 }
 
-func (sr *ServiceRepository) GetGateByID(id string) (*models.Gate, error) {
+func (sr *ServiceRepository) GetGateById(id string) (*models.Gate, error) {
 	log.Debug().Msg("service layer for retrieving gate details by id")
 
 	var gate models.Gate

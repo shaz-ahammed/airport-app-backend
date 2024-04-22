@@ -46,7 +46,7 @@ func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for retrieving gate details by id")
 
 	gateID := ctx.Param("id")
-	gate, err := gcr.service.GetGateByID(gateID)
+	gate, err := gcr.service.GetGateById(gateID)
 	if err != nil {
 		if strings.Contains(err.Error(), "SQLSTATE 22P02") {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "Gate not found"})
