@@ -14,7 +14,6 @@ import (
   "github.com/golang/mock/gomock"
   "github.com/stretchr/testify/assert"
 )
-
 func TestHandleAirline(t *testing.T) {
   mockCtrl := gomock.NewController(t)
   defer mockCtrl.Finish()
@@ -49,7 +48,6 @@ func TestHandleAirlineById(t *testing.T) {
 }
 
 func TestHandleCreateNewAirline(t *testing.T) {
-
   mockCtrl := gomock.NewController(t)
   defer mockCtrl.Finish()
   mockService := mocks.NewMockIAirlineRepository(mockCtrl)
