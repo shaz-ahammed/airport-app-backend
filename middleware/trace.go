@@ -22,6 +22,5 @@ func TraceSpanTags() gin.HandlerFunc {
 			trace.StringAttribute("http.content_length", strconv.FormatInt(c.Request.ContentLength, 10)),
 		)
 		c.Next()
-
 	}
 }
