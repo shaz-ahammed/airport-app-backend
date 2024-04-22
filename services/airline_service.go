@@ -47,13 +47,10 @@ func containsOnlyCharacters(s string) bool {
 	return re.MatchString(s)
 }
 
-func (sr *ServiceRepository) CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airline) error {
-	_, span := trace.StartSpan(c, "get_airline_by_id")
-	defer span.End()
-	middleware.TraceSpanTags(span)(ctx)
+func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
 
 	if !(containsOnlyCharacters(airline.Name)) {
-		return errors.New("name should not contain Numbers")
+		return errors.New("name should not contain numbers")
 	}
 	result := sr.db.Save(airline)
 	if result.Error != nil {

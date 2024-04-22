@@ -64,16 +64,14 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 
 func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
 	var airline models.Airline
-	c, span := trace.StartSpan(context.Background(), "handle_airline_by_id")
-	defer span.End()
-	middleware.TraceSpanTags(span)(ctx)
+
 	err := ctx.ShouldBindWith(&airline, binding.JSON)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
 		return
 	}
 
-	serviceError := acr.service.CreateNewAirline(c, ctx, &airline)
+	serviceError := acr.service.CreateNewAirline(&airline)
 	if serviceError != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": serviceError.Error()})
 		return
