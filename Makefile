@@ -35,7 +35,7 @@ mock:
 
 sonar-scan:
 	go test ./... -coverprofile=coverage.out
-	sonar-scanner \
+	sonar-scanner -X \
       -Dsonar.projectKey=Airport \
       -Dsonar.sources=. \
       -Dsonar.host.url=http://localhost:9000 \
