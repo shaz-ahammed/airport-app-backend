@@ -8,4 +8,4 @@ ON CONFLICT (gate_number) DO NOTHING;
 INSERT INTO airlines (name)
 SELECT
     substr(md5(random()::text), 0, 10)
-FROM generate_series(1, 24);  
+FROM generate_series(1, 24);

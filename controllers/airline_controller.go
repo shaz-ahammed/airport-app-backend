@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"airport-app-backend/models"
 	"airport-app-backend/services"
+	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
 
@@ -27,18 +29,35 @@ func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
-	appAirline, err := acr.service.GetAirline(page)
+	airline, err := acr.service.GetAirline(page)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Airlines Details Not found"})
 	}
-	ctx.JSON(http.StatusOK, appAirline)
+	ctx.JSON(http.StatusOK, airline)
 }
 
 func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	airlineId := ctx.Param(`id`)
-	appAirline, err := acr.service.GetAirlineById(airlineId)
+	airline, err := acr.service.GetAirlineById(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "error: Incorrect Airlines Id")
 	}
-	ctx.JSON(http.StatusOK, appAirline)
+	ctx.JSON(http.StatusOK, airline)
+}
+
+func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
+	var airline models.Airline
+
+	err := ctx.ShouldBindWith(&airline, binding.JSON)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+		return
+	}
+
+	serviceError := acr.service.CreateNewAirline(&airline)
+	if serviceError != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": serviceError.Error()})
+		return
+	}
+	ctx.JSON(http.StatusCreated, "Created Successfully")
 }

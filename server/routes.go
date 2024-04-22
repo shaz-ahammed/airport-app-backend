@@ -1,12 +1,12 @@
 package server
 
 import (
-	"airport-app-backend/config"
-	"airport-app-backend/database"
-	"airport-app-backend/middleware"
+  "airport-app-backend/config"
+  "airport-app-backend/database"
+  "airport-app-backend/middleware"
 
-	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
+  "github.com/gin-gonic/gin"
+  "github.com/rs/zerolog/log"
 )
 
 // Main API routes
@@ -30,7 +30,7 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 	log.Info().Msg("Configuring GIN middleware")
 	srv.router.Use(gin.Recovery()) // Default recovery middleware
 
-	srv.router.Use(middleware.DisableCache())
-	srv.router.Use(middleware.AddSecurityHeaders(config.EnableTls))
-	srv.router.Use(middleware.HandleFaviconRequests())
+  srv.router.Use(middleware.DisableCache())
+  srv.router.Use(middleware.AddSecurityHeaders(config.EnableTls))
+  srv.router.Use(middleware.HandleFaviconRequests())
 }
