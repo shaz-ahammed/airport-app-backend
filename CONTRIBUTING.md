@@ -52,7 +52,7 @@ Docker-compose
       sonar.language=go
       sonar.sourceEncoding=UTF-8
       sonar.go.coverage.reportPaths=coverage.out
-      sonar.coverage.exclusions=mocks/**,services/**,models/**,server/**,certs/**,config/**,database/**
+      sonar.coverage.exclusions=mocks/**,models/**,server/**,certs/**,config/**,database/**, **/*_test.go, **/main.go
       sonar.login=admin
       sonar.password= <YOUR PASSWORD>
       sonar.token=sqp_63263a4640298f92ecff4b59811e2f85ff587850 (REPLACE THIS VALUE WITH YOUR TOKEN COPIED PREVIOUSLY)`
