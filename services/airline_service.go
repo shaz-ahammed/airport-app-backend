@@ -32,8 +32,8 @@ func (sr *ServiceRepository) GetAirlineById(id string) (*models.Airline, error) 
 	}
 	return airline, nil
 }
-func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
 
+func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
 	if !(containsOnlyCharacters(airline.Name)) {
 		return errors.New("name should not contain numbers")
 	}
