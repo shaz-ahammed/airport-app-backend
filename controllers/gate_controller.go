@@ -22,7 +22,6 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 }
 
 func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
-
 	log.Debug().Msg("Getting list of gates")
 	pageStr := ctx.Query("page")
 	floorStr := ctx.Query("floor")
@@ -56,5 +55,4 @@ func (gcr *GateControllerRepository) HandleGetGateByID(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gate)
-
 }

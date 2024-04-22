@@ -40,5 +40,4 @@ func TestHandleAirlineByIdController(t *testing.T) {
 	ctx.Request, _ = http.NewRequest("GET", "airline/12332", nil)
 	controllerRepo.HandleGetAirlineById(ctx)
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
-
 }

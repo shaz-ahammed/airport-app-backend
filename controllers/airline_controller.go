@@ -20,7 +20,6 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 }
 
 func (acr *AirlineControllerRepository) HandleGetAirline(ctx *gin.Context) {
-
 	log.Debug().Msg("Getting application health information")
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	if page < 0 {
@@ -35,7 +34,6 @@ func (acr *AirlineControllerRepository) HandleGetAirline(ctx *gin.Context) {
 }
 
 func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
-
 	airlineId := ctx.Param(`id`)
 	appAirline, err := acr.service.GetAirlineById(airlineId)
 	if err != nil {

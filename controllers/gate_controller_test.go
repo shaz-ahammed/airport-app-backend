@@ -29,7 +29,6 @@ func TestHandleGetGatesController(t *testing.T) {
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
 
-
 func TestHandleGetGatesByIDController(t *testing.T) {
 	mockControl := gomock.NewController(t)
 	defer mockControl.Finish()
@@ -46,10 +45,3 @@ func TestHandleGetGatesByIDController(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
-
-
-
-
-
-
-

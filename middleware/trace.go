@@ -8,7 +8,6 @@ import (
 )
 
 func TraceSpanTags() gin.HandlerFunc {
-
 	return func(c *gin.Context) {
 		_, span := trace.StartSpan(c.Request.Context(), c.FullPath())
 		defer span.End()
@@ -22,7 +21,6 @@ func TraceSpanTags() gin.HandlerFunc {
 			trace.StringAttribute("http.user_agent", c.Request.UserAgent()),
 			trace.StringAttribute("http.content_length", strconv.FormatInt(c.Request.ContentLength, 10)),
 		)
-
 		c.Next()
 
 	}

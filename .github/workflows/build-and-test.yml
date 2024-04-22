@@ -25,7 +25,6 @@ jobs:
       - name: Build all on ubuntu-20.04
         run: make all
 
-
       - name: Install Snyk CLI
         run: |
           npm install -g snyk@1.1288.0
