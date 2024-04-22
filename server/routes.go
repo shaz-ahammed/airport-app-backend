@@ -11,7 +11,6 @@ import (
 
 // Main API routes
 func (srv *AppServer) setupRoutesAndMiddleware() {
-
 	log.Info().Msg("Connecting to postgres database")
 
 	DB, err := database.ConnectToDB()
@@ -34,5 +33,4 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
   srv.router.Use(middleware.DisableCache())
   srv.router.Use(middleware.AddSecurityHeaders(config.EnableTls))
   srv.router.Use(middleware.HandleFaviconRequests())
-
 }
