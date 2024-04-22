@@ -5,7 +5,7 @@ import (
 )
 
 type Gate struct {
-	ID          string `json:"id" gorm:"type:uuid;primaryKey"`
+	Id          string `json:"id" gorm:"type:uuid;primaryKey"`
 	GateNumber  int    `gorm:"unique;not null"`
 	FloorNumber int    `gorm:"not null"`
 }
