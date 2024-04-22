@@ -41,7 +41,7 @@ func TestHandleGetGatesByIDController(t *testing.T) {
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
 	ctx.Request, _ = http.NewRequest("GET", "/gates/123", nil)
-	mockController.HandleGetGateByID(ctx)
+	mockController.HandleGetGateById(ctx)
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }

@@ -12,5 +12,5 @@ func (srv *AppServer) GateRouter(db *gorm.DB) {
 	gateController := controllers.NewGateRepository(gateService)
 	
 	srv.router.GET("/gates", gateController.HandleGetGates)
-	srv.router.GET("/gates/:id", gateController.HandleGetGateByID)
+	srv.router.GET("/gates/:id", gateController.HandleGetGateById)
 }

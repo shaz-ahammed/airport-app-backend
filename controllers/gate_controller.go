@@ -42,7 +42,7 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gates)
 }
 
-func (gcr *GateControllerRepository) HandleGetGateByID(ctx *gin.Context) {
+func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for retrieving gate details by id")
 
 	gateID := ctx.Param("id")
