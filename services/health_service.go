@@ -1,15 +1,12 @@
 package services
 
 import (
-	"airport-app-backend/middleware"
 	"airport-app-backend/models"
-	"context"
-	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
-	"go.opencensus.io/trace"
 	"os"
 	"runtime"
 	"sync"
+
+	"github.com/rs/zerolog/log"
 )
 
 var doOnce sync.Once
@@ -24,14 +21,10 @@ var arch string
 var memStats runtime.MemStats
 
 type IHealthRepository interface {
-	GetAppHealth(c context.Context, ctx *gin.Context) models.AppHealth
+	GetAppHealth() models.AppHealth
 }
 
-func (repo *ServiceRepository) GetAppHealth(c context.Context, ctx *gin.Context) models.AppHealth {
-	_, span := trace.StartSpan(c, "get_app_health")
-	defer span.End()
-
-	middleware.TraceSpanTags(span)(ctx)
+func (repo *ServiceRepository) GetAppHealth() models.AppHealth {
 
 	doOnce.Do(func() {
 		log.Debug().Msg("Performing one-time lookup of constant runtime information")

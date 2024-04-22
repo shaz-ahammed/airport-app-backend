@@ -25,6 +25,7 @@ func NewServer(rtr *gin.Engine) *AppServer {
 	}
 	srv.additionalRouterConfiguration()
 	srv.setupRoutesAndMiddleware()
+
 	isServerConfigured = true
 	return srv
 }

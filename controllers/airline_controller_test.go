@@ -21,7 +21,7 @@ func TestHandleAirlineController(t *testing.T) {
 	mockAirlines = append(mockAirlines, models.Airlines{Name: "Kingfisher"})
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
-	mockService.EXPECT().GetAirline(gomock.Any(), gomock.Any(), ctx).Return(mockAirlines, nil)
+	mockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirlines, nil)
 	ctx.Request, _ = http.NewRequest("GET", "/airline", nil)
 	controllerRepo.HandleGetAirline(ctx)
 
@@ -36,7 +36,7 @@ func TestHandleAirlineByIdController(t *testing.T) {
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
 	mockAirlines := models.Airlines{Name: "Jet Airways"}
-	mockService.EXPECT().GetAirlineById(gomock.Any(), ctx, gomock.Any()).Return(&mockAirlines, nil)
+	mockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirlines, nil)
 	ctx.Request, _ = http.NewRequest("GET", "airline/12332", nil)
 	controllerRepo.HandleGetAirlineById(ctx)
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())

@@ -1,29 +1,20 @@
 package services
 
 import (
-	"airport-app-backend/middleware"
 	"airport-app-backend/models"
-	"context"
 
-	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	"go.opencensus.io/trace"
 )
 
 var DEFAULT_PAGE_SIZE = 10
 
 type IGateRepository interface {
-  
-  GetGates(page int, floor int, c context.Context, ctx *gin.Context) ([]models.Gate, error)
-	GetGateByID(context.Context, *gin.Context, string) (*models.Gate, error)
-	
+	GetGates(page int, floor int) ([]models.Gate, error)
+	GetGateByID(string) (*models.Gate, error)
 }
 
-func (sr *ServiceRepository) GetGates(page, floor int, c context.Context, ctx *gin.Context) ([]models.Gate, error) {
-	_, span := trace.StartSpan(c, "get_gates")
-	defer span.End()
+func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
 
-	middleware.TraceSpanTags(span)(ctx)
 	log.Debug().Msg("Fetching list of gates")
 	var gates []models.Gate
 	offset := (page - 1) * DEFAULT_PAGE_SIZE
@@ -37,12 +28,8 @@ func (sr *ServiceRepository) GetGates(page, floor int, c context.Context, ctx *g
 	return gates, nil
 }
 
-func (sr *ServiceRepository) GetGateByID(c context.Context, ctx *gin.Context, id string) (*models.Gate, error) {
+func (sr *ServiceRepository) GetGateByID(id string) (*models.Gate, error) {
 	log.Debug().Msg("service layer for retrieving gate details by id")
-	_, span := trace.StartSpan(c, "get_gate_by_id")
-	defer span.End()
-
-	middleware.TraceSpanTags(span)(ctx)
 
 	var gate models.Gate
 	if err := sr.db.Where("id = ?", id).First(&gate).Error; err != nil {
