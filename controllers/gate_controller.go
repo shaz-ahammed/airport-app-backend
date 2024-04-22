@@ -23,7 +23,7 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 
 func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	log.Debug().Msg("Getting list of gates")
-	
+
 	pageStr := ctx.Query("page")
 	floorStr := ctx.Query("floor")
 	page, err := strconv.Atoi(pageStr)

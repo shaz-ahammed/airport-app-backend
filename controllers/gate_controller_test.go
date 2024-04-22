@@ -32,7 +32,7 @@ func TestHandleGetGatesController(t *testing.T) {
 func TestHandleGetGatesByIDController(t *testing.T) {
 	mockControl := gomock.NewController(t)
 	defer mockControl.Finish()
-	
+
 	mockService := mocks.NewMockIGateRepository(mockControl)
 	mockController := NewGateRepository(mockService)
 	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
