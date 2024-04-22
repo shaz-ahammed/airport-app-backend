@@ -32,21 +32,6 @@ func (sr *ServiceRepository) GetAirlineById(id string) (*models.Airline, error) 
 	}
 	return airline, nil
 }
-
-func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
-
-	if !(containsOnlyCharacters(airline.Name)) {
-		return errors.New("name should not contain numbers")
-	}
-	result := sr.db.Save(airline)
-	return result.Error
-}
-
-func containsOnlyCharacters(s string) bool {
-	re := regexp.MustCompile("^[A-Za-z ]+$")
-	return re.MatchString(s)
-}
-
 func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
 
 	if !(containsOnlyCharacters(airline.Name)) {

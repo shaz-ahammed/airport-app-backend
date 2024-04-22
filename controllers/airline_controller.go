@@ -61,20 +61,3 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 	}
 	ctx.JSON(http.StatusCreated, "Created Successfully")
 }
-
-func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
-	var airline models.Airline
-
-	err := ctx.ShouldBindWith(&airline, binding.JSON)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
-		return
-	}
-
-	serviceError := acr.service.CreateNewAirline(&airline)
-	if serviceError != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"Error": serviceError.Error()})
-		return
-	}
-	ctx.JSON(http.StatusCreated, "Created Successfully")
-}
