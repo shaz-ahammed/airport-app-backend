@@ -5,7 +5,6 @@ bootrun:
 	make test
 	make test-report
 	make docker
-	make sonar
 	make run
 all:
 	make clean
@@ -26,6 +25,8 @@ build:
 	go build main.go
 install:
 	go get .
+	go install github.com/vakenbolt/go-test-report@v0.9.3
+	go install github.com/golang/mock/mockgen@v1.6.0
 docker:
 	docker-compose -f docker-compose.yaml up -d
 mock:
@@ -35,7 +36,7 @@ mock:
 
 sonar-scan:
 	go test ./... -coverprofile=coverage.out
-	sonar-scanner \
+	sonar-scanner -X \
       -Dsonar.projectKey=Airport \
       -Dsonar.sources=. \
       -Dsonar.host.url=http://localhost:9000 \
