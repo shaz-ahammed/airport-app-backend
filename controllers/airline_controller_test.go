@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
