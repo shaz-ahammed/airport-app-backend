@@ -21,6 +21,7 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 
 func (acr *AirlineControllerRepository) HandleGetAirline(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
+	
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	if page < 0 {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})

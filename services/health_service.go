@@ -25,7 +25,6 @@ type IHealthRepository interface {
 }
 
 func (repo *ServiceRepository) GetAppHealth() models.AppHealth {
-
 	doOnce.Do(func() {
 		log.Debug().Msg("Performing one-time lookup of constant runtime information")
 
