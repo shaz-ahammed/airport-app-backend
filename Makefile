@@ -12,7 +12,7 @@ all:
 	make test-report
 	make build
 	make sonar
-	make sonar
+
 clean:
 	go clean
 	go mod tidy
