@@ -26,6 +26,7 @@ build:
 	go build main.go
 install:
 	go get .
+	go install github.com/vakenbolt/go-test-report@v0.9.3
 docker:
 	docker-compose -f docker-compose.yaml up -d
 mock:
