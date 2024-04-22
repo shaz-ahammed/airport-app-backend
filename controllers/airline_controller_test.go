@@ -14,6 +14,7 @@ import (
   "github.com/golang/mock/gomock"
   "github.com/stretchr/testify/assert"
 )
+
 func TestHandleAirline(t *testing.T) {
   mockCtrl := gomock.NewController(t)
   defer mockCtrl.Finish()
@@ -68,7 +69,6 @@ func TestHandleCreateNewAirline(t *testing.T) {
 
   assert.NoError(t, err)
   assert.Equal(t, airline.Name, response.Name)
-
 }
 
 func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
@@ -84,7 +84,6 @@ func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
   controllerRepo.HandleCreateNewAirline(ctx)
 
   assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
-
 }
 
 func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
@@ -100,7 +99,6 @@ func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
   controllerRepo.HandleCreateNewAirline(ctx)
 
   assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
-
 }
 
 func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
@@ -116,7 +114,6 @@ func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
   controllerRepo.HandleCreateNewAirline(ctx)
 
   assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
-
 }
 
 func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
@@ -132,7 +129,6 @@ func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) 
   controllerRepo.HandleCreateNewAirline(ctx)
 
   assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
-
 }
 
 func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
