@@ -12,7 +12,6 @@ all:
 	make test-report
 	make build
 	make sonar
-
 clean:
 	go clean
 	go mod tidy
@@ -34,7 +33,6 @@ mock:
 	mockgen -destination=mocks/gate_service_mock.go -package=mocks airport-app-backend/services IGateRepository
 	mockgen -destination=mocks/health_service_mock.go -package=mocks airport-app-backend/services IHealthRepository
 	mockgen -destination=mocks/airline_service_mock.go -package=mocks airport-app-backend/services IAirlineRepository
-
 sonar-scan:
 	go test ./... -coverprofile=coverage.out
 	sonar-scanner -X \
@@ -48,4 +46,3 @@ ifeq ($(CI),)
 else
 	@echo "SonarQube scan skipped "
 endif
-
