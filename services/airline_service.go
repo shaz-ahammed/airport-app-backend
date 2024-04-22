@@ -10,9 +10,9 @@ import (
 )
 
 type IAirlineRepository interface {
-	GetAirline(pageNum int, c context.Context, ctx *gin.Context) ([]models.Airlines, error)
-	GetAirlineById(context.Context, *gin.Context, string) (*models.Airlines, error)
-	CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airlines) error
+	GetAirline(pageNum int, c context.Context, ctx *gin.Context) ([]models.Airline, error)
+	GetAirlineById(context.Context, *gin.Context, string) (*models.Airline, error)
+	CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airline) error
 }
 
 var DEFAULT_PAGE_LIMIT int = 10
@@ -35,7 +35,7 @@ func (sr *ServiceRepository) GetAirlineById(id string) (*models.Airlines, error)
 	return airlines, nil
 }
 
-func (sr *ServiceRepository) CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airlines) error {
+func (sr *ServiceRepository) CreateNewAirline(c context.Context, ctx *gin.Context, airline *models.Airline) error {
 	_, span := trace.StartSpan(c, "get_airline_by_id")
 	defer span.End()
 	middleware.TraceSpanTags(span)(ctx)

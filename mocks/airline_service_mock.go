@@ -35,7 +35,7 @@ func (m *MockIAirlineRepository) EXPECT() *MockIAirlineRepositoryMockRecorder {
 }
 
 // CreateNewAirline mocks base method.
-func (m *MockIAirlineRepository) CreateNewAirline(arg0 context.Context, arg1 *gin.Context, arg2 *models.Airlines) error {
+func (m *MockIAirlineRepository) CreateNewAirline(arg0 context.Context, arg1 *gin.Context, arg2 *models.Airline) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateNewAirline", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)

@@ -4,6 +4,7 @@ import (
 	"airport-app-backend/mocks"
 	"airport-app-backend/models"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -20,8 +21,8 @@ func TestHandleAirlineController(t *testing.T) {
 	defer mockCtrl.Finish()
 	mockService := mocks.NewMockIAirlineRepository(mockCtrl)
 	controllerRepo := NewAirlineControllerRepository(mockService)
-	mockAirlines := make([]models.Airlines, 3)
-	mockAirlines = append(mockAirlines, models.Airlines{Name: "Kingfisher"})
+	mockAirline := make([]models.Airline, 3)
+	mockAirline = append(mockAirline, models.Airline{Name: "Kingfisher"})
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
 	mockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirlines, nil)
@@ -53,20 +54,101 @@ func TestHandleCreateNewAirline(t *testing.T) {
 	controllerRepo := NewAirlineControllerRepository(mockService)
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
-	airline := models.Airlines{
-		Name: "XYZAirlines",
+	airline := models.Airline{
+		Name: "XYZAirline",
 	}
 	mockService.EXPECT().CreateNewAirline(gomock.Any(), ctx, &airline).Return(nil)
-	reqBody := `{"name":"XYZAirlines"}`
+	reqBody := `{"name":"XYZAirline"}`
 
 	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
 	controllerRepo.HandleCreateNewAirline(ctx)
 	assert.Equal(t, http.StatusCreated, ctx.Writer.Status())
 
-	var response models.Airlines
+	var response models.Airline
 	err := json.Unmarshal([]byte(reqBody), &response)
 	assert.NoError(t, err)
 
 	assert.Equal(t, airline.Name, response.Name)
 
+}
+
+func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
+
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+	mockService := mocks.NewMockIAirlineRepository(mockCtrl)
+	controllerRepo := NewAirlineControllerRepository(mockService)
+	recorder := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(recorder)
+	reqBody := `{"Name":""}`
+
+	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
+	controllerRepo.HandleCreateNewAirline(ctx)
+	assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+
+}
+
+func TestHandleCreateNewAirlineWhenThePayloadIsEmpty(t *testing.T) {
+
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+	mockService := mocks.NewMockIAirlineRepository(mockCtrl)
+	controllerRepo := NewAirlineControllerRepository(mockService)
+	recorder := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(recorder)
+	reqBody := `{}`
+
+	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
+	controllerRepo.HandleCreateNewAirline(ctx)
+	assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+
+}
+
+func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
+
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+	mockService := mocks.NewMockIAirlineRepository(mockCtrl)
+	controllerRepo := NewAirlineControllerRepository(mockService)
+	recorder := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(recorder)
+	reqBody := `{"Count":2}`
+	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
+	controllerRepo.HandleCreateNewAirline(ctx)
+	assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+
+}
+
+func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
+
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+	mockService := mocks.NewMockIAirlineRepository(mockCtrl)
+	controllerRepo := NewAirlineControllerRepository(mockService)
+	recorder := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(recorder)
+	reqBody := `{"name":123}`
+
+	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
+	controllerRepo.HandleCreateNewAirline(ctx)
+	assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+
+}
+
+func TestHandleCreateNewAirlineWherErrorIsThrownInServiceLayer(t *testing.T) {
+
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+	mockService := mocks.NewMockIAirlineRepository(mockCtrl)
+	controllerRepo := NewAirlineControllerRepository(mockService)
+	recorder := httptest.NewRecorder()
+	ctx, _ := gin.CreateTestContext(recorder)
+	airline := models.Airline{
+		Name: "Test",
+	}
+	reqBody := `{"name":"Test"}`
+	mockService.EXPECT().CreateNewAirline(gomock.Any(), ctx, &airline).Return(errors.New("invalid Request"))
+	ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
+	controllerRepo.HandleCreateNewAirline(ctx)
+	assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
 }
