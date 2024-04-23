@@ -12,6 +12,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
+var GET_GATE_BY_ID = "/gate/123"
+var GET_ALL_GATES = "gates"
 
 var mockService *mocks.MockIGateRepository
 var mockController *GateControllerRepository
@@ -33,7 +35,7 @@ func TestHandleGetGates(t *testing.T) {
 	mockGates = append(mockGates, models.Gate{FloorNumber: 2, GateNumber: 1})
 
 	mockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(mockGates, nil)
-	ctx.Request, _ = http.NewRequest("GET", "/gates", nil)
+	ctx.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
 	mockController.HandleGetGates(ctx)
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
@@ -43,7 +45,7 @@ func TestHandleGetGatesWhenServiceReturnsError(t *testing.T) {
 	beforeEach(t)
 
 	mockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
-	ctx.Request, _ = http.NewRequest("GET", "/gates", nil)
+	ctx.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
 	mockController.HandleGetGates(ctx)
 
 	assert.Equal(t, http.StatusInternalServerError, ctx.Writer.Status())
@@ -54,7 +56,7 @@ func TestHandleGetGateById(t *testing.T) {
 	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
 
 	mockService.EXPECT().GetGateById(gomock.Any()).Return(&mockGates, nil)
-	ctx.Request, _ = http.NewRequest("GET", "/gates/123", nil)
+	ctx.Request, _ = http.NewRequest("GET", GET_GATE_BY_ID, nil)
 	mockController.HandleGetGateById(ctx)
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
@@ -64,7 +66,7 @@ func TestHandleGetGateByIdWhenGateIdDoesNotExist(t *testing.T) {
 	beforeEach(t)
 
 	mockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("SQLSTATE 22P02"))
-	ctx.Request, _ = http.NewRequest("GET", "/gates/123", nil)
+	ctx.Request, _ = http.NewRequest("GET", GET_GATE_BY_ID, nil)
 	mockController.HandleGetGateById(ctx)
 
 	assert.Equal(t, http.StatusNotFound, ctx.Writer.Status())
@@ -74,7 +76,7 @@ func TestHandleGetGateByIdWhenServiceReturnsError(t *testing.T) {
 	beforeEach(t)
 
 	mockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("Invalid"))
-	ctx.Request, _ = http.NewRequest("GET", "/gates/123", nil)
+	ctx.Request, _ = http.NewRequest("GET", GET_GATE_BY_ID, nil)
 	mockController.HandleGetGateById(ctx)
 
 	assert.Equal(t, http.StatusInternalServerError, ctx.Writer.Status())
