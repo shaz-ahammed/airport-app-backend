@@ -2,7 +2,6 @@ package services
 
 import (
 	"airport-app-backend/models"
-
 	"github.com/rs/zerolog/log"
 )
 
@@ -11,6 +10,7 @@ var DEFAULT_PAGE_SIZE = 10
 type IGateRepository interface {
 	GetGates(page int, floor int) ([]models.Gate, error)
 	GetGateById(string) (*models.Gate, error)
+	CreateNewGate(*models.Gate) error
 }
 
 func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
@@ -36,4 +36,9 @@ func (sr *ServiceRepository) GetGateById(id string) (*models.Gate, error) {
 		return nil, err
 	}
 	return &gate, nil
+}
+
+func (sr *ServiceRepository) CreateNewGate(gate *models.Gate) error {
+	err := sr.db.Save(gate)
+	return err.Error
 }

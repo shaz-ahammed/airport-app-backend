@@ -5,9 +5,9 @@ import (
 )
 
 type Gate struct {
-	Id          string `json:"id" gorm:"type:uuid;primaryKey"`
-	GateNumber  int    `gorm:"unique;not null"`
-	FloorNumber int    `gorm:"not null"`
+	Id          string `json:"id" gorm:"primaryKey;autoIncrement"`
+	GateNumber  int    `json:"gate_number" binding:"required" gorm:"unique;not null"`
+	FloorNumber int    `json:"floor_number" binding:"required" gorm:"not null"`
 }
 
 // TableName specifies the table name for the Gate model
