@@ -3,6 +3,7 @@ package controllers
 import (
 	"airport-app-backend/mocks"
 	"airport-app-backend/models"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -12,16 +13,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHandleGetGates(t *testing.T) {
+var mockService *mocks.MockIGateRepository
+var mockController *GateControllerRepository
+var ctx *gin.Context
+
+func beforeEach(t *testing.T) {
 	mockControl := gomock.NewController(t)
 	defer mockControl.Finish()
+ 
+	mockService = mocks.NewMockIGateRepository(mockControl)
+	mockController = NewGateRepository(mockService)
+	recorder := httptest.NewRecorder()
+	ctx, _ = gin.CreateTestContext(recorder)
+}
 
-	mockService := mocks.NewMockIGateRepository(mockControl)
-	mockController := NewGateRepository(mockService)
+func TestHandleGetGates(t *testing.T) {
+	beforeEach(t)
 	mockGates := make([]models.Gate, 3)
 	mockGates = append(mockGates, models.Gate{FloorNumber: 2, GateNumber: 1})
-	recorder := httptest.NewRecorder()
-	ctx, _ := gin.CreateTestContext(recorder)
+
 	mockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(mockGates, nil)
 	ctx.Request, _ = http.NewRequest("GET", "/gates", nil)
 	mockController.HandleGetGates(ctx)
@@ -30,15 +40,10 @@ func TestHandleGetGates(t *testing.T) {
 }
 
 func TestHandleGetGateById(t *testing.T) {
-	mockControl := gomock.NewController(t)
-	defer mockControl.Finish()
-
-	mockService := mocks.NewMockIGateRepository(mockControl)
-	mockController := NewGateRepository(mockService)
+	beforeEach(t)
 	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
+
 	mockService.EXPECT().GetGateById(gomock.Any()).Return(&mockGates, nil)
-	recorder := httptest.NewRecorder()
-	ctx, _ := gin.CreateTestContext(recorder)
 	ctx.Request, _ = http.NewRequest("GET", "/gates/123", nil)
 	mockController.HandleGetGateById(ctx)
 
