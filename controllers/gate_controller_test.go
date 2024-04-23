@@ -24,7 +24,7 @@ var gateContext *gin.Context
 func beforeEachGateTest(t *testing.T) {
 	mockControl := gomock.NewController(t)
 	defer mockControl.Finish()
- 
+
 	gateMockService = mocks.NewMockIGateRepository(mockControl)
 	gateMockController = NewGateRepository(gateMockService)
 	recorder := httptest.NewRecorder()
