@@ -39,6 +39,16 @@ func TestHandleGetGates(t *testing.T) {
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
 
+func TestHandleGetGatesWhenServiceReturnsError(t *testing.T) {
+	beforeEach(t)
+
+	mockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
+	ctx.Request, _ = http.NewRequest("GET", "/gates", nil)
+	mockController.HandleGetGates(ctx)
+
+	assert.Equal(t, http.StatusInternalServerError, ctx.Writer.Status())
+}
+
 func TestHandleGetGateById(t *testing.T) {
 	beforeEach(t)
 	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
