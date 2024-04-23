@@ -59,3 +59,23 @@ func TestHandleGetGateById(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
 }
+
+func TestHandleGetGateByIdWhenGateIdDoesNotExist(t *testing.T) {
+	beforeEach(t)
+
+	mockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("SQLSTATE 22P02"))
+	ctx.Request, _ = http.NewRequest("GET", "/gates/123", nil)
+	mockController.HandleGetGateById(ctx)
+
+	assert.Equal(t, http.StatusNotFound, ctx.Writer.Status())
+}
+
+func TestHandleGetGateByIdWhenServiceReturnsError(t *testing.T) {
+	beforeEach(t)
+
+	mockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("Invalid"))
+	ctx.Request, _ = http.NewRequest("GET", "/gates/123", nil)
+	mockController.HandleGetGateById(ctx)
+
+	assert.Equal(t, http.StatusInternalServerError, ctx.Writer.Status())
+}
