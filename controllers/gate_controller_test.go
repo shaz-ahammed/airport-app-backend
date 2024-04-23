@@ -61,16 +61,16 @@ func TestHandleCreateNewGate(t *testing.T) {
 	}
 	mockService.EXPECT().CreateNewGate(&gate).Return(nil)
 	reqBody := `{"gate_number" : 1,"floor_number" : 1}`
+	var gateModel models.Gate
+
 	ctx.Request, _ = http.NewRequest("POST", "/gate", strings.NewReader(reqBody))
 	controllerRepo.HandleCreateNewGate(ctx)
+	err := json.Unmarshal([]byte(reqBody), &gateModel)
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
-	var response models.Gate
-	err := json.Unmarshal([]byte(reqBody), &response)
-
 	assert.NoError(t, err)
-	assert.Equal(t, gate.GateNumber, response.GateNumber)
-	assert.Equal(t, gate.FloorNumber, response.FloorNumber)
+	assert.Equal(t, gate.GateNumber, gateModel.GateNumber)
+	assert.Equal(t, gate.FloorNumber, gateModel.FloorNumber)
 }
 
 func TestHandleCreateNewGateWhenTheMandatoryValueIsAbsent(t *testing.T) {
