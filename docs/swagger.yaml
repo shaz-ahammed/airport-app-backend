@@ -1,3 +1,13 @@
+definitions:
+  models.Gate:
+    properties:
+      floor_number:
+        type: integer
+      gate_number:
+        type: integer
+      id:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -27,6 +37,15 @@ paths:
       description: Update gate of given id
       operationId: update-gate
       parameters:
+<<<<<<< HEAD
+=======
+      - description: Updated gate object
+        in: body
+        name: gate
+        required: true
+        schema:
+          $ref: '#/definitions/models.Gate'
+>>>>>>> 844c91c ([Shaz|Madhavan] added body annotation)
       - description: Gate ID
         in: path
         name: id

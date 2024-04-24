@@ -59,6 +59,18 @@ const docTemplate = `{
                 "operationId": "update-gate",
                 "parameters": [
                     {
+<<<<<<< HEAD
+=======
+                        "description": "Updated gate object",
+                        "name": "gate",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Gate"
+                        }
+                    },
+                    {
+>>>>>>> 844c91c ([Shaz|Madhavan] added body annotation)
                         "type": "string",
                         "description": "Gate ID",
                         "name": "id",
@@ -108,6 +120,22 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal server error"
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Gate": {
+            "type": "object",
+            "properties": {
+                "floor_number": {
+                    "type": "integer"
+                },
+                "gate_number": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
                 }
             }
         }

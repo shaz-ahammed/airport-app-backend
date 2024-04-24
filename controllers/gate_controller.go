@@ -104,6 +104,7 @@ func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
 // @Tags gate
 // @Accept json
 // @Produce  json
+// @Param gate body models.Gate true "Updated gate object"
 // @Param id path string true "Gate ID"
 // @Success 204  "Gate updated sucessfully"
 // @Failure 400  "Gate not found"
