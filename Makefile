@@ -1,19 +1,18 @@
 bootrun:
 	direnv allow
 	make clean
-	make install
-	make docker
 	make swagger
 	make mock
-	make test
-	make test-report
+	make install
+	make start-dependencies
 	make run
 all:
 	make clean
+	make swagger
+	make mock
+	make install
 	make test
-	make test-report
 	make build
-	make sonar
 clean:
 	go clean
 	go mod tidy
@@ -21,18 +20,16 @@ run:
 	go run main.go
 test:
 	go test ./...
-test-report:
 	mkdir -p build/reports/go-test-report && go test ./... -json | go-test-report -o build/reports/go-test-report/index.html
 build:
 	go build main.go
 install:
 	go get .
 	go install github.com/vakenbolt/go-test-report@v0.9.3
-	go install github.com/golang/mock/mockgen@v1.6.0
-	go install github.com/swaggo/swag/cmd/swag@v1.16.3
-docker:
+start-dependencies:
 	docker-compose -f docker-compose.yaml up -d
 mock:
+	go install github.com/golang/mock/mockgen@v1.6.0
 	mockgen -destination=mocks/gate_service_mock.go -package=mocks airport-app-backend/services IGateRepository
 	mockgen -destination=mocks/health_service_mock.go -package=mocks airport-app-backend/services IHealthRepository
 	mockgen -destination=mocks/airline_service_mock.go -package=mocks airport-app-backend/services IAirlineRepository
@@ -50,4 +47,5 @@ else
 	@echo "SonarQube scan skipped "
 endif
 swagger:
+	go install github.com/swaggo/swag/cmd/swag@v1.16.3
 	swag init
