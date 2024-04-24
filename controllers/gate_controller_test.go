@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
 var GET_GATE_BY_ID = "/gate/123"
 var GET_ALL_GATES = "gates"
 var CREATE_NEW_GATE = "/gate"
@@ -49,7 +48,6 @@ func TestHandleGetGates(t *testing.T) {
 func TestHandleGetGatesWhenServiceReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
 	gateMockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
-
 	gateContext.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
 
 	gateController.HandleGetGates(gateContext)
@@ -61,7 +59,6 @@ func TestHandleGetGateById(t *testing.T) {
 	beforeEachGateTest(t)
 	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
 	gateMockService.EXPECT().GetGateById(gomock.Any()).Return(&mockGates, nil)
-
 	gateContext.Request, _ = http.NewRequest("GET", GET_GATE_BY_ID, nil)
 
 	gateController.HandleGetGateById(gateContext)
@@ -72,7 +69,6 @@ func TestHandleGetGateById(t *testing.T) {
 func TestHandleGetGateByIdWhenGateIdDoesNotExist(t *testing.T) {
 	beforeEachGateTest(t)
 	gateMockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("SQLSTATE 22P02"))
-
 	gateContext.Request, _ = http.NewRequest("GET", GET_GATE_BY_ID, nil)
 
 	gateController.HandleGetGateById(gateContext)

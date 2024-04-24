@@ -22,7 +22,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "gates"
+                    "gate"
                 ],
                 "summary": "Get gate by ID",
                 "operationId": "get-gate-by-id",
@@ -59,13 +59,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Page number",
+                        "description": "Page number (default = 0)",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Floor number",
+                        "description": "filter by floor (default = all floor)",
                         "name": "floor",
                         "in": "query"
                     }

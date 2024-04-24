@@ -20,17 +20,17 @@ paths:
           description: Gate not found
       summary: Get gate by ID
       tags:
-      - gates
+      - gate
   /gates:
     get:
       description: get all the gate details
       operationId: get-all-gate
       parameters:
-      - description: Page number
+      - description: Page number (default = 0)
         in: query
         name: page
         type: integer
-      - description: Floor number
+      - description: filter by floor (default = all floor)
         in: query
         name: floor
         type: integer
