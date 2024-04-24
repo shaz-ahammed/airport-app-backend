@@ -21,8 +21,8 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 	}
 }
 
-// @Summary Get all gates
 // @Router /gates [get]
+// @Summary Get all gates
 // @Description get all the gate details
 // @ID get-all-gate
 // @Tags gate
@@ -52,15 +52,15 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gates)
 }
 
+// @Router /gate/{id} [get]
 // @Summary Get gate by ID
 // @Description Retrieve a gate by its ID
 // @ID get-gate-by-id
-// @Tags gates
-// @Param id path string true "Gate ID"
+// @Tags gate
 // @Produce  json
+// @Param id path string true "Gate ID"
 // @Success 200  "ok"
 // @Failure 400  "Gate not found"
-// @Router /gate/{id} [get]
 func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for retrieving gate details by id")
 
