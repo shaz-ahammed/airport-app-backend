@@ -385,4 +385,3 @@ build
 .scannerwork
 coverage.out
 /sonar-project.properties
-docs

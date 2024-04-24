@@ -1,0 +1,25 @@
+info:
+  contact: {}
+paths:
+  /gates:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      operationId: get-all-gate
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Floor number
+        in: query
+        name: floor
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+      summary: Get all gates
+swagger: "2.0"
