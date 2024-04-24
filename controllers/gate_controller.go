@@ -27,8 +27,8 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 // @ID get-all-gate
 // @Tags gate
 // @Produce  json
-// @Param   page        query    int     false        "Page number"
-// @Param   floor       query    int     false        "Floor number"
+// @Param   page        query    int     false        "Page number (default = 0)"
+// @Param   floor       query    int     false        "filter by floor (default = all floor)"
 // @Success 200  "ok"
 // @Failure 500 "Internal server error"
 func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
