@@ -228,4 +228,99 @@ func TestHandleDeleteNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T)
 
 	responseBody, _ := io.ReadAll(response.Body)
 	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect airline id: %s\"}", nonExistentAirlineId), string(responseBody))
+	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
+}
+
+func TestHandleUpdateAirline(t *testing.T) {
+	beforeEachAirlineTest(t)
+	airlineId := "1"
+	airline := factory.ConstructAirline()
+	reqBody, _ := json.Marshal(airline)
+	airlineContext.AddParam("id", airlineId)
+	mockAirlineRepository.EXPECT().UpdateAirline(&airline, airlineId).Return(nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodPut, AIRLINE, strings.NewReader(string(reqBody)))
+
+	airlineController.HandleUpdateAirline(airlineContext)
+
+	response := airlineResponseRecorder.Result()
+	assert.Equal(t, http.StatusCreated, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"message\":\"update success\"}", string(responseBody))
+}
+
+func TestHandleUpdateAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
+	beforeEachAirlineTest(t)
+	reqBody := `{}`
+
+	airlineContext.Request, _ = http.NewRequest(http.MethodPut, AIRLINE, strings.NewReader(reqBody))
+
+	airlineController.HandleUpdateAirline(airlineContext)
+
+	response := airlineResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Key: 'Airline.Name' Error:Field validation for 'Name' failed on the 'required' tag\"}", string(responseBody))
+}
+
+func TestHandleUpdateAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
+	beforeEachAirlineTest(t)
+	reqBody := `{"Name":""}`
+	airlineContext.Request, _ = http.NewRequest(http.MethodPut, AIRLINE, strings.NewReader(reqBody))
+
+	airlineController.HandleUpdateAirline(airlineContext)
+
+	response := airlineResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Key: 'Airline.Name' Error:Field validation for 'Name' failed on the 'required' tag\"}", string(responseBody))
+}
+
+func TestHandleUpdateAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
+	beforeEachAirlineTest(t)
+	invalidId := "-1"
+	airline := factory.ConstructAirline()
+	airlineContext.AddParam("id", invalidId)
+	reqBody, _ := json.Marshal(&airline)
+	mockAirlineRepository.EXPECT().UpdateAirline(&airline, invalidId).Return(errors.New("invalid Request"))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPut, AIRLINE, strings.NewReader(string(reqBody)))
+
+	airlineController.HandleUpdateAirline(airlineContext)
+
+	response := airlineResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"invalid Request\"}", string(responseBody))
+}
+
+func TestHandleUpdateAirlineWhereErrorIsThrownWhenIdIsUpdates(t *testing.T) {
+	beforeEachAirlineTest(t)
+	reqBody := `{"name":"Test", "id":"56yfh"}`
+	mockAirlineRepository.EXPECT().UpdateAirline(gomock.Any(), gomock.Any()).Return(nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodPut, AIRLINE, strings.NewReader(reqBody))
+
+	airlineController.HandleUpdateAirline(airlineContext)
+
+	response := airlineResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"ID cannot be updated\"}", string(responseBody))
+}
+
+func TestHandleUpdateAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
+	beforeEachAirlineTest(t)
+	reqBody := `{"Count":2}`
+	airlineContext.Request, _ = http.NewRequest(http.MethodPut, AIRLINE, strings.NewReader(reqBody))
+
+	airlineController.HandleUpdateAirline(airlineContext)
+
+	response := airlineResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Key: 'Airline.Name' Error:Field validation for 'Name' failed on the 'required' tag\"}", string(responseBody))
 }

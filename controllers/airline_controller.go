@@ -109,3 +109,38 @@ func (ac *AirlineController) HandleDeleteAirline(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, "Deleted the airline successfully")
 }
+
+// @Summary Update airline by ID
+// @Router /airline/{id} [put]
+// @Summary Update airline by ID
+// @Description update the airline details by its ID
+// @ID update-airline
+// @Tags airline
+// @Produce  json
+// @Param id path string true "Airline ID"
+// @Param airline body models.Airline true "Updated airline object"
+// @Success 200  "ok"
+// @Failure 500 "Internal server error"
+// @Failure 400 "Bad request"
+func (ac *AirlineController) HandleUpdateAirline(ctx *gin.Context) {
+	airlineId := ctx.Param(`id`)
+	var airline models.Airline
+
+	err := ctx.ShouldBindWith(&airline, binding.JSON)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+		return
+	}
+
+	if len(airline.Id) > 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "ID cannot be updated"})
+		return
+	}
+
+	repositoryError := ac.repository.UpdateAirline(&airline, airlineId)
+	if repositoryError != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": repositoryError.Error()})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{"message": "update success"})
+}
