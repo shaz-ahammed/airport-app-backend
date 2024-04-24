@@ -28,6 +28,7 @@ install:
 	go get .
 	go install github.com/vakenbolt/go-test-report@v0.9.3
 	go install github.com/golang/mock/mockgen@v1.6.0
+	go install github.com/swaggo/swag/cmd/swag@v1.16.3
 docker:
 	docker-compose -f docker-compose.yaml up -d
 mock:
