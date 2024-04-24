@@ -34,6 +34,20 @@ func (m *MockIGateRepository) EXPECT() *MockIGateRepositoryMockRecorder {
 	return m.recorder
 }
 
+// CreateNewGate mocks base method.
+func (m *MockIGateRepository) CreateNewGate(arg0 *models.Gate) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNewGate", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateNewGate indicates an expected call of CreateNewGate.
+func (mr *MockIGateRepositoryMockRecorder) CreateNewGate(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNewGate", reflect.TypeOf((*MockIGateRepository)(nil).CreateNewGate), arg0)
+}
+
 // GetGateById mocks base method.
 func (m *MockIGateRepository) GetGateById(arg0 string) (*models.Gate, error) {
 	m.ctrl.T.Helper()

@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"airport-app-backend/models"
+	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
 	"strings"
@@ -56,4 +58,21 @@ func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gate)
+}
+
+func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
+	var gate models.Gate
+
+	err := ctx.ShouldBindWith(&gate, binding.JSON)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	serviceError := gcr.service.CreateNewGate(&gate)
+	if serviceError != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": serviceError.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, "Successfully created a gate")
 }
