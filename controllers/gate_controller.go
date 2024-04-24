@@ -67,8 +67,8 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for retrieving gate details by id")
 
-	gateID := ctx.Param("id")
-	gate, err := gcr.service.GetGateById(gateID)
+	gateId := ctx.Param("id")
+	gate, err := gcr.service.GetGateById(gateId)
 	if err != nil {
 		if strings.Contains(err.Error(), "SQLSTATE 22P02") {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "Gate not found"})
@@ -105,8 +105,23 @@ func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
 // @Accept json
 // @Produce  json
 // @Param id path string true "Gate ID"
-// @Success 200  "ok"
+// @Success 204  "Gate updated sucessfully"
 // @Failure 400  "Gate not found"
 func (gcr *GateControllerRepository) HandleUpdateGate(ctx *gin.Context) {
-
+	log.Debug().Msg("controller layer for updating gate info")
+	
+	var gate models.Gate
+	gateId := ctx.Param("id")
+	err := ctx.ShouldBindWith(&gate, binding.JSON)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	err = gcr.service.UpdateGate(gateId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusNoContent, "Successfully updated gate details")
 }
