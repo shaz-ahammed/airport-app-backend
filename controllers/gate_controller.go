@@ -21,6 +21,14 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 	}
 }
 
+// @Router /gates [get]
+// @Description get all the gate details
+// @ID get-all-gate
+// @Accept  json
+// @Produce  json
+// @Param   page        query    int     false        "Page number"
+// @Param   floor       query    int     false        "Floor number"
+// @Success 200  "ok"
 func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	log.Debug().Msg("Getting list of gates")
 

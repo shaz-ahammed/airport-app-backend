@@ -5,6 +5,7 @@ bootrun:
 	make test
 	make test-report
 	make docker
+	make swagger
 	make run
 all:
 	make clean
@@ -46,3 +47,6 @@ ifeq ($(CI),)
 else
 	@echo "SonarQube scan skipped "
 endif
+
+swagger:
+	swag init
