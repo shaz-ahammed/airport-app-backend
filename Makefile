@@ -1,11 +1,12 @@
 bootrun:
-	make clean
 	direnv allow
+	make clean
+	make install
+	make docker
+	make swagger
 	make mock
 	make test
 	make test-report
-	make docker
-	make swagger
 	make run
 all:
 	make clean
