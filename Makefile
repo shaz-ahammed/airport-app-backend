@@ -47,6 +47,5 @@ ifeq ($(CI),)
 else
 	@echo "SonarQube scan skipped "
 endif
-
 swagger:
 	swag init
