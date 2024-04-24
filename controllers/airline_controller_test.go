@@ -20,7 +20,7 @@ var GET_AIRLINE_BY_ID = "/airline/123"
 var POST_AIRLINE = "/airline"
 
 var airlineMockService *mocks.MockIAirlineRepository
-var airlineMockController *AirlineControllerRepository
+var airlineController *AirlineControllerRepository
 var airlineContext *gin.Context
 
 func beforeEachAirlineTest(t *testing.T) {
@@ -28,7 +28,7 @@ func beforeEachAirlineTest(t *testing.T) {
   defer mockControl.Finish()
 
   airlineMockService = mocks.NewMockIAirlineRepository(mockControl)
-  airlineMockController = NewAirlineControllerRepository(airlineMockService)
+  airlineController = NewAirlineControllerRepository(airlineMockService)
   recorder := httptest.NewRecorder()
   airlineContext, _ = gin.CreateTestContext(recorder)
 }
@@ -38,9 +38,9 @@ func TestHandleAirline(t *testing.T) {
   mockAirline := make([]models.Airline, 3)
   mockAirline = append(mockAirline, models.Airline{Name: "Kingfisher"})
   airlineMockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
-
   airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
-  airlineMockController.HandleGetAirlines(airlineContext)
+
+  airlineController.HandleGetAirlines(airlineContext)
 
   assert.Equal(t, http.StatusOK, airlineContext.Writer.Status())
 }
@@ -49,9 +49,9 @@ func TestHandleAirlineById(t *testing.T) {
   beforeEachAirlineTest(t)
   mockAirline := models.Airline{Name: "Jet Airways"}
   airlineMockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
-
   airlineContext.Request, _ = http.NewRequest("GET", GET_AIRLINE_BY_ID, nil)
-  airlineMockController.HandleGetAirlineById(airlineContext)
+
+  airlineController.HandleGetAirlineById(airlineContext)
 
   assert.Equal(t, http.StatusOK, airlineContext.Writer.Status())
 }
@@ -65,9 +65,9 @@ func TestHandleCreateNewAirline(t *testing.T) {
   reqBody := `{"name":"XYZAirline"}`
   var response models.Airline
   err := json.Unmarshal([]byte(reqBody), &response)
-
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-  airlineMockController.HandleCreateNewAirline(airlineContext)
+
+  airlineController.HandleCreateNewAirline(airlineContext)
 
   assert.Equal(t, http.StatusCreated, airlineContext.Writer.Status())
   assert.NoError(t, err)
@@ -77,9 +77,9 @@ func TestHandleCreateNewAirline(t *testing.T) {
 func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
   beforeEachAirlineTest(t)
   reqBody := `{"Name":""}`
-
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-  airlineMockController.HandleCreateNewAirline(airlineContext)
+
+  airlineController.HandleCreateNewAirline(airlineContext)
 
   assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
@@ -87,9 +87,9 @@ func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
 func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
   beforeEachAirlineTest(t)
   reqBody := `{}`
-
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-  airlineMockController.HandleCreateNewAirline(airlineContext)
+
+  airlineController.HandleCreateNewAirline(airlineContext)
 
   assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
@@ -97,9 +97,9 @@ func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
 func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
   beforeEachAirlineTest(t)
   reqBody := `{"Count":2}`
-
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-  airlineMockController.HandleCreateNewAirline(airlineContext)
+
+  airlineController.HandleCreateNewAirline(airlineContext)
 
   assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
@@ -107,9 +107,9 @@ func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
   beforeEachAirlineTest(t)
   reqBody := `{"name":123}`
-
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-  airlineMockController.HandleCreateNewAirline(airlineContext)
+  
+  airlineController.HandleCreateNewAirline(airlineContext)
 
   assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
@@ -121,9 +121,9 @@ func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
   }
   reqBody := `{"name":"Test"}`
   airlineMockService.EXPECT().CreateNewAirline(&airline).Return(errors.New("invalid Request"))
-  
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-  airlineMockController.HandleCreateNewAirline(airlineContext)
+
+  airlineController.HandleCreateNewAirline(airlineContext)
 
   assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
