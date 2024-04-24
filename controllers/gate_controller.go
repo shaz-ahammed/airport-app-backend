@@ -23,6 +23,7 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 	}
 }
 
+// @Summary Get all gates
 // @Router /gates [get]
 // @Summary Get all gates
 // @Description get all the gate details

@@ -38,6 +38,7 @@ func TestHandleAirline(t *testing.T) {
   mockAirline := make([]models.Airline, 3)
   mockAirline = append(mockAirline, models.Airline{Name: "Kingfisher"})
   airlineMockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
+
   airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
 
   airlineController.HandleGetAirlines(airlineContext)
@@ -49,6 +50,7 @@ func TestHandleAirlineById(t *testing.T) {
   beforeEachAirlineTest(t)
   mockAirline := models.Airline{Name: "Jet Airways"}
   airlineMockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
+
   airlineContext.Request, _ = http.NewRequest("GET", GET_AIRLINE_BY_ID, nil)
 
   airlineController.HandleGetAirlineById(airlineContext)
@@ -68,6 +70,9 @@ func TestHandleCreateNewAirline(t *testing.T) {
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
 
   airlineController.HandleCreateNewAirline(airlineContext)
+
+  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+  airlineMockController.HandleCreateNewAirline(airlineContext)
 
   assert.Equal(t, http.StatusCreated, airlineContext.Writer.Status())
   assert.NoError(t, err)
@@ -121,6 +126,7 @@ func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
   }
   reqBody := `{"name":"Test"}`
   airlineMockService.EXPECT().CreateNewAirline(&airline).Return(errors.New("invalid Request"))
+  
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
 
   airlineController.HandleCreateNewAirline(airlineContext)
