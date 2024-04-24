@@ -21,14 +21,16 @@ func NewGateRepository(service services.IGateRepository) *GateControllerReposito
 	}
 }
 
+// @Summary Get all gates
 // @Router /gates [get]
 // @Description get all the gate details
 // @ID get-all-gate
-// @Accept  json
+// @Tags gate
 // @Produce  json
 // @Param   page        query    int     false        "Page number"
 // @Param   floor       query    int     false        "Floor number"
 // @Success 200  "ok"
+// @Failure 500 "Internal server error"
 func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	log.Debug().Msg("Getting list of gates")
 
@@ -50,6 +52,15 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gates)
 }
 
+// @Summary Get gate by ID
+// @Description Retrieve a gate by its ID
+// @ID get-gate-by-id
+// @Tags gates
+// @Param id path string true "Gate ID"
+// @Produce  json
+// @Success 200  "ok"
+// @Failure 400  "Gate not found"
+// @Router /gate/{id} [get]
 func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for retrieving gate details by id")
 

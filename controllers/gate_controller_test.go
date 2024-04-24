@@ -12,6 +12,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
+
 var GET_GATE_BY_ID = "/gate/123"
 var GET_ALL_GATES = "gates"
 
@@ -33,8 +34,8 @@ func TestHandleGetGates(t *testing.T) {
 	beforeEachGateTest(t)
 	mockGates := make([]models.Gate, 3)
 	mockGates = append(mockGates, models.Gate{FloorNumber: 2, GateNumber: 1})
-
 	gateMockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(mockGates, nil)
+	
 	gateContext.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
 	gateMockController.HandleGetGates(gateContext)
 
@@ -43,8 +44,8 @@ func TestHandleGetGates(t *testing.T) {
 
 func TestHandleGetGatesWhenServiceReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
-
 	gateMockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
+
 	gateContext.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
 	gateMockController.HandleGetGates(gateContext)
 
@@ -54,8 +55,8 @@ func TestHandleGetGatesWhenServiceReturnsError(t *testing.T) {
 func TestHandleGetGateById(t *testing.T) {
 	beforeEachGateTest(t)
 	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
-
 	gateMockService.EXPECT().GetGateById(gomock.Any()).Return(&mockGates, nil)
+
 	gateContext.Request, _ = http.NewRequest("GET", GET_GATE_BY_ID, nil)
 	gateMockController.HandleGetGateById(gateContext)
 
@@ -64,8 +65,8 @@ func TestHandleGetGateById(t *testing.T) {
 
 func TestHandleGetGateByIdWhenGateIdDoesNotExist(t *testing.T) {
 	beforeEachGateTest(t)
-
 	gateMockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("SQLSTATE 22P02"))
+
 	gateContext.Request, _ = http.NewRequest("GET", GET_GATE_BY_ID, nil)
 	gateMockController.HandleGetGateById(gateContext)
 
@@ -74,8 +75,8 @@ func TestHandleGetGateByIdWhenGateIdDoesNotExist(t *testing.T) {
 
 func TestHandleGetGateByIdWhenServiceReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
-
 	gateMockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("Invalid"))
+
 	gateContext.Request, _ = http.NewRequest("GET", GET_GATE_BY_ID, nil)
 	gateMockController.HandleGetGateById(gateContext)
 

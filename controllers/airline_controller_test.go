@@ -14,6 +14,7 @@ import (
   "github.com/golang/mock/gomock"
   "github.com/stretchr/testify/assert"
 )
+
 var GET_ALL_AIRLINES = "/airlines"
 var GET_AIRLINE_BY_ID = "/airline/123"
 var POST_AIRLINE = "/airline"
@@ -36,8 +37,8 @@ func TestHandleAirline(t *testing.T) {
   beforeEachAirlineTest(t)
   mockAirline := make([]models.Airline, 3)
   mockAirline = append(mockAirline, models.Airline{Name: "Kingfisher"})
-  
   airlineMockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
+
   airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
   airlineMockController.HandleGetAirlines(airlineContext)
 
@@ -47,8 +48,8 @@ func TestHandleAirline(t *testing.T) {
 func TestHandleAirlineById(t *testing.T) {
   beforeEachAirlineTest(t)
   mockAirline := models.Airline{Name: "Jet Airways"}
-
   airlineMockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
+
   airlineContext.Request, _ = http.NewRequest("GET", GET_AIRLINE_BY_ID, nil)
   airlineMockController.HandleGetAirlineById(airlineContext)
 
@@ -62,11 +63,11 @@ func TestHandleCreateNewAirline(t *testing.T) {
   }
   airlineMockService.EXPECT().CreateNewAirline(&airline).Return(nil)
   reqBody := `{"name":"XYZAirline"}`
-  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-  airlineMockController.HandleCreateNewAirline(airlineContext)
-
   var response models.Airline
   err := json.Unmarshal([]byte(reqBody), &response)
+
+  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+  airlineMockController.HandleCreateNewAirline(airlineContext)
 
   assert.Equal(t, http.StatusCreated, airlineContext.Writer.Status())
   assert.NoError(t, err)
@@ -119,8 +120,8 @@ func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
     Name: "Test",
   }
   reqBody := `{"name":"Test"}`
-
   airlineMockService.EXPECT().CreateNewAirline(&airline).Return(errors.New("invalid Request"))
+  
   airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
   airlineMockController.HandleCreateNewAirline(airlineContext)
 

@@ -1,11 +1,29 @@
 info:
   contact: {}
 paths:
+  /gate/{id}:
+    get:
+      description: Retrieve a gate by its ID
+      operationId: get-gate-by-id
+      parameters:
+      - description: Gate ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+        "400":
+          description: Gate not found
+      summary: Get gate by ID
+      tags:
+      - gates
   /gates:
     get:
-      consumes:
-      - application/json
-      description: get string by ID
+      description: get all the gate details
       operationId: get-all-gate
       parameters:
       - description: Page number
@@ -21,5 +39,9 @@ paths:
       responses:
         "200":
           description: ok
+        "500":
+          description: Internal server error
       summary: Get all gates
+      tags:
+      - gate
 swagger: "2.0"

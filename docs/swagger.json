@@ -4,14 +4,44 @@
         "contact": {}
     },
     "paths": {
-        "/gates": {
+        "/gate/{id}": {
             "get": {
-                "description": "get string by ID",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Retrieve a gate by its ID",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "gates"
+                ],
+                "summary": "Get gate by ID",
+                "operationId": "get-gate-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Gate ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    },
+                    "400": {
+                        "description": "Gate not found"
+                    }
+                }
+            }
+        },
+        "/gates": {
+            "get": {
+                "description": "get all the gate details",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "gate"
                 ],
                 "summary": "Get all gates",
                 "operationId": "get-all-gate",
@@ -32,6 +62,9 @@
                 "responses": {
                     "200": {
                         "description": "ok"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
