@@ -77,3 +77,17 @@ func (mr *MockIGateRepositoryMockRecorder) GetGates(arg0, arg1 interface{}) *gom
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGates", reflect.TypeOf((*MockIGateRepository)(nil).GetGates), arg0, arg1)
 }
+
+// UpdateGate mocks base method.
+func (m *MockIGateRepository) UpdateGate(arg0 string, arg1 models.Gate) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateGate", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateGate indicates an expected call of UpdateGate.
+func (mr *MockIGateRepositoryMockRecorder) UpdateGate(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGate", reflect.TypeOf((*MockIGateRepository)(nil).UpdateGate), arg0, arg1)
+}

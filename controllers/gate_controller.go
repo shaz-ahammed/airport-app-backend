@@ -109,7 +109,7 @@ func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
 // @Failure 400  "Gate not found"
 func (gcr *GateControllerRepository) HandleUpdateGate(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for updating gate info")
-	
+
 	var gate models.Gate
 	gateId := ctx.Param("id")
 	err := ctx.ShouldBindWith(&gate, binding.JSON)
@@ -117,8 +117,8 @@ func (gcr *GateControllerRepository) HandleUpdateGate(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
-	err = gcr.service.UpdateGate(gateId)
+
+	err = gcr.service.UpdateGate(gateId, gate)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

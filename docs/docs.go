@@ -43,6 +43,37 @@ const docTemplate = `{
                         "description": "Gate not found"
                     }
                 }
+            },
+            "put": {
+                "description": "Update gate of given id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "gate"
+                ],
+                "summary": "Update ga",
+                "operationId": "update-gate",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Gate ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Gate updated sucessfully"
+                    },
+                    "400": {
+                        "description": "Gate not found"
+                    }
+                }
             }
         },
         "/gates": {
