@@ -27,6 +27,7 @@ Docker-compose
 - To run app without packaging, run: `make bootrun`
 - The running app can be accessed [here](https://0.0.0.0:8080/)
 - The Jaeger UI can be accessed [here](http://localhost:16686)
+- The Swagger UI can be accessed [here](https://0.0.0.0:8080/swagger/index.html)
 
 ## Steps to setup SonarQube locally
 

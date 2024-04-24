@@ -59,8 +59,6 @@ const docTemplate = `{
                 "operationId": "update-gate",
                 "parameters": [
                     {
-<<<<<<< HEAD
-=======
                         "description": "Updated gate object",
                         "name": "gate",
                         "in": "body",
@@ -70,7 +68,6 @@ const docTemplate = `{
                         }
                     },
                     {
->>>>>>> 844c91c ([Shaz|Madhavan] added body annotation)
                         "type": "string",
                         "description": "Gate ID",
                         "name": "id",
@@ -79,8 +76,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "Gate updated sucessfully"
+                    "200": {
+                        "description": "ok"
                     },
                     "400": {
                         "description": "Gate not found"
@@ -127,6 +124,10 @@ const docTemplate = `{
     "definitions": {
         "models.Gate": {
             "type": "object",
+            "required": [
+                "floor_number",
+                "gate_number"
+            ],
             "properties": {
                 "floor_number": {
                     "type": "integer"

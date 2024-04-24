@@ -124,5 +124,5 @@ func (gcr *GateControllerRepository) HandleUpdateGate(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusNoContent, "Successfully updated gate details")
+	ctx.JSON(http.StatusOK, "Successfully updated gate details")
 }

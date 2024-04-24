@@ -7,6 +7,9 @@ definitions:
         type: integer
       id:
         type: string
+    required:
+    - floor_number
+    - gate_number
     type: object
 info:
   contact: {}
@@ -37,15 +40,12 @@ paths:
       description: Update gate of given id
       operationId: update-gate
       parameters:
-<<<<<<< HEAD
-=======
       - description: Updated gate object
         in: body
         name: gate
         required: true
         schema:
           $ref: '#/definitions/models.Gate'
->>>>>>> 844c91c ([Shaz|Madhavan] added body annotation)
       - description: Gate ID
         in: path
         name: id
@@ -54,8 +54,8 @@ paths:
       produces:
       - application/json
       responses:
-        "204":
-          description: Gate updated sucessfully
+        "200":
+          description: ok
         "400":
           description: Gate not found
       summary: Update ga
