@@ -14,138 +14,115 @@ import (
   "github.com/golang/mock/gomock"
   "github.com/stretchr/testify/assert"
 )
+var GET_ALL_AIRLINES = "/airlines"
+var GET_AIRLINE_BY_ID = "/airline/123"
+var POST_AIRLINE = "/airline"
+
+var airlineMockService *mocks.MockIAirlineRepository
+var airlineMockController *AirlineControllerRepository
+var airlineContext *gin.Context
+
+func beforeEachAirlineTest(t *testing.T) {
+  mockControl := gomock.NewController(t)
+  defer mockControl.Finish()
+
+  airlineMockService = mocks.NewMockIAirlineRepository(mockControl)
+  airlineMockController = NewAirlineControllerRepository(airlineMockService)
+  recorder := httptest.NewRecorder()
+  airlineContext, _ = gin.CreateTestContext(recorder)
+}
 
 func TestHandleAirline(t *testing.T) {
-  mockCtrl := gomock.NewController(t)
-  defer mockCtrl.Finish()
-  mockService := mocks.NewMockIAirlineRepository(mockCtrl)
-  controllerRepo := NewAirlineControllerRepository(mockService)
+  beforeEachAirlineTest(t)
   mockAirline := make([]models.Airline, 3)
   mockAirline = append(mockAirline, models.Airline{Name: "Kingfisher"})
-  recorder := httptest.NewRecorder()
-  ctx, _ := gin.CreateTestContext(recorder)
+  
+  airlineMockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
+  airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
+  airlineMockController.HandleGetAirlines(airlineContext)
 
-  mockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
-  ctx.Request, _ = http.NewRequest("GET", "/airline", nil)
-  controllerRepo.HandleGetAirlines(ctx)
-
-  assert.Equal(t, http.StatusOK, ctx.Writer.Status())
+  assert.Equal(t, http.StatusOK, airlineContext.Writer.Status())
 }
 
 func TestHandleAirlineById(t *testing.T) {
-  mockCtrl := gomock.NewController(t)
-  defer mockCtrl.Finish()
-  mockService := mocks.NewMockIAirlineRepository(mockCtrl)
-  controllerRepo := NewAirlineControllerRepository(mockService)
-  recorder := httptest.NewRecorder()
-  ctx, _ := gin.CreateTestContext(recorder)
+  beforeEachAirlineTest(t)
   mockAirline := models.Airline{Name: "Jet Airways"}
 
-  mockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
-  ctx.Request, _ = http.NewRequest("GET", "airline/12332", nil)
-  controllerRepo.HandleGetAirlineById(ctx)
+  airlineMockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
+  airlineContext.Request, _ = http.NewRequest("GET", GET_AIRLINE_BY_ID, nil)
+  airlineMockController.HandleGetAirlineById(airlineContext)
 
-  assert.Equal(t, http.StatusOK, ctx.Writer.Status())
+  assert.Equal(t, http.StatusOK, airlineContext.Writer.Status())
 }
 
 func TestHandleCreateNewAirline(t *testing.T) {
-  mockCtrl := gomock.NewController(t)
-  defer mockCtrl.Finish()
-  mockService := mocks.NewMockIAirlineRepository(mockCtrl)
-  controllerRepo := NewAirlineControllerRepository(mockService)
-  recorder := httptest.NewRecorder()
-  ctx, _ := gin.CreateTestContext(recorder)
+  beforeEachAirlineTest(t)
   airline := models.Airline{
     Name: "XYZAirline",
   }
-  mockService.EXPECT().CreateNewAirline(&airline).Return(nil)
+  airlineMockService.EXPECT().CreateNewAirline(&airline).Return(nil)
   reqBody := `{"name":"XYZAirline"}`
-  ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
-  controllerRepo.HandleCreateNewAirline(ctx)
+  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+  airlineMockController.HandleCreateNewAirline(airlineContext)
 
-  assert.Equal(t, http.StatusCreated, ctx.Writer.Status())
   var response models.Airline
   err := json.Unmarshal([]byte(reqBody), &response)
 
+  assert.Equal(t, http.StatusCreated, airlineContext.Writer.Status())
   assert.NoError(t, err)
   assert.Equal(t, airline.Name, response.Name)
 }
 
 func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
-  mockCtrl := gomock.NewController(t)
-  defer mockCtrl.Finish()
-  mockService := mocks.NewMockIAirlineRepository(mockCtrl)
-  controllerRepo := NewAirlineControllerRepository(mockService)
-  recorder := httptest.NewRecorder()
-  ctx, _ := gin.CreateTestContext(recorder)
+  beforeEachAirlineTest(t)
   reqBody := `{"Name":""}`
 
-  ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
-  controllerRepo.HandleCreateNewAirline(ctx)
+  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+  airlineMockController.HandleCreateNewAirline(airlineContext)
 
-  assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+  assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
 
 func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
-  mockCtrl := gomock.NewController(t)
-  defer mockCtrl.Finish()
-  mockService := mocks.NewMockIAirlineRepository(mockCtrl)
-  controllerRepo := NewAirlineControllerRepository(mockService)
-  recorder := httptest.NewRecorder()
-  ctx, _ := gin.CreateTestContext(recorder)
+  beforeEachAirlineTest(t)
   reqBody := `{}`
 
-  ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
-  controllerRepo.HandleCreateNewAirline(ctx)
+  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+  airlineMockController.HandleCreateNewAirline(airlineContext)
 
-  assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+  assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
 
 func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
-  mockCtrl := gomock.NewController(t)
-  defer mockCtrl.Finish()
-  mockService := mocks.NewMockIAirlineRepository(mockCtrl)
-  controllerRepo := NewAirlineControllerRepository(mockService)
-  recorder := httptest.NewRecorder()
-  ctx, _ := gin.CreateTestContext(recorder)
+  beforeEachAirlineTest(t)
   reqBody := `{"Count":2}`
 
-  ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
-  controllerRepo.HandleCreateNewAirline(ctx)
+  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+  airlineMockController.HandleCreateNewAirline(airlineContext)
 
-  assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+  assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
 
 func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
-  mockCtrl := gomock.NewController(t)
-  defer mockCtrl.Finish()
-  mockService := mocks.NewMockIAirlineRepository(mockCtrl)
-  controllerRepo := NewAirlineControllerRepository(mockService)
-  recorder := httptest.NewRecorder()
-  ctx, _ := gin.CreateTestContext(recorder)
+  beforeEachAirlineTest(t)
   reqBody := `{"name":123}`
 
-  ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
-  controllerRepo.HandleCreateNewAirline(ctx)
+  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+  airlineMockController.HandleCreateNewAirline(airlineContext)
 
-  assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+  assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
 
 func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
-  mockCtrl := gomock.NewController(t)
-  defer mockCtrl.Finish()
-  mockService := mocks.NewMockIAirlineRepository(mockCtrl)
-  controllerRepo := NewAirlineControllerRepository(mockService)
-  recorder := httptest.NewRecorder()
-  ctx, _ := gin.CreateTestContext(recorder)
+  beforeEachAirlineTest(t)
   airline := models.Airline{
     Name: "Test",
   }
   reqBody := `{"name":"Test"}`
 
-  mockService.EXPECT().CreateNewAirline(&airline).Return(errors.New("invalid Request"))
-  ctx.Request, _ = http.NewRequest("POST", "/airline", strings.NewReader(reqBody))
-  controllerRepo.HandleCreateNewAirline(ctx)
+  airlineMockService.EXPECT().CreateNewAirline(&airline).Return(errors.New("invalid Request"))
+  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+  airlineMockController.HandleCreateNewAirline(airlineContext)
 
-  assert.Equal(t, http.StatusBadRequest, ctx.Writer.Status())
+  assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }

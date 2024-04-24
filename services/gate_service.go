@@ -17,7 +17,7 @@ func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
 	log.Debug().Msg("Fetching list of gates")
 
 	var gates []models.Gate
-	offset := (page - 1) * DEFAULT_PAGE_SIZE
+	offset := page * DEFAULT_PAGE_SIZE
 	query := sr.db.Offset(offset).Limit(DEFAULT_PAGE_SIZE)
 	if floor != -1 {
 		query = query.Where("floor_number = ?", floor)
