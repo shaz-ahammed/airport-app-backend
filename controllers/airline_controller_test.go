@@ -71,9 +71,6 @@ func TestHandleCreateNewAirline(t *testing.T) {
 
   airlineController.HandleCreateNewAirline(airlineContext)
 
-  airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-  airlineMockController.HandleCreateNewAirline(airlineContext)
-
   assert.Equal(t, http.StatusCreated, airlineContext.Writer.Status())
   assert.NoError(t, err)
   assert.Equal(t, airline.Name, response.Name)
