@@ -96,3 +96,17 @@ func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, "Successfully created a gate")
 }
+
+// @Router /gate/{id} [PUT]
+// @Summary Update gate
+// @Description Update gate of given id
+// @ID update-gate
+// @Tags gate
+// @Accept json
+// @Produce  json
+// @Param id path string true "Gate ID"
+// @Success 200  "ok"
+// @Failure 400  "Gate not found"
+func (gcr *GateControllerRepository) HandleUpdateGate(ctx *gin.Context) {
+
+}
