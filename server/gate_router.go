@@ -15,5 +15,4 @@ func (srv *AppServer) GateRouter(db *gorm.DB) {
 	srv.router.GET("/gate/:id", gateController.HandleGetGateById)
 	srv.router.POST("/gate", gateController.HandleCreateNewGate)
 	srv.router.PUT("/gate/:id", gateController.HandleUpdateGate)
-
 }
