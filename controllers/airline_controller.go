@@ -59,5 +59,15 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": serviceError.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, "Created Successfully")
+	ctx.JSON(http.StatusCreated, "Created a new airline Successfully")
+}
+
+func (acr *AirlineControllerRepository) HandleDeleteAirlineById(ctx *gin.Context) {
+	airlineId := ctx.Param(`id`)
+	err := acr.service.DeleteAirlineById(airlineId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, "error: Incorrect Airlines Id")
+		return
+	}
+	ctx.JSON(http.StatusOK, "Deleted the airline successfully")
 }

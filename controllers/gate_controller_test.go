@@ -93,7 +93,7 @@ func TestHandleCreateNewGate(t *testing.T) {
 	gateMockService.EXPECT().CreateNewGate(gomock.Any()).Return(nil)
 	reqBody := `{"gate_number" : 1, "floor_number" : 1}`
 	var gate models.Gate
-	gateContext.Request, _ = http.NewRequest("POST", "CREATE_NEW_GATE", strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
 	err := json.Unmarshal([]byte(reqBody), &gate)
 
 	gateController.HandleCreateNewGate(gateContext)
