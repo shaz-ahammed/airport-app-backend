@@ -3,9 +3,10 @@ package controllers
 import (
 	"airport-app-backend/models"
 	"airport-app-backend/services"
-	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin/binding"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -21,6 +22,15 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 	}
 }
 
+// @Summary			Get all airlines
+// @Router 			/airlines [get]
+// @Description 	Gets all the airlines
+// @ID 				get-all-airlines
+// @Tags 			airlines
+// @Produce  		json
+// @Param   		page	query	int		false	"Page number (default = 0)"
+// @Success 		200		"ok"
+// @Failure 		500		"Internal server error"
 func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
 
@@ -36,8 +46,17 @@ func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, airline)
 }
 
+// @Summary			Get airline by ID
+// @Router			/airline/{id} [get]
+// @Description 	Gets airline by ID
+// @ID 				get-airline-by-id
+// @Tags 			airlines
+// @Produce  		json
+// @Param   		id		path		string		true		"Airline ID"
+// @Success 		200		"ok"
+// @Failure 		500		"Internal server error"
 func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
-	airlineId := ctx.Param(`id`)
+	airlineId := ctx.Param("id")
 	airline, err := acr.service.GetAirlineById(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "error: Incorrect Airlines Id")
@@ -45,6 +64,15 @@ func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, airline)
 }
 
+// @Summary			Create new airline
+// @Router			/airline [post]
+// @Description 	Create new airline
+// @ID 				create-airline
+// @Tags 			airlines
+// @Produce  		json
+// @Param   		airline		body		models.Airline		true		"Airline Object"
+// @Success 		200		"ok"
+// @Failure 		500		"Internal server error"
 func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
 	var airline models.Airline
 
