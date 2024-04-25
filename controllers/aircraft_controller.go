@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"airport-app-backend/repositories"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -36,17 +37,19 @@ func (acr *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
+	// year, err := strconv.Atoi(ctx.Query("year"))
+	// if err != nil || year < 1970 {
+	// 	year = -1
+	// }
+	// capacity, err := strconv.Atoi(ctx.Query("capacity"))
+	// if err != nil || capacity < 0 {
+	// 	capacity = -1
+	// }
 
-	yearStr := ctx.Query("year")
-	capacityStr := ctx.Query("capacity")
-	// aircraftType := ctx.Query("type")
-
-	year, err := strconv.Atoi(yearStr)
-	if err != nil || year < 1970 {
-		year = -1
+	aircrafts, err := acr.repository.RetrieveAllAircrafts(page)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"Error": "Internal server error"})
+		return
 	}
-	capacity, err := strconv.Atoi(capacityStr)
-	if err != nil || capacity < 0 {
-		capacity = -1
-	}
+	ctx.JSON(http.StatusOK, aircrafts)
 }

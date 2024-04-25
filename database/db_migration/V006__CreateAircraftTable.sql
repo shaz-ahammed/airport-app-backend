@@ -1,9 +1,9 @@
 CREATE TABLE aircrafts (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    airline_id UUID REFERENCES airlines(id) NOT NULL ON DELETE CASCADE,
-    wing_number VARCHAR(255) NOT NULL,
-    type VARCHAR(255) NOT NULL CHECK (type IN ('passenger', 'cargo', 'helicopter')),
-    capacity INT NOT NULL,
+    id VARCHAR(255) PRIMARY KEY AUTO_INCREMENT,
+    tail_number VARCHAR(100) UNIQUE NOT NULL,
+    -- type VARCHAR(255) NOT NULL CHECK (type IN ('passenger', 'cargo', 'helicopter')),
     year_of_manufacture INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -- created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    airline_id VARCHAR(255),
+    FOREIGN KEY (airline_id) REFERENCES airlines(id) ON DELETE CASCADE,
 );
