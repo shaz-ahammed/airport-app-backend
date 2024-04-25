@@ -60,6 +60,7 @@ func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	airline, err := acr.service.GetAirlineById(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "error: Incorrect Airlines Id")
+		return
 	}
 	ctx.JSON(http.StatusOK, airline)
 }
@@ -90,6 +91,15 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 	ctx.JSON(http.StatusCreated, "Created a new airline Successfully")
 }
 
+// @Summary Delete airline by Id
+// @Router /airline/{id} [delete]
+// @Summary Delete airline by Id
+// @Description Delete the airline details of the particular id
+// @ID delete-airline-by-id
+// @Tags airline
+// @Param id path string true "Airline ID"
+// @Success 200  "ok"
+// @Failure 404 "Incorrect airline id"
 func (acr *AirlineControllerRepository) HandleDeleteAirlineById(ctx *gin.Context) {
 	airlineId := ctx.Param(`id`)
 	err := acr.service.DeleteAirlineById(airlineId)

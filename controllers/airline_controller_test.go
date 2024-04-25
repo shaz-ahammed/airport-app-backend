@@ -117,11 +117,8 @@ func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) 
 
 func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
-	airline := models.Airline{
-		Name: "Test",
-	}
 	reqBody := `{"name":"Test"}`
-	airlineMockService.EXPECT().CreateNewAirline(&airline).Return(errors.New("invalid Request"))
+	airlineMockService.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid Request"))
 
 	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
 
