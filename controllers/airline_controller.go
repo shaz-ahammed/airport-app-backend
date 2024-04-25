@@ -26,7 +26,7 @@ func NewAirlineControllerRepository(service services.IAirlineRepository) *Airlin
 // @Router 			/airlines [get]
 // @Description 	Gets all the airlines
 // @ID 				get-all-airlines
-// @Tags 			airlines
+// @Tags 			airline
 // @Produce  		json
 // @Param   		page	query	int		false	"Page number (default = 0)"
 // @Success 		200		"ok"
@@ -50,7 +50,7 @@ func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 // @Router			/airline/{id} [get]
 // @Description 	Gets airline by ID
 // @ID 				get-airline-by-id
-// @Tags 			airlines
+// @Tags 			airline
 // @Produce  		json
 // @Param   		id		path		string		true		"Airline ID"
 // @Success 		200		"ok"
@@ -69,7 +69,7 @@ func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 // @Router			/airline [post]
 // @Description 	Create new airline
 // @ID 				create-airline
-// @Tags 			airlines
+// @Tags 			airline
 // @Produce  		json
 // @Param   		airline		body		models.Airline		true		"Airline Object"
 // @Success 		200		"ok"
