@@ -80,6 +80,16 @@ func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gate)
 }
 
+// @Router /gate [POST]
+// @Summary Create gate
+// @Description Create a new gate
+// @ID create-gate
+// @Tags gate
+// @Accept json
+// @Produce  json
+// @Param gate body models.Gate true "New gate object"
+// @Success 200  "ok"
+// @Failure 400  "Bad request"
 func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
 	var gate models.Gate
 
@@ -98,7 +108,7 @@ func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
 }
 
 // @Router /gate/{id} [PUT]
-// @Summary Update ga
+// @Summary Update gate
 // @Description Update gate of given id
 // @ID update-gate
 // @Tags gate
