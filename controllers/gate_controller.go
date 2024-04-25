@@ -81,7 +81,7 @@ func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 }
 
 // @Router /gate [POST]
-// @Summary Create new gate
+// @Summary Create gate
 // @Description Create a new gate
 // @ID create-gate
 // @Tags gate
