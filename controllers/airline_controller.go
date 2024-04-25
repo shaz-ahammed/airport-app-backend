@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin/binding"
-
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/rs/zerolog/log"
 )
 
@@ -41,7 +40,7 @@ func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 	}
 	airline, err := acr.service.GetAirline(page)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "Airlines Details Not found"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Airlines Details Not found"})
 	}
 	ctx.JSON(http.StatusOK, airline)
 }
@@ -54,12 +53,12 @@ func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 // @Produce  		json
 // @Param   		id		path		string		true		"Airline ID"
 // @Success 		200		"ok"
-// @Failure 		500		"Internal server error"
+// @Failure 		400		"Airline not found"
 func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	airlineId := ctx.Param("id")
 	airline, err := acr.service.GetAirlineById(airlineId)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, "error: Incorrect Airlines Id")
+		ctx.JSON(http.StatusBadRequest, "error: Incorrect Airlines Id")
 		return
 	}
 	ctx.JSON(http.StatusOK, airline)
@@ -73,7 +72,7 @@ func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 // @Produce  		json
 // @Param   		airline		body		models.Airline		true		"Airline Object"
 // @Success 		200		"ok"
-// @Failure 		500		"Internal server error"
+// @Failure 		400		" Airline not found"
 func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
 	var airline models.Airline
 
@@ -99,7 +98,7 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 // @Tags airline
 // @Param id path string true "Airline ID"
 // @Success 200  "ok"
-// @Failure 404 "Incorrect airline id"
+// @Failure 400 "Airline not found"
 func (acr *AirlineControllerRepository) HandleDeleteAirlineById(ctx *gin.Context) {
 	airlineId := ctx.Param(`id`)
 	err := acr.service.DeleteAirlineById(airlineId)

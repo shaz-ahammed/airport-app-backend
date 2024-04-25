@@ -49,7 +49,6 @@ func TestHandleAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
 	mockAirline := models.Airline{Name: "Jet Airways"}
 	airlineMockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
-
 	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
 
 	airlineController.HandleGetAirlineById(airlineContext)
@@ -119,7 +118,6 @@ func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"name":"Test"}`
 	airlineMockService.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid Request"))
-
 	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)

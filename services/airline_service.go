@@ -40,5 +40,4 @@ func (sr *ServiceRepository) DeleteAirlineById(id string) error {
 	var airline *models.Airline
 	result := sr.db.Delete(&airline, "id=?", id)
 	return result.Error
-
 }
