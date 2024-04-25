@@ -25,7 +25,6 @@ func NewGateController(repository repositories.IGateRepository) *GateController 
 
 // @Summary Get all gates
 // @Router /gates [get]
-// @Summary Get all gates
 // @Description get all the gate details
 // @ID get-all-gate
 // @Tags gate
