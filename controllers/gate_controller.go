@@ -10,14 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 
-	"airport-app-backend/services"
+	"airport-app-backend/repositories"
 )
 
 type GateControllerRepository struct {
-	service services.IGateRepository
+	service repositories.IGateRepository
 }
 
-func NewGateRepository(service services.IGateRepository) *GateControllerRepository {
+func NewGateRepository(service repositories.IGateRepository) *GateControllerRepository {
 	return &GateControllerRepository{
 		service: service,
 	}

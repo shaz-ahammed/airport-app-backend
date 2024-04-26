@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"airport-app-backend/services"
+	"airport-app-backend/repositories"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type HealthControllerRepository struct {
-	service services.IHealthRepository
+	service repositories.IHealthRepository
 }
 
-func NewControllerRepository(service services.IHealthRepository) *HealthControllerRepository {
+func NewControllerRepository(service repositories.IHealthRepository) *HealthControllerRepository {
 	return &HealthControllerRepository{
 		service: service,
 	}

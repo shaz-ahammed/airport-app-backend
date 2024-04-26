@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"airport-app-backend/models"
-	"airport-app-backend/services"
+	"airport-app-backend/repositories"
 	"net/http"
 	"strconv"
 
@@ -12,10 +12,10 @@ import (
 )
 
 type AirlineControllerRepository struct {
-	service services.IAirlineRepository
+	service repositories.IAirlineRepository
 }
 
-func NewAirlineControllerRepository(service services.IAirlineRepository) *AirlineControllerRepository {
+func NewAirlineControllerRepository(service repositories.IAirlineRepository) *AirlineControllerRepository {
 	return &AirlineControllerRepository{
 		service: service,
 	}

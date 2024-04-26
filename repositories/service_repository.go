@@ -1,4 +1,5 @@
-package services
+package repositories
+
 import 	"gorm.io/gorm"
 
 type ServiceRepository struct {

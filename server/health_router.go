@@ -2,13 +2,13 @@ package server
 
 import (
 	"airport-app-backend/controllers"
-	"airport-app-backend/services"
+	"airport-app-backend/repositories"
 
 	"gorm.io/gorm"
 )
 
 func (srv *AppServer) HealthRouter(db *gorm.DB) {
-	healthService := services.NewServiceRepository(db)
+	healthService := repositories.NewServiceRepository(db)
 	healthController := controllers.NewControllerRepository(healthService)
 
 	srv.router.GET("/health", healthController.HandleHealth)
