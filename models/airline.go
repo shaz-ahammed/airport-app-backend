@@ -6,12 +6,12 @@ type Airline struct {
 	Count int    `json:"count" gorm:"null"`
 }
 
-func (airline *Airline) SetName(name string) *Airline {
+func (airline *Airline) SetName(name string) Airline {
 	(*airline).Name = name
-	return airline
+	return *airline
 }
 
-func (airline *Airline) SetCount(count int) *Airline {
+func (airline *Airline) SetCount(count int) Airline {
 	(*airline).Count = count
-	return airline
+	return *airline
 }

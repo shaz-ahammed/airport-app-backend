@@ -6,6 +6,6 @@ import (
 	"github.com/go-faker/faker/v4"
 )
 
-func ConstructAirline() *models.Airline {
-	return &models.Airline{Name: faker.Name()}
+func ConstructAirline() models.Airline {
+	return models.Airline{Name: faker.Name()}
 }
