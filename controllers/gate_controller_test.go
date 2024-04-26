@@ -19,18 +19,17 @@ var GATE_BY_ID = "/gate/123"
 var GET_ALL_GATES = "gates"
 var CREATE_NEW_GATE = "/gate"
 
-var gateMockService *mocks.MockIGateRepository
+var gateMockRepository *mocks.MockIGateRepository
 var gateController *GateControllerRepository
 var gateContext *gin.Context
 
 func beforeEachGateTest(t *testing.T) {
-	mockControl := gomock.NewController(t)
-	defer mockControl.Finish()
+	gomockController := gomock.NewController(t)
+	defer gomockController.Finish()
 
-	gateMockService = mocks.NewMockIGateRepository(mockControl)
-	gateController = NewGateRepository(gateMockService)
-	recorder := httptest.NewRecorder()
-	gateContext, _ = gin.CreateTestContext(recorder)
+	gateMockRepository = mocks.NewMockIGateRepository(gomockController)
+	gateController = NewGateRepository(gateMockRepository)
+	gateContext, _ = gin.CreateTestContext(httptest.NewRecorder())
 }
 
 func TestHandleGetGates(t *testing.T) {
@@ -38,16 +37,16 @@ func TestHandleGetGates(t *testing.T) {
 	mockGates := make([]models.Gate, 3)
 	mockGates = append(mockGates, models.Gate{FloorNumber: 2, GateNumber: 1})
 	gateContext.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
-	gateMockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(mockGates, nil)
+	gateMockRepository.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(mockGates, nil)
 
 	gateController.HandleGetGates(gateContext)
 
 	assert.Equal(t, http.StatusOK, gateContext.Writer.Status())
 }
 
-func TestHandleGetGatesWhenServiceReturnsError(t *testing.T) {
+func TestHandleGetGatesWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
-	gateMockService.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
+	gateMockRepository.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
 	gateContext.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
 
 	gateController.HandleGetGates(gateContext)
@@ -58,7 +57,7 @@ func TestHandleGetGatesWhenServiceReturnsError(t *testing.T) {
 func TestHandleGetGateById(t *testing.T) {
 	beforeEachGateTest(t)
 	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
-	gateMockService.EXPECT().GetGateById(gomock.Any()).Return(&mockGates, nil)
+	gateMockRepository.EXPECT().GetGateById(gomock.Any()).Return(&mockGates, nil)
 	gateContext.Request, _ = http.NewRequest("GET", GATE_BY_ID, nil)
 
 	gateController.HandleGetGateById(gateContext)
@@ -68,7 +67,7 @@ func TestHandleGetGateById(t *testing.T) {
 
 func TestHandleGetGateByIdWhenGateIdDoesNotExist(t *testing.T) {
 	beforeEachGateTest(t)
-	gateMockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("SQLSTATE 22P02"))
+	gateMockRepository.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("SQLSTATE 22P02"))
 	gateContext.Request, _ = http.NewRequest("GET", GATE_BY_ID, nil)
 
 	gateController.HandleGetGateById(gateContext)
@@ -76,9 +75,9 @@ func TestHandleGetGateByIdWhenGateIdDoesNotExist(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, gateContext.Writer.Status())
 }
 
-func TestHandleGetGateByIdWhenServiceReturnsError(t *testing.T) {
+func TestHandleGetGateByIdWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
-	gateMockService.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("invalid"))
+	gateMockRepository.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("invalid"))
 	gateContext.Request, _ = http.NewRequest("GET", GATE_BY_ID, nil)
 
 	gateController.HandleGetGateById(gateContext)
@@ -90,7 +89,7 @@ func TestHandleCreateNewGate(t *testing.T) {
 	beforeEachGateTest(t)
 	ExpectedGateNumber := 1
 	ExpectedFloorNumber := 1
-	gateMockService.EXPECT().CreateNewGate(gomock.Any()).Return(nil)
+	gateMockRepository.EXPECT().CreateNewGate(gomock.Any()).Return(nil)
 	reqBody := `{"gate_number" : 1, "floor_number" : 1}`
 	var gate models.Gate
 	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
@@ -144,10 +143,10 @@ func TestHandleCreateNewGateWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
 }
 
-func TestHandleCreateNewGateWhereErrorIsThrownInServiceLayer(t *testing.T) {
+func TestHandleCreateNewGateWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":3, "floor_number":6}`
-	gateMockService.EXPECT().CreateNewGate(gomock.Any()).Return(errors.New("invalid Request"))
+	gateMockRepository.EXPECT().CreateNewGate(gomock.Any()).Return(errors.New("invalid Request"))
 	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
@@ -158,7 +157,7 @@ func TestHandleCreateNewGateWhereErrorIsThrownInServiceLayer(t *testing.T) {
 func TestHandleUpdateGate(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":3, "floor_number":6}`
-	gateMockService.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(nil)
+	gateMockRepository.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(nil)
 	gateContext.Request, _ = http.NewRequest("PUT", GATE_BY_ID, strings.NewReader(reqBody))
 
 	gateController.HandleUpdateGate(gateContext)
@@ -169,7 +168,7 @@ func TestHandleUpdateGate(t *testing.T) {
 func TestHandleUpdateGateWhenRequiredFieldIsNotGiven(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":3}`
-	gateMockService.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(nil)
+	gateMockRepository.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(nil)
 	gateContext.Request, _ = http.NewRequest("PUT", GATE_BY_ID, strings.NewReader(reqBody))
 
 	gateController.HandleUpdateGate(gateContext)
@@ -177,10 +176,10 @@ func TestHandleUpdateGateWhenRequiredFieldIsNotGiven(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
 }
 
-func TestHandleUpdateGateWhenServiceThrowsError(t *testing.T) {
+func TestHandleUpdateGateWhenRepositoryThrowsError(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":3, "floor_number":6}`
-	gateMockService.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(errors.New("Invalid"))
+	gateMockRepository.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(errors.New("Invalid"))
 	gateContext.Request, _ = http.NewRequest("PUT", GATE_BY_ID, strings.NewReader(reqBody))
 
 	gateController.HandleUpdateGate(gateContext)

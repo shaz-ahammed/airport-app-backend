@@ -1,24 +1,24 @@
 package controllers
 
 import (
-	"airport-app-backend/services"
+	"airport-app-backend/repositories"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type HealthControllerRepository struct {
-	service services.IHealthRepository
+	repository repositories.IHealthRepository
 }
 
-func NewControllerRepository(service services.IHealthRepository) *HealthControllerRepository {
+func NewControllerRepository(repository repositories.IHealthRepository) *HealthControllerRepository {
 	return &HealthControllerRepository{
-		service: service,
+		repository: repository,
 	}
 }
 
 func (repo *HealthControllerRepository) HandleHealth(ctx *gin.Context) {
-	appHealth := repo.service.GetAppHealth()
+	appHealth := repo.repository.GetAppHealth()
 	ctx.JSON(http.StatusOK, appHealth)
 }
 

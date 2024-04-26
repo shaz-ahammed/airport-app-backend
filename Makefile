@@ -16,6 +16,7 @@ all:
 clean:
 	go clean
 	go mod tidy
+	rm -rf build/ docs/ mocks/
 run:
 	go run main.go
 test:
@@ -30,9 +31,9 @@ start-dependencies:
 	docker-compose -f docker-compose.yaml up -d
 mock:
 	go install github.com/golang/mock/mockgen@v1.6.0
-	mockgen -destination=mocks/gate_service_mock.go -package=mocks airport-app-backend/services IGateRepository
-	mockgen -destination=mocks/health_service_mock.go -package=mocks airport-app-backend/services IHealthRepository
-	mockgen -destination=mocks/airline_service_mock.go -package=mocks airport-app-backend/services IAirlineRepository
+	mockgen -destination=mocks/gate_repository_mock.go -package=mocks airport-app-backend/repositories IGateRepository
+	mockgen -destination=mocks/health_repository_mock.go -package=mocks airport-app-backend/repositories IHealthRepository
+	mockgen -destination=mocks/airline_repository_mock.go -package=mocks airport-app-backend/repositories IAirlineRepository
 sonar-scan:
 	go test ./... -coverprofile=coverage.out
 	sonar-scanner -X \

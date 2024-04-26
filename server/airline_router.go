@@ -2,14 +2,14 @@ package server
 
 import (
 	"airport-app-backend/controllers"
-	"airport-app-backend/services"
+	"airport-app-backend/repositories"
 
 	"gorm.io/gorm"
 )
 
 func (srv *AppServer) AirlineRouter(db *gorm.DB) {
-	airlineService := services.NewServiceRepository(db)
-	airlineController := controllers.NewAirlineControllerRepository(airlineService)
+	airlineRepository := repositories.NewServiceRepository(db)
+	airlineController := controllers.NewAirlineControllerRepository(airlineRepository)
 
 	srv.router.GET("/airlines/", airlineController.HandleGetAirlines)
 	srv.router.GET("/airline/:id", airlineController.HandleGetAirlineById)
