@@ -6,6 +6,7 @@ import (
 	"airport-app-backend/models/factory"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -62,9 +63,10 @@ func TestHandleAirlineById(t *testing.T) {
 func TestHandleCreateNewAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
-	airline = airline.SetName("XYZAirline")
+	airlineName := "XYZAirline"
+	airline = airline.SetName(airlineName)
 	airlineMockService.EXPECT().CreateNewAirline(&airline).Return(nil)
-	reqBody := `{"name":"XYZAirline"}`
+	reqBody := fmt.Sprintf("{\"name\":\"%s\"}", airlineName)
 	var response models.Airline
 	err := json.Unmarshal([]byte(reqBody), &response)
 	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
