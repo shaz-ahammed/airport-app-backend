@@ -3,8 +3,10 @@ package controllers
 import (
 	"airport-app-backend/mocks"
 	"airport-app-backend/models"
+	"airport-app-backend/models/factory"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -36,7 +38,8 @@ func beforeEachAirlineTest(t *testing.T) {
 func TestHandleAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	mockAirline := make([]models.Airline, 3)
-	mockAirline = append(mockAirline, models.Airline{Name: "Kingfisher"})
+	newAirline := factory.ConstructAirline()
+	mockAirline = append(mockAirline, newAirline.SetName("Kingfisher"))
 
 	airlineMockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
 	airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
@@ -47,7 +50,8 @@ func TestHandleAirline(t *testing.T) {
 
 func TestHandleAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
-	mockAirline := models.Airline{Name: "Jet Airways"}
+	newAirline := factory.ConstructAirline()
+	mockAirline := newAirline.SetName("Jet Airways")
 	airlineMockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
 	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
 
@@ -58,11 +62,11 @@ func TestHandleAirlineById(t *testing.T) {
 
 func TestHandleCreateNewAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
-	airline := models.Airline{
-		Name: "XYZAirline",
-	}
+	airline := factory.ConstructAirline()
+	airlineName := "XYZAirline"
+	airline = airline.SetName(airlineName)
 	airlineMockService.EXPECT().CreateNewAirline(&airline).Return(nil)
-	reqBody := `{"name":"XYZAirline"}`
+	reqBody := fmt.Sprintf("{\"name\":\"%s\"}", airlineName)
 	var response models.Airline
 	err := json.Unmarshal([]byte(reqBody), &response)
 	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
