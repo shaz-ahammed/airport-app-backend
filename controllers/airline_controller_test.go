@@ -26,13 +26,12 @@ var airlineController *AirlineControllerRepository
 var airlineContext *gin.Context
 
 func beforeEachAirlineTest(t *testing.T) {
-	mockControl := gomock.NewController(t)
-	defer mockControl.Finish()
+	gomockController := gomock.NewController(t)
+	defer gomockController.Finish()
 
-	airlineMockRepository = mocks.NewMockIAirlineRepository(mockControl)
+	airlineMockRepository = mocks.NewMockIAirlineRepository(gomockController)
 	airlineController = NewAirlineControllerRepository(airlineMockRepository)
-	recorder := httptest.NewRecorder()
-	airlineContext, _ = gin.CreateTestContext(recorder)
+	airlineContext, _ = gin.CreateTestContext(httptest.NewRecorder())
 }
 
 func TestHandleAirline(t *testing.T) {
