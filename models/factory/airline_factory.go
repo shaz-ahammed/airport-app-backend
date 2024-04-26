@@ -7,6 +7,5 @@ import (
 )
 
 func ConstructAirline() *models.Airline {
-	airline := models.Airline{}
-	return airline.SetName(faker.Name())
+	return &models.Airline{Name: faker.Name()}
 }
