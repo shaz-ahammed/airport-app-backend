@@ -30,15 +30,17 @@ func NewAirlineControllerRepository(repository repositories.IAirlineRepository) 
 // @Param   		page	query	int		false	"Page number (default = 0)"
 // @Success 		200		"ok"
 // @Failure 		500		"Internal server error"
-func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
+func (acr *AirlineControllerRepository) HandleGetAllAirlines(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
 
+  // TODO: Convert to using a pagination library to handle this and other edge cases
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	if page < 0 {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
-	airline, err := acr.repository.GetAirline(page)
+
+	airline, err := acr.repository.GetAllAirlines(page)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Airlines Details Not found"})
 	}

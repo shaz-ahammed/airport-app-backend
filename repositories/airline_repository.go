@@ -5,7 +5,7 @@ import (
 )
 
 type IAirlineRepository interface {
-	GetAirline(int) ([]models.Airline, error)
+	GetAllAirlines(int) ([]models.Airline, error)
 	GetAirlineById(string) (*models.Airline, error)
 	CreateNewAirline(*models.Airline) error
 	DeleteAirlineById(string) error
@@ -13,7 +13,7 @@ type IAirlineRepository interface {
 
 var DEFAULT_PAGE_LIMIT int = 10
 
-func (sr *ServiceRepository) GetAirline(pageNum int) ([]models.Airline, error) {
+func (sr *ServiceRepository) GetAllAirlines(pageNum int) ([]models.Airline, error) {
 	var airline []models.Airline
 	result := sr.db.Limit(DEFAULT_PAGE_LIMIT).Offset(pageNum * DEFAULT_PAGE_LIMIT).Find(&airline)
 	if result.Error != nil {

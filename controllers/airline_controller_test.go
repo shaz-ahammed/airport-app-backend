@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	// "io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -24,6 +25,7 @@ var POST_AIRLINE = "/airline"
 var airlineMockRepository *mocks.MockIAirlineRepository
 var airlineController *AirlineControllerRepository
 var airlineContext *gin.Context
+var responseRecorder *httptest.ResponseRecorder
 
 func beforeEachAirlineTest(t *testing.T) {
 	gomockController := gomock.NewController(t)
@@ -31,27 +33,45 @@ func beforeEachAirlineTest(t *testing.T) {
 
 	airlineMockRepository = mocks.NewMockIAirlineRepository(gomockController)
 	airlineController = NewAirlineControllerRepository(airlineMockRepository)
-	airlineContext, _ = gin.CreateTestContext(httptest.NewRecorder())
+  responseRecorder = httptest.NewRecorder()
+	airlineContext, _ = gin.CreateTestContext(responseRecorder)
 }
 
 func TestHandleAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
-	mockAirline := make([]models.Airline, 3)
-	newAirline := factory.ConstructAirline()
-	mockAirline = append(mockAirline, newAirline.SetName("Kingfisher"))
+  airlineName1 := "Kingfisher"
+  airlineName2 := "Indigo"
+  airlineName3 := "Deccan Air"
+	airlines := make([]models.Airline, 3)
+  airline1 := factory.ConstructAirline()
+	airlines = append(airlines, airline1.SetName(airlineName1))
+  airline2 := factory.ConstructAirline()
+	airlines = append(airlines, airline2.SetName(airlineName2))
+  airline3 := factory.ConstructAirline()
+	airlines = append(airlines, airline3.SetName(airlineName3))
 
-	airlineMockRepository.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
+	airlineMockRepository.EXPECT().GetAllAirlines(gomock.Any()).Return(airlines, nil)
 	airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
-	airlineController.HandleGetAirlines(airlineContext)
 
-	assert.Equal(t, http.StatusOK, airlineContext.Writer.Status())
+  airlineController.HandleGetAllAirlines(airlineContext)
+
+  response := responseRecorder.Result()
+	// body, _ := io.ReadAll(response.Body)
+
+	// var response models.Airline
+	// err := json.Unmarshal([]byte(reqBody), &response)
+
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+  // assert.Contains(t, *body, airlineName1)
+  // assert.Contains(t, body, airlineName2)
+  // assert.Contains(t, body, airlineName3)
 }
 
 func TestHandleAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
 	newAirline := factory.ConstructAirline()
-	mockAirline := newAirline.SetName("Jet Airways")
-	airlineMockRepository.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
+	airlines := newAirline.SetName("Jet Airways")
+	airlineMockRepository.EXPECT().GetAirlineById(gomock.Any()).Return(&airlines, nil)
 	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
 
 	airlineController.HandleGetAirlineById(airlineContext)
