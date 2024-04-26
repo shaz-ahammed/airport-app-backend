@@ -14,12 +14,12 @@ import (
 )
 
 type GateControllerRepository struct {
-	service repositories.IGateRepository
+	repository repositories.IGateRepository
 }
 
-func NewGateRepository(service repositories.IGateRepository) *GateControllerRepository {
+func NewGateRepository(repository repositories.IGateRepository) *GateControllerRepository {
 	return &GateControllerRepository{
-		service: service,
+		repository: repository,
 	}
 }
 
@@ -47,7 +47,7 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 	if err != nil || floor < 0 {
 		floor = -1
 	}
-	gates, err := gcr.service.GetGates(page, floor)
+	gates, err := gcr.repository.GetGates(page, floor)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gates"})
 		return
@@ -68,7 +68,7 @@ func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for retrieving gate details by id")
 
 	gateId := ctx.Param("id")
-	gate, err := gcr.service.GetGateById(gateId)
+	gate, err := gcr.repository.GetGateById(gateId)
 	if err != nil {
 		if strings.Contains(err.Error(), "SQLSTATE 22P02") {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": "Gate not found"})
@@ -99,9 +99,9 @@ func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
 		return
 	}
 
-	serviceError := gcr.service.CreateNewGate(&gate)
-	if serviceError != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": serviceError.Error()})
+	repositoryError := gcr.repository.CreateNewGate(&gate)
+	if repositoryError != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": repositoryError.Error()})
 		return
 	}
 	ctx.JSON(http.StatusOK, "Successfully created a gate")
@@ -129,7 +129,7 @@ func (gcr *GateControllerRepository) HandleUpdateGate(ctx *gin.Context) {
 		return
 	}
 
-	err = gcr.service.UpdateGate(gateId, gate)
+	err = gcr.repository.UpdateGate(gateId, gate)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

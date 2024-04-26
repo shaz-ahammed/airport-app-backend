@@ -30,7 +30,7 @@ func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
 }
 
 func (sr *ServiceRepository) GetGateById(id string) (*models.Gate, error) {
-	log.Debug().Msg("service layer for retrieving gate details by id")
+	log.Debug().Msg("repository layer for retrieving gate details by id")
 
 	var gate models.Gate
 	if err := sr.db.Where("id = ?", id).First(&gate).Error; err != nil {

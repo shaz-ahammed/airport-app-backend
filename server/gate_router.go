@@ -8,8 +8,8 @@ import (
 )
 
 func (srv *AppServer) GateRouter(db *gorm.DB) {
-	gateService := repositories.NewServiceRepository(db)
-	gateController := controllers.NewGateRepository(gateService)
+	gateRepository := repositories.NewServiceRepository(db)
+	gateController := controllers.NewGateRepository(gateRepository)
 
 	srv.router.GET("/gates", gateController.HandleGetGates)
 	srv.router.GET("/gate/:id", gateController.HandleGetGateById)

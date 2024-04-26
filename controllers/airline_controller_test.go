@@ -21,7 +21,7 @@ var GET_ALL_AIRLINES = "/airlines"
 var AIRLINE_BY_ID = "/airline/123"
 var POST_AIRLINE = "/airline"
 
-var airlineMockService *mocks.MockIAirlineRepository
+var airlineMockRepository *mocks.MockIAirlineRepository
 var airlineController *AirlineControllerRepository
 var airlineContext *gin.Context
 
@@ -29,8 +29,8 @@ func beforeEachAirlineTest(t *testing.T) {
 	mockControl := gomock.NewController(t)
 	defer mockControl.Finish()
 
-	airlineMockService = mocks.NewMockIAirlineRepository(mockControl)
-	airlineController = NewAirlineControllerRepository(airlineMockService)
+	airlineMockRepository = mocks.NewMockIAirlineRepository(mockControl)
+	airlineController = NewAirlineControllerRepository(airlineMockRepository)
 	recorder := httptest.NewRecorder()
 	airlineContext, _ = gin.CreateTestContext(recorder)
 }
@@ -41,7 +41,7 @@ func TestHandleAirline(t *testing.T) {
 	newAirline := factory.ConstructAirline()
 	mockAirline = append(mockAirline, newAirline.SetName("Kingfisher"))
 
-	airlineMockService.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
+	airlineMockRepository.EXPECT().GetAirline(gomock.Any()).Return(mockAirline, nil)
 	airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
 	airlineController.HandleGetAirlines(airlineContext)
 
@@ -52,7 +52,7 @@ func TestHandleAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
 	newAirline := factory.ConstructAirline()
 	mockAirline := newAirline.SetName("Jet Airways")
-	airlineMockService.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
+	airlineMockRepository.EXPECT().GetAirlineById(gomock.Any()).Return(&mockAirline, nil)
 	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
 
 	airlineController.HandleGetAirlineById(airlineContext)
@@ -65,7 +65,7 @@ func TestHandleCreateNewAirline(t *testing.T) {
 	airline := factory.ConstructAirline()
 	airlineName := "XYZAirline"
 	airline = airline.SetName(airlineName)
-	airlineMockService.EXPECT().CreateNewAirline(&airline).Return(nil)
+	airlineMockRepository.EXPECT().CreateNewAirline(&airline).Return(nil)
 	reqBody := fmt.Sprintf("{\"name\":\"%s\"}", airlineName)
 	var response models.Airline
 	err := json.Unmarshal([]byte(reqBody), &response)
@@ -118,10 +118,10 @@ func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) 
 	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
 
-func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
+func TestHandleCreateNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"name":"Test"}`
-	airlineMockService.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid Request"))
+	airlineMockRepository.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid Request"))
 	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
@@ -131,7 +131,7 @@ func TestHandleCreateNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
 
 func TestHandleDeleteAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
-	airlineMockService.EXPECT().DeleteAirlineById(gomock.Any()).Return(nil)
+	airlineMockRepository.EXPECT().DeleteAirlineById(gomock.Any()).Return(nil)
 	airlineContext.Request, _ = http.NewRequest("DELETE", AIRLINE_BY_ID, nil)
 
 	airlineController.HandleDeleteAirlineById(airlineContext)
@@ -139,9 +139,9 @@ func TestHandleDeleteAirlineById(t *testing.T) {
 	assert.Equal(t, http.StatusOK, airlineContext.Writer.Status())
 }
 
-func TestHandleDeleteNewAirlineWhereErrorIsThrownInServiceLayer(t *testing.T) {
+func TestHandleDeleteNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
-	airlineMockService.EXPECT().DeleteAirlineById(gomock.Any()).Return(errors.New("invalid Request"))
+	airlineMockRepository.EXPECT().DeleteAirlineById(gomock.Any()).Return(errors.New("invalid Request"))
 	airlineContext.Request, _ = http.NewRequest("DELETE", AIRLINE_BY_ID, nil)
 
 	airlineController.HandleDeleteAirlineById(airlineContext)

@@ -8,17 +8,17 @@ import (
 )
 
 type HealthControllerRepository struct {
-	service repositories.IHealthRepository
+	repository repositories.IHealthRepository
 }
 
-func NewControllerRepository(service repositories.IHealthRepository) *HealthControllerRepository {
+func NewControllerRepository(repository repositories.IHealthRepository) *HealthControllerRepository {
 	return &HealthControllerRepository{
-		service: service,
+		repository: repository,
 	}
 }
 
 func (repo *HealthControllerRepository) HandleHealth(ctx *gin.Context) {
-	appHealth := repo.service.GetAppHealth()
+	appHealth := repo.repository.GetAppHealth()
 	ctx.JSON(http.StatusOK, appHealth)
 }
 

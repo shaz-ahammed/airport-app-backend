@@ -12,12 +12,12 @@ import (
 )
 
 type AirlineControllerRepository struct {
-	service repositories.IAirlineRepository
+	repository repositories.IAirlineRepository
 }
 
-func NewAirlineControllerRepository(service repositories.IAirlineRepository) *AirlineControllerRepository {
+func NewAirlineControllerRepository(repository repositories.IAirlineRepository) *AirlineControllerRepository {
 	return &AirlineControllerRepository{
-		service: service,
+		repository: repository,
 	}
 }
 
@@ -38,7 +38,7 @@ func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
-	airline, err := acr.service.GetAirline(page)
+	airline, err := acr.repository.GetAirline(page)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Airlines Details Not found"})
 	}
@@ -56,7 +56,7 @@ func (acr *AirlineControllerRepository) HandleGetAirlines(ctx *gin.Context) {
 // @Failure 		400		"Airline not found"
 func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	airlineId := ctx.Param("id")
-	airline, err := acr.service.GetAirlineById(airlineId)
+	airline, err := acr.repository.GetAirlineById(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, "error: Incorrect Airlines Id")
 		return
@@ -82,9 +82,9 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 		return
 	}
 
-	serviceError := acr.service.CreateNewAirline(&airline)
-	if serviceError != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"Error": serviceError.Error()})
+	repositoryError := acr.repository.CreateNewAirline(&airline)
+	if repositoryError != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": repositoryError.Error()})
 		return
 	}
 	ctx.JSON(http.StatusCreated, "Created a new airline Successfully")
@@ -101,7 +101,7 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 // @Failure 400 "Airline not found"
 func (acr *AirlineControllerRepository) HandleDeleteAirlineById(ctx *gin.Context) {
 	airlineId := ctx.Param(`id`)
-	err := acr.service.DeleteAirlineById(airlineId)
+	err := acr.repository.DeleteAirlineById(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, "error: Incorrect Airlines Id")
 		return

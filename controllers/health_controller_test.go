@@ -13,16 +13,16 @@ import (
 )
 
 func TestHandleHealth(t *testing.T) {
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
-	mockService := mocks.NewMockIHealthRepository(mockCtrl)
-	controllerRepo := NewControllerRepository(mockService)
+	mockController := gomock.NewController(t)
+	defer mockController.Finish()
+	mockRepository := mocks.NewMockIHealthRepository(mockController)
+	controllerRepo := NewControllerRepository(mockRepository)
 	appHealthMock := models.AppHealth{Goroutines: 5}
 	recorder := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(recorder)
-	mockService.EXPECT().GetAppHealth().Return(appHealthMock)
-
+	mockRepository.EXPECT().GetAppHealth().Return(appHealthMock)
 	ctx.Request, _ = http.NewRequest("GET", "/health", nil)
+
 	controllerRepo.HandleHealth(ctx)
 
 	assert.Equal(t, http.StatusOK, ctx.Writer.Status())
