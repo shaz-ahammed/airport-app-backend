@@ -71,7 +71,8 @@ func TestHandleGetAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
 	airlineMockRepository.EXPECT().GetAirlineById("123").Return(&airline, nil)
-	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodGet, AIRLINE_BY_ID, nil)
+	airlineContext.AddParam("id", "123")
 
 	airlineController.HandleGetAirlineById(airlineContext)
 
