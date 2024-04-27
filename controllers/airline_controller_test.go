@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	// "io"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -33,39 +33,39 @@ func beforeEachAirlineTest(t *testing.T) {
 
 	airlineMockRepository = mocks.NewMockIAirlineRepository(gomockController)
 	airlineController = NewAirlineControllerRepository(airlineMockRepository)
-  responseRecorder = httptest.NewRecorder()
+	responseRecorder = httptest.NewRecorder()
 	airlineContext, _ = gin.CreateTestContext(responseRecorder)
 }
 
-func TestHandleAirline(t *testing.T) {
+func TestHandleGetAllAirlines(t *testing.T) {
 	beforeEachAirlineTest(t)
-  airlineName1 := "Kingfisher"
-  airlineName2 := "Indigo"
-  airlineName3 := "Deccan Air"
-	airlines := make([]models.Airline, 3)
-  airline1 := factory.ConstructAirline()
-	airlines = append(airlines, airline1.SetName(airlineName1))
-  airline2 := factory.ConstructAirline()
-	airlines = append(airlines, airline2.SetName(airlineName2))
-  airline3 := factory.ConstructAirline()
-	airlines = append(airlines, airline3.SetName(airlineName3))
+	var airlines []models.Airline
+	airline1 := factory.ConstructAirline()
+	airlines = append(airlines, airline1)
+	airline2 := factory.ConstructAirline()
+	airlines = append(airlines, airline2)
+	airline3 := factory.ConstructAirline()
+	airlines = append(airlines, airline3)
 
 	airlineMockRepository.EXPECT().GetAllAirlines(gomock.Any()).Return(airlines, nil)
 	airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
 
-  airlineController.HandleGetAllAirlines(airlineContext)
+	airlineController.HandleGetAllAirlines(airlineContext)
 
-  response := responseRecorder.Result()
-	// body, _ := io.ReadAll(response.Body)
-
-	// var response models.Airline
-	// err := json.Unmarshal([]byte(reqBody), &response)
-
+	response := responseRecorder.Result()
 	assert.Equal(t, http.StatusOK, response.StatusCode)
-  // assert.Contains(t, *body, airlineName1)
-  // assert.Contains(t, body, airlineName2)
-  // assert.Contains(t, body, airlineName3)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var responseAirlines []models.Airline
+	json.Unmarshal([]byte(responseBody), &responseAirlines)
+
+	assert.Equal(t, 3, len(responseAirlines))
+	assert.Contains(t, responseAirlines, airline1)
+	assert.Contains(t, responseAirlines, airline2)
+	assert.Contains(t, responseAirlines, airline3)
 }
+
+// TODO: InternalServerError scenario for GetAllAirlines
 
 func TestHandleAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)

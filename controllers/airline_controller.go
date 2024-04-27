@@ -33,18 +33,18 @@ func NewAirlineControllerRepository(repository repositories.IAirlineRepository) 
 func (acr *AirlineControllerRepository) HandleGetAllAirlines(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
 
-  // TODO: Convert to using a pagination library to handle this and other edge cases
+	// TODO: Convert to using a pagination library to handle this and other edge cases
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	if page < 0 {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
 
-	airline, err := acr.repository.GetAllAirlines(page)
+	airlines, err := acr.repository.GetAllAirlines(page)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Airlines Details Not found"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"Error": "Airlines not found"})
 	}
-	ctx.JSON(http.StatusOK, airline)
+	ctx.JSON(http.StatusOK, airlines)
 }
 
 // @Summary			Get airline by ID
