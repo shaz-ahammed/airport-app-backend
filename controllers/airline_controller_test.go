@@ -56,13 +56,13 @@ func TestHandleGetAllAirlines(t *testing.T) {
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-	var responseAirlines []models.Airline
-	json.Unmarshal([]byte(responseBody), &responseAirlines)
+	var airlinesFromResponse []models.Airline
+	json.Unmarshal([]byte(responseBody), &airlinesFromResponse)
 
-	assert.Equal(t, 3, len(responseAirlines))
-	assert.Contains(t, responseAirlines, airline1)
-	assert.Contains(t, responseAirlines, airline2)
-	assert.Contains(t, responseAirlines, airline3)
+	assert.Equal(t, 3, len(airlinesFromResponse))
+	assert.Contains(t, airlinesFromResponse, airline1)
+	assert.Contains(t, airlinesFromResponse, airline2)
+	assert.Contains(t, airlinesFromResponse, airline3)
 }
 
 // TODO: InternalServerError scenario for GetAllAirlines
@@ -70,9 +70,10 @@ func TestHandleGetAllAirlines(t *testing.T) {
 func TestHandleGetAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
-	airlineMockRepository.EXPECT().GetAirlineById("123").Return(&airline, nil)
+	airlineId := "123"
+	airlineMockRepository.EXPECT().GetAirlineById(airlineId).Return(&airline, nil)
 	airlineContext.Request, _ = http.NewRequest(http.MethodGet, AIRLINE_BY_ID, nil)
-	airlineContext.AddParam("id", "123")
+	airlineContext.AddParam("id", airlineId)
 
 	airlineController.HandleGetAirlineById(airlineContext)
 
@@ -80,12 +81,30 @@ func TestHandleGetAirlineById(t *testing.T) {
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-	var responseAirline models.Airline
-	json.Unmarshal([]byte(responseBody), &responseAirline)
+	var airlineFromResponse models.Airline
+	json.Unmarshal([]byte(responseBody), &airlineFromResponse)
 
-	assert.Equal(t, responseAirline, airline)
+	assert.Equal(t, airlineFromResponse, airline)
 }
 
+func TestHandleGetAirlineByIdWhenRecordDoesntExist(t *testing.T) {
+	beforeEachAirlineTest(t)
+	nonExistentAirlineId := "-23243"
+	airlineMockRepository.EXPECT().GetAirlineById(nonExistentAirlineId).Return(nil, errors.New("foo bar"))
+	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
+	airlineContext.AddParam("id", nonExistentAirlineId)
+
+	airlineController.HandleGetAirlineById(airlineContext)
+
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+
+	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect airline id: %s\"}", nonExistentAirlineId), string(responseBody))
+}
+
+// TODO: All tests beyond this line have to be reviewed
 func TestHandleCreateNewAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()

@@ -106,7 +106,7 @@ func (acr *AirlineControllerRepository) HandleDeleteAirlineById(ctx *gin.Context
 	airlineId := ctx.Param(`id`)
 	err := acr.repository.DeleteAirlineById(airlineId)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, "error: Incorrect Airlines Id")
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect airline id: " + airlineId})
 		return
 	}
 	ctx.JSON(http.StatusOK, "Deleted the airline successfully")
