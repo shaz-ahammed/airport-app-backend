@@ -47,13 +47,13 @@ func (acr *AirlineControllerRepository) HandleGetAllAirlines(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, airlines)
 }
 
-// @Summary			Get airline by ID
+// @Summary			Get airline by Id
 // @Router			/airline/{id} [get]
-// @Description 	Gets airline by ID
+// @Description 	Gets airline by Id
 // @ID 				get-airline-by-id
 // @Tags 			airline
 // @Produce  		json
-// @Param   		id		path		string		true		"Airline ID"
+// @Param   		id		path		string		true		"Airline Id"
 // @Success 		200		"ok"
 // @Failure 		400		"Airline not found"
 func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
@@ -90,7 +90,7 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": repositoryError.Error()})
 		return
 	}
-	ctx.JSON(http.StatusCreated, "Created a new airline Successfully")
+	ctx.JSON(http.StatusCreated, "Created a new airline successfully")
 }
 
 // @Summary Delete airline by Id
@@ -99,11 +99,11 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 // @Description Delete the airline details of the particular id
 // @ID delete-airline-by-id
 // @Tags airline
-// @Param id path string true "Airline ID"
+// @Param id path string true "Airline Id"
 // @Success 200  "ok"
 // @Failure 400 "Airline not found"
 func (acr *AirlineControllerRepository) HandleDeleteAirlineById(ctx *gin.Context) {
-	airlineId := ctx.Param(`id`)
+	airlineId := ctx.Param("id")
 	err := acr.repository.DeleteAirlineById(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect airline id: " + airlineId})

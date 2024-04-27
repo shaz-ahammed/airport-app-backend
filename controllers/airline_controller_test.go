@@ -48,7 +48,7 @@ func TestHandleGetAllAirlines(t *testing.T) {
 	airlines = append(airlines, airline3)
 
 	airlineMockRepository.EXPECT().GetAllAirlines(gomock.Any()).Return(airlines, nil)
-	airlineContext.Request, _ = http.NewRequest("GET", GET_ALL_AIRLINES, nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodGet, GET_ALL_AIRLINES, nil)
 
 	airlineController.HandleGetAllAirlines(airlineContext)
 
@@ -112,84 +112,100 @@ func TestHandleCreateNewAirline(t *testing.T) {
 	airline = airline.SetName(airlineName)
 	airlineMockRepository.EXPECT().CreateNewAirline(&airline).Return(nil)
 	reqBody := fmt.Sprintf("{\"name\":\"%s\"}", airlineName)
-	var response models.Airline
-	err := json.Unmarshal([]byte(reqBody), &response)
-	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+	var airlineFromResponse models.Airline
+	// TODO: How is this getting it from the response?
+	json.Unmarshal([]byte(reqBody), &airlineFromResponse)
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	assert.Equal(t, http.StatusCreated, airlineContext.Writer.Status())
-	assert.NoError(t, err)
-	assert.Equal(t, airline.Name, response.Name)
-}
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusCreated, response.StatusCode)
 
-func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
-	beforeEachAirlineTest(t)
-	reqBody := `{"Name":""}`
-	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
-
-	airlineController.HandleCreateNewAirline(airlineContext)
-
-	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
+	assert.Equal(t, airline.Name, airlineFromResponse.Name)
 }
 
 func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{}`
-	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+	// TODO: More assertions needed?
+}
+
+func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
+	beforeEachAirlineTest(t)
+	reqBody := `{"Name":""}`
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
+
+	airlineController.HandleCreateNewAirline(airlineContext)
+
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+	// TODO: More assertions needed?
 }
 
 func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"Count":2}`
-	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+	// TODO: More assertions needed?
 }
 
 func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"name":123}`
-	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+	// TODO: More assertions needed?
 }
 
 func TestHandleCreateNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"name":"Test"}`
-	airlineMockRepository.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid Request"))
-	airlineContext.Request, _ = http.NewRequest("POST", POST_AIRLINE, strings.NewReader(reqBody))
+	airlineMockRepository.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid request"))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+	// TODO: More assertions needed?
 }
 
 func TestHandleDeleteAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airlineMockRepository.EXPECT().DeleteAirlineById(gomock.Any()).Return(nil)
-	airlineContext.Request, _ = http.NewRequest("DELETE", AIRLINE_BY_ID, nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE_BY_ID, nil)
 
 	airlineController.HandleDeleteAirlineById(airlineContext)
 
-	assert.Equal(t, http.StatusOK, airlineContext.Writer.Status())
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+	// TODO: More assertions needed?
 }
 
 func TestHandleDeleteNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
-	airlineMockRepository.EXPECT().DeleteAirlineById(gomock.Any()).Return(errors.New("invalid Request"))
-	airlineContext.Request, _ = http.NewRequest("DELETE", AIRLINE_BY_ID, nil)
+	airlineMockRepository.EXPECT().DeleteAirlineById(gomock.Any()).Return(errors.New("invalid request"))
+	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE_BY_ID, nil)
 
 	airlineController.HandleDeleteAirlineById(airlineContext)
 
-	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+	// TODO: More assertions needed?
 }

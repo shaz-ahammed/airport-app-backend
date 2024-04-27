@@ -20,7 +20,7 @@ func TestHandleHealth(t *testing.T) {
 	appHealthMock := models.AppHealth{}
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	mockRepository.EXPECT().GetAppHealth().Return(appHealthMock)
-	ctx.Request, _ = http.NewRequest("GET", "/health", nil)
+	ctx.Request, _ = http.NewRequest(http.MethodGet, "/health", nil)
 
 	controllerRepo.HandleHealth(ctx)
 

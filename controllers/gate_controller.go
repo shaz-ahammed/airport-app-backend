@@ -56,12 +56,12 @@ func (gcr *GateControllerRepository) HandleGetGates(ctx *gin.Context) {
 }
 
 // @Router /gate/{id} [get]
-// @Summary Get gate by ID
-// @Description Retrieve a gate by its ID
+// @Summary Get gate by Id
+// @Description Retrieve a gate by its Id
 // @ID get-gate-by-id
 // @Tags gate
 // @Produce  json
-// @Param id path string true "Gate ID"
+// @Param id path string true "Gate Id"
 // @Success 200  "ok"
 // @Failure 400  "Gate not found"
 func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
@@ -115,7 +115,7 @@ func (gcr *GateControllerRepository) HandleCreateNewGate(ctx *gin.Context) {
 // @Accept json
 // @Produce  json
 // @Param gate body models.Gate true "Updated gate object"
-// @Param id path string true "Gate ID"
+// @Param id path string true "Gate Id"
 // @Success 200  "ok"
 // @Failure 400  "Gate not found"
 func (gcr *GateControllerRepository) HandleUpdateGate(ctx *gin.Context) {
