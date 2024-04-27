@@ -71,7 +71,7 @@ func (gcr *GateControllerRepository) HandleGetGateById(ctx *gin.Context) {
 	gate, err := gcr.repository.GetGateById(gateId)
 	if err != nil {
 		if strings.Contains(err.Error(), "SQLSTATE 22P02") {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": "Gate not found"})
+			ctx.JSON(http.StatusNotFound, gin.H{"error": gateId + " not found"})
 			return
 		}
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gate"})
