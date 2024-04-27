@@ -67,16 +67,22 @@ func TestHandleGetAllAirlines(t *testing.T) {
 
 // TODO: InternalServerError scenario for GetAllAirlines
 
-func TestHandleAirlineById(t *testing.T) {
+func TestHandleGetAirlineById(t *testing.T) {
 	beforeEachAirlineTest(t)
-	newAirline := factory.ConstructAirline()
-	airlines := newAirline.SetName("Jet Airways")
-	airlineMockRepository.EXPECT().GetAirlineById(gomock.Any()).Return(&airlines, nil)
+	airline := factory.ConstructAirline()
+	airlineMockRepository.EXPECT().GetAirlineById("123").Return(&airline, nil)
 	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
 
 	airlineController.HandleGetAirlineById(airlineContext)
 
-	assert.Equal(t, http.StatusOK, airlineContext.Writer.Status())
+	response := responseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var responseAirline models.Airline
+	json.Unmarshal([]byte(responseBody), &responseAirline)
+
+	assert.Equal(t, responseAirline, airline)
 }
 
 func TestHandleCreateNewAirline(t *testing.T) {

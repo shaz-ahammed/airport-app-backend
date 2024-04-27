@@ -3,6 +3,7 @@ package controllers
 import (
 	"airport-app-backend/models"
 	"airport-app-backend/repositories"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -58,9 +59,10 @@ func (acr *AirlineControllerRepository) HandleGetAllAirlines(ctx *gin.Context) {
 // @Failure 		400		"Airline not found"
 func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 	airlineId := ctx.Param("id")
+	fmt.Println("************ ", airlineId)
 	airline, err := acr.repository.GetAirlineById(airlineId)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, "error: Incorrect Airlines Id")
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect airline id: " + airlineId})
 		return
 	}
 	ctx.JSON(http.StatusOK, airline)
