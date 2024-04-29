@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/rs/zerolog/log"
 )
 
 type AirlineController struct {
@@ -31,8 +30,6 @@ func NewAirlineController(repository repositories.IAirlineRepository) *AirlineCo
 // @Success 		200		"ok"
 // @Failure 		500		"Internal server error"
 func (acr *AirlineController) HandleGetAllAirlines(ctx *gin.Context) {
-	log.Debug().Msg("Getting application health information")
-
 	// TODO: Convert to using a pagination library to handle this and other edge cases
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	if page < 0 {

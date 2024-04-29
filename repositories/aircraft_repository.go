@@ -1,5 +1,4 @@
-package services
+package repositories
 
 type IAircraftRepository interface {
-	
 }

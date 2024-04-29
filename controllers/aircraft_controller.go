@@ -1,25 +1,25 @@
 package controllers
 
 import (
-	"airport-app-backend/services"
+	"airport-app-backend/repositories"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-type AircraftControllerRepository struct {
-	service services.IAircraftRepository
+type AircraftController struct {
+	repository repositories.IAircraftRepository
 }
 
-func NewAircraftControllerRepository(service services.IAircraftRepository) *AircraftControllerRepository {
-	return &AircraftControllerRepository{
-		service: service,
+func NewAircraftController(repository repositories.IAircraftRepository) *AircraftController {
+	return &AircraftController{
+		repository: repository,
 	}
 }
 
-// @Summary Get aircrafts
+// @Summary Get all aircrafts
 // @Router /aircrafts [get]
-// @Description get all the aircrafts details
+// @Description get all the aircrafts
 // @ID get-all-aircrafts
 // @Tags aircraft
 // @Produce  json
@@ -29,17 +29,18 @@ func NewAircraftControllerRepository(service services.IAircraftRepository) *Airc
 // @Param   capacity       query    int     false        "condition by capacity grater than given value (default = 0)"
 // @Success 200  "ok"
 // @Failure 500 "Internal server error"
-func (acr *AircraftControllerRepository) HandleGetAircrafts(context *gin.Context) {
-	pageStr := context.Query("page")
-	yearStr := context.Query("year")
-	capacityStr := context.Query("capacity")
-	aircraftType := context.Query("type")
-
-
-	page, err := strconv.Atoi(pageStr)
-	if err != nil || page < 1 {
-		page = 1
+func (acr *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
+	// TODO: Convert to using a pagination library to handle this and other edge cases
+	page, _ := strconv.Atoi(ctx.Query("page"))
+	if page < 0 {
+		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
+		return
 	}
+
+	yearStr := ctx.Query("year")
+	capacityStr := ctx.Query("capacity")
+	// aircraftType := ctx.Query("type")
+
 	year, err := strconv.Atoi(yearStr)
 	if err != nil || year < 1970 {
 		year = -1

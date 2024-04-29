@@ -35,6 +35,7 @@ mock:
 	mockgen -destination=mocks/gate_repository_mock.go -package=mocks airport-app-backend/repositories IGateRepository
 	mockgen -destination=mocks/health_repository_mock.go -package=mocks airport-app-backend/repositories IHealthRepository
 	mockgen -destination=mocks/airline_repository_mock.go -package=mocks airport-app-backend/repositories IAirlineRepository
+	mockgen -destination=mocks/aircraft_repository_mock.go -package=mocks airport-app-backend/repositories IAircraftRepository
 sonar-scan:
 	go test ./... -coverprofile=coverage.out
 	sonar-scanner -X \
