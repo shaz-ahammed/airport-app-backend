@@ -139,7 +139,9 @@ func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
 
 	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-	// TODO: More assertions needed?
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Key: 'Airline.Name' Error:Field validation for 'Name' failed on the 'required' tag\"}", string(responseBody))
 }
 
 func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
@@ -151,7 +153,9 @@ func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 
 	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-	// TODO: More assertions needed?
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Key: 'Airline.Name' Error:Field validation for 'Name' failed on the 'required' tag\"}", string(responseBody))
 }
 
 func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
@@ -163,7 +167,10 @@ func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) 
 
 	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-	// TODO: More assertions needed?
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"json: cannot unmarshal number into Go struct field Airline.name of type string\"}", string(responseBody))
+
 }
 
 func TestHandleCreateNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
@@ -176,7 +183,9 @@ func TestHandleCreateNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T)
 
 	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-	// TODO: More assertions needed?
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"invalid request\"}", string(responseBody))
 }
 
 func TestHandleDeleteAirline(t *testing.T) {
@@ -192,7 +201,7 @@ func TestHandleDeleteAirline(t *testing.T) {
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-	assert.Equal(t, fmt.Sprintf("\"Deleted the airline successfully\""), string(responseBody))
+	assert.Equal(t, "\"Deleted the airline successfully\"", string(responseBody))
 }
 
 func TestHandleDeleteNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
