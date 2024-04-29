@@ -181,9 +181,11 @@ func TestHandleCreateNewGateWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 
 func TestHandleUpdateGate(t *testing.T) {
 	beforeEachGateTest(t)
+	gateId := "1"
 	gate := factory.ConstructGate()
 	reqBody, _ := json.Marshal(gate)
-	mockGateRepository.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(nil)
+	gateContext.AddParam("id", gateId)
+	mockGateRepository.EXPECT().UpdateGate(gateId, gate).Return(nil)
 	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE_BY_ID, strings.NewReader(string(reqBody)))
 
 	gateController.HandleUpdateGate(gateContext)
@@ -205,9 +207,11 @@ func TestHandleUpdateGateWhenRequiredFieldIsNotGiven(t *testing.T) {
 
 func TestHandleUpdateGateWhenRepositoryThrowsError(t *testing.T) {
 	beforeEachGateTest(t)
+	invalidId := "1"
 	gate := factory.ConstructGate()
+	gateContext.AddParam("id", invalidId)
 	reqBody, _ := json.Marshal(gate)
-	mockGateRepository.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(errors.New("Invalid"))
+	mockGateRepository.EXPECT().UpdateGate(invalidId, gate).Return(errors.New("Invalid"))
 	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE_BY_ID, strings.NewReader(string(reqBody)))
 
 	gateController.HandleUpdateGate(gateContext)
