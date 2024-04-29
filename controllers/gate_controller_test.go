@@ -30,7 +30,7 @@ func beforeEachGateTest(t *testing.T) {
 	gomockController := gomock.NewController(t)
 	defer gomockController.Finish()
 
-	mockGateRepository := mocks.NewMockIGateRepository(gomockController)
+	mockGateRepository = mocks.NewMockIGateRepository(gomockController)
 	gateController = NewGateController(mockGateRepository)
 	gateResponseRecorder = httptest.NewRecorder()
 	gateContext, _ = gin.CreateTestContext(gateResponseRecorder)
