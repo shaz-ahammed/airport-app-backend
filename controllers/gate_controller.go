@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"airport-app-backend/models"
-	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
-	"strings"
+
+	"github.com/gin-gonic/gin/binding"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -70,11 +70,7 @@ func (gcr *GateController) HandleGetGate(ctx *gin.Context) {
 	gateId := ctx.Param("id")
 	gate, err := gcr.repository.GetGate(gateId)
 	if err != nil {
-		if strings.Contains(err.Error(), "SQLSTATE 22P02") {
-			ctx.JSON(http.StatusNotFound, gin.H{"Error": "Incorrect gate id: " + gateId})
-			return
-		}
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gate"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect gate id: " + gateId})
 		return
 	}
 	ctx.JSON(http.StatusOK, gate)

@@ -6,6 +6,7 @@ import (
 	"airport-app-backend/models/factory"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -73,6 +74,9 @@ func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
 
 	response := gateResponseRecorder.Result()
 	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("{\"error\":\"Failed to fetch gates\"}"), string(responseBody))
 }
 
 func TestHandleGetGate(t *testing.T) {
@@ -95,30 +99,20 @@ func TestHandleGetGate(t *testing.T) {
 	assert.Equal(t, gate, gateFromResponse)
 }
 
-func TestHandleGetGateWhenGateIdDoesNotExist(t *testing.T) {
-	beforeEachGateTest(t)
-	gateId := "123"
-	mockGateRepository.EXPECT().GetGate(gateId).Return(nil, errors.New("SQLSTATE 22P02"))
-	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
-	gateContext.AddParam("id", gateId)
-
-	gateController.HandleGetGate(gateContext)
-
-	response := gateResponseRecorder.Result()
-	assert.Equal(t, http.StatusNotFound, response.StatusCode)
-}
-
 func TestHandleGetGateWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
-	gateId := "123"
-	mockGateRepository.EXPECT().GetGate(gateId).Return(nil, errors.New("Invalid"))
+	InvalidGateId := "123"
+	mockGateRepository.EXPECT().GetGate(InvalidGateId).Return(nil, errors.New("Invalid"))
 	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
-	gateContext.AddParam("id", gateId)
+	gateContext.AddParam("id", InvalidGateId)
 
 	gateController.HandleGetGate(gateContext)
 
 	response := gateResponseRecorder.Result()
-	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect gate id: %s\"}", InvalidGateId), string(responseBody))
 }
 
 func TestHandleCreateNewGate(t *testing.T) {
