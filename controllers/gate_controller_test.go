@@ -88,13 +88,22 @@ func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
 
 func TestHandleGetGate(t *testing.T) {
 	beforeEachGateTest(t)
-	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
-	mockGateRepository.EXPECT().GetGate(gomock.Any()).Return(&mockGates, nil)
+	gateId := "123"
+	gate := factory.ConstructGate()
+	mockGateRepository.EXPECT().GetGate(gateId).Return(&gate, nil)
 	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
+	gateContext.AddParam("id", gateId)
 
 	gateController.HandleGetGate(gateContext)
 
-	assert.Equal(t, http.StatusOK, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var gateFromResponse models.Gate
+	json.Unmarshal([]byte(responseBody), &gateFromResponse)
+
+	assert.Equal(t, gate, gateFromResponse)
 }
 
 func TestHandleGetGateWhenGateIdDoesNotExist(t *testing.T) {
