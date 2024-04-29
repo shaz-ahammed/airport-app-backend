@@ -7,21 +7,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type HealthControllerRepository struct {
+type HealthController struct {
 	repository repositories.IHealthRepository
 }
 
-func NewControllerRepository(repository repositories.IHealthRepository) *HealthControllerRepository {
-	return &HealthControllerRepository{
+func NewController(repository repositories.IHealthRepository) *HealthController {
+	return &HealthController{
 		repository: repository,
 	}
 }
 
-func (repo *HealthControllerRepository) HandleHealth(ctx *gin.Context) {
+func (repo *HealthController) HandleHealth(ctx *gin.Context) {
 	appHealth := repo.repository.GetAppHealth()
 	ctx.JSON(http.StatusOK, appHealth)
 }
 
-func (hcr *HealthControllerRepository) Home(ctx *gin.Context) {
+func (hcr *HealthController) Home(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, "Home page : AIRPORT MANAGEMENT SYSTEM")
 }

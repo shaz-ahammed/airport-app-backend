@@ -1,6 +1,6 @@
 package repositories
 
-import 	"gorm.io/gorm"
+import "gorm.io/gorm"
 
 type ServiceRepository struct {
 	db *gorm.DB

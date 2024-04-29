@@ -29,11 +29,11 @@ var ServerIdleTimeout = getEnvOrSetFallbackInt("APP_SRV_IDLE_TIMEOUT", 45)
 // Gets value from environment variable or sets fallback (default) value. Returns string. Case sensitive.
 func getEnvOrSetFallbackString(envVar string, fallbackValue string) string {
 	val := os.Getenv(envVar)
-  if val == "" {
-    val = fallbackValue
-  }
+	if val == "" {
+		val = fallbackValue
+	}
 
-  return val
+	return val
 }
 
 // Gets value from environment variable or sets fallback (default) value. Returns parsed value as bool. Case sensitive.

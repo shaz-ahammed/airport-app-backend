@@ -3,14 +3,13 @@ package server
 import (
 	"airport-app-backend/config"
 	"airport-app-backend/database"
+	_ "airport-app-backend/docs"
 	"airport-app-backend/middleware"
-	_"airport-app-backend/docs"
-
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // Main API routes

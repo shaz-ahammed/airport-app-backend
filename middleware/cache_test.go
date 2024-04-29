@@ -13,7 +13,7 @@ func TestDisableCache(t *testing.T) {
 	router := setupRouterCache()
 
 	responseRecorder := httptest.NewRecorder()
-	request, _ := http.NewRequest("GET", "/test", nil)
+	request, _ := http.NewRequest(http.MethodGet, "/test", nil)
 	router.ServeHTTP(responseRecorder, request)
 
 	assert.Equal(t, http.StatusOK, responseRecorder.Code)

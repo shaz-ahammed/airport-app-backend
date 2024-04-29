@@ -8,13 +8,13 @@ import (
 var DEFAULT_PAGE_SIZE = 10
 
 type IGateRepository interface {
-	GetGates(page int, floor int) ([]models.Gate, error)
-	GetGateById(string) (*models.Gate, error)
+	GetAllGates(page int, floor int) ([]models.Gate, error)
+	GetGate(string) (*models.Gate, error)
 	CreateNewGate(*models.Gate) error
 	UpdateGate(string, models.Gate) error
 }
 
-func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
+func (sr *ServiceRepository) GetAllGates(page, floor int) ([]models.Gate, error) {
 	log.Debug().Msg("Fetching list of gates")
 
 	var gates []models.Gate
@@ -29,7 +29,7 @@ func (sr *ServiceRepository) GetGates(page, floor int) ([]models.Gate, error) {
 	return gates, nil
 }
 
-func (sr *ServiceRepository) GetGateById(id string) (*models.Gate, error) {
+func (sr *ServiceRepository) GetGate(id string) (*models.Gate, error) {
 	log.Debug().Msg("repository layer for retrieving gate details by id")
 
 	var gate models.Gate

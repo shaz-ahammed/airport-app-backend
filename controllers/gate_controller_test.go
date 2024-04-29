@@ -3,8 +3,11 @@ package controllers
 import (
 	"airport-app-backend/mocks"
 	"airport-app-backend/models"
+	"airport-app-backend/models/factory"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -19,170 +22,231 @@ var GATE_BY_ID = "/gate/123"
 var GET_ALL_GATES = "gates"
 var CREATE_NEW_GATE = "/gate"
 
-var gateMockRepository *mocks.MockIGateRepository
-var gateController *GateControllerRepository
+var mockGateRepository *mocks.MockIGateRepository
+var gateController *GateController
 var gateContext *gin.Context
+var gateResponseRecorder *httptest.ResponseRecorder
 
 func beforeEachGateTest(t *testing.T) {
 	gomockController := gomock.NewController(t)
 	defer gomockController.Finish()
 
-	gateMockRepository = mocks.NewMockIGateRepository(gomockController)
-	gateController = NewGateRepository(gateMockRepository)
-	gateContext, _ = gin.CreateTestContext(httptest.NewRecorder())
+	mockGateRepository = mocks.NewMockIGateRepository(gomockController)
+	gateController = NewGateController(mockGateRepository)
+	gateResponseRecorder = httptest.NewRecorder()
+	gateContext, _ = gin.CreateTestContext(gateResponseRecorder)
 }
 
-func TestHandleGetGates(t *testing.T) {
+func TestHandleGetAllGates(t *testing.T) {
 	beforeEachGateTest(t)
-	mockGates := make([]models.Gate, 3)
-	mockGates = append(mockGates, models.Gate{FloorNumber: 2, GateNumber: 1})
-	gateContext.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
-	gateMockRepository.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(mockGates, nil)
+	var gates []models.Gate
+	gate1 := factory.ConstructGate()
+	gates = append(gates, gate1)
+	gate2 := factory.ConstructGate()
+	gates = append(gates, gate2)
+	gate3 := factory.ConstructGate()
+	gates = append(gates, gate3)
+	mockGateRepository.EXPECT().GetAllGates(gomock.Any(), gomock.Any()).Return(gates, nil)
 
-	gateController.HandleGetGates(gateContext)
+	gateController.HandleGetAllGates(gateContext)
 
-	assert.Equal(t, http.StatusOK, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var gatesFromResponse []models.Gate
+	json.Unmarshal([]byte(responseBody), &gatesFromResponse)
+
+	assert.Equal(t, 3, len(gatesFromResponse))
+	assert.Contains(t, gatesFromResponse, gate1)
+	assert.Contains(t, gatesFromResponse, gate2)
+	assert.Contains(t, gatesFromResponse, gate3)
 }
 
-func TestHandleGetGatesWhenRepositoryReturnsError(t *testing.T) {
+func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
-	gateMockRepository.EXPECT().GetGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
-	gateContext.Request, _ = http.NewRequest("GET", GET_ALL_GATES, nil)
+	mockGateRepository.EXPECT().GetAllGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GET_ALL_GATES, nil)
 
-	gateController.HandleGetGates(gateContext)
+	gateController.HandleGetAllGates(gateContext)
 
-	assert.Equal(t, http.StatusInternalServerError, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"Failed to fetch gates\"}", string(responseBody))
 }
 
-func TestHandleGetGateById(t *testing.T) {
+func TestHandleGetGate(t *testing.T) {
 	beforeEachGateTest(t)
-	mockGates := models.Gate{FloorNumber: 2, GateNumber: 1}
-	gateMockRepository.EXPECT().GetGateById(gomock.Any()).Return(&mockGates, nil)
-	gateContext.Request, _ = http.NewRequest("GET", GATE_BY_ID, nil)
+	gateId := "123"
+	gate := factory.ConstructGate()
+	mockGateRepository.EXPECT().GetGate(gateId).Return(&gate, nil)
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
+	gateContext.AddParam("id", gateId)
 
-	gateController.HandleGetGateById(gateContext)
+	gateController.HandleGetGate(gateContext)
 
-	assert.Equal(t, http.StatusOK, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var gateFromResponse models.Gate
+	json.Unmarshal([]byte(responseBody), &gateFromResponse)
+
+	assert.Equal(t, gate, gateFromResponse)
 }
 
-func TestHandleGetGateByIdWhenGateIdDoesNotExist(t *testing.T) {
+func TestHandleGetGateWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
-	gateMockRepository.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("SQLSTATE 22P02"))
-	gateContext.Request, _ = http.NewRequest("GET", GATE_BY_ID, nil)
+	InvalidGateId := "123"
+	mockGateRepository.EXPECT().GetGate(InvalidGateId).Return(nil, errors.New("Invalid"))
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
+	gateContext.AddParam("id", InvalidGateId)
 
-	gateController.HandleGetGateById(gateContext)
+	gateController.HandleGetGate(gateContext)
 
-	assert.Equal(t, http.StatusNotFound, gateContext.Writer.Status())
-}
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 
-func TestHandleGetGateByIdWhenRepositoryReturnsError(t *testing.T) {
-	beforeEachGateTest(t)
-	gateMockRepository.EXPECT().GetGateById(gomock.Any()).Return(nil, errors.New("invalid"))
-	gateContext.Request, _ = http.NewRequest("GET", GATE_BY_ID, nil)
-
-	gateController.HandleGetGateById(gateContext)
-
-	assert.Equal(t, http.StatusInternalServerError, gateContext.Writer.Status())
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect gate id: %s\"}", InvalidGateId), string(responseBody))
 }
 
 func TestHandleCreateNewGate(t *testing.T) {
 	beforeEachGateTest(t)
-	ExpectedGateNumber := 1
-	ExpectedFloorNumber := 1
-	gateMockRepository.EXPECT().CreateNewGate(gomock.Any()).Return(nil)
-	reqBody := `{"gate_number" : 1, "floor_number" : 1}`
-	var gate models.Gate
-	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
-	err := json.Unmarshal([]byte(reqBody), &gate)
+	gate := factory.ConstructGate()
+	reqBody, _ := json.Marshal(&gate)
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(string(reqBody)))
+	mockGateRepository.EXPECT().CreateNewGate(&gate).Return(nil)
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusOK, gateContext.Writer.Status())
-	assert.NoError(t, err)
-	assert.Equal(t, ExpectedGateNumber, gate.GateNumber)
-	assert.Equal(t, ExpectedFloorNumber, gate.FloorNumber)
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "\"Successfully created a gate\"", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenTheMandatoryValueIsAbsent(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":, "floor_number":2}`
-	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"invalid character ',' looking for beginning of value\"}", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenTheRequestPayloadIsEmpty(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{}`
-	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"Key: 'Gate.GateNumber' Error:Field validation for 'GateNumber' failed on the 'required' tag\\nKey: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":2}`
-	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"Key: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":"one", "floor_number":20}`
-	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"json: cannot unmarshal string into Go struct field Gate.gate_number of type int\"}", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachGateTest(t)
-	reqBody := `{"gate_number":3, "floor_number":6}`
-	gateMockRepository.EXPECT().CreateNewGate(gomock.Any()).Return(errors.New("invalid Request"))
-	gateContext.Request, _ = http.NewRequest("POST", CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gate := factory.ConstructGate()
+	reqBody, _ := json.Marshal(&gate)
+	mockGateRepository.EXPECT().CreateNewGate(&gate).Return(errors.New("invalid Request"))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(string(reqBody)))
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"invalid Request\"}", string(responseBody))
 }
 
 func TestHandleUpdateGate(t *testing.T) {
 	beforeEachGateTest(t)
-	reqBody := `{"gate_number":3, "floor_number":6}`
-	gateMockRepository.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(nil)
-	gateContext.Request, _ = http.NewRequest("PUT", GATE_BY_ID, strings.NewReader(reqBody))
+	gateId := "1"
+	gate := factory.ConstructGate()
+	reqBody, _ := json.Marshal(gate)
+	gateContext.AddParam("id", gateId)
+	mockGateRepository.EXPECT().UpdateGate(gateId, gate).Return(nil)
+	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE_BY_ID, strings.NewReader(string(reqBody)))
 
 	gateController.HandleUpdateGate(gateContext)
 
-	assert.Equal(t, http.StatusOK, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "\"Successfully updated gate details\"", string(responseBody))
 }
 
 func TestHandleUpdateGateWhenRequiredFieldIsNotGiven(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":3}`
-	gateMockRepository.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(nil)
-	gateContext.Request, _ = http.NewRequest("PUT", GATE_BY_ID, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE_BY_ID, strings.NewReader(reqBody))
 
 	gateController.HandleUpdateGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"Key: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}", string(responseBody))
 }
 
 func TestHandleUpdateGateWhenRepositoryThrowsError(t *testing.T) {
 	beforeEachGateTest(t)
-	reqBody := `{"gate_number":3, "floor_number":6}`
-	gateMockRepository.EXPECT().UpdateGate(gomock.Any(), gomock.Any()).Return(errors.New("Invalid"))
-	gateContext.Request, _ = http.NewRequest("PUT", GATE_BY_ID, strings.NewReader(reqBody))
+	invalidId := "-1"
+	gate := factory.ConstructGate()
+	gateContext.AddParam("id", invalidId)
+	reqBody, _ := json.Marshal(gate)
+	mockGateRepository.EXPECT().UpdateGate(invalidId, gate).Return(errors.New("Invalid"))
+	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE_BY_ID, strings.NewReader(string(reqBody)))
 
 	gateController.HandleUpdateGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"Invalid\"}", string(responseBody))
 }

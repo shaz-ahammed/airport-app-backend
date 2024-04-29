@@ -13,7 +13,7 @@ func TestAddSecurityHeadersNoTls(t *testing.T) {
 	router := setupRouterSecurityHeaders(false)
 
 	responseRecorder := httptest.NewRecorder()
-	request, _ := http.NewRequest("GET", "/test", nil)
+	request, _ := http.NewRequest(http.MethodGet, "/test", nil)
 	router.ServeHTTP(responseRecorder, request)
 
 	assert.Equal(t, http.StatusOK, responseRecorder.Code)
@@ -29,7 +29,7 @@ func TestAddSecurityHeadersWithTlsEnabled(t *testing.T) {
 	router := setupRouterSecurityHeaders(true)
 
 	responseRecorder := httptest.NewRecorder()
-	request, _ := http.NewRequest("GET", "/test", nil)
+	request, _ := http.NewRequest(http.MethodGet, "/test", nil)
 	router.ServeHTTP(responseRecorder, request)
 
 	assert.Equal(t, http.StatusOK, responseRecorder.Code)

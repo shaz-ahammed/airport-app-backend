@@ -5,15 +5,15 @@ import (
 )
 
 type IAirlineRepository interface {
-	GetAirline(int) ([]models.Airline, error)
-	GetAirlineById(string) (*models.Airline, error)
+	GetAllAirlines(int) ([]models.Airline, error)
+	GetAirline(string) (*models.Airline, error)
 	CreateNewAirline(*models.Airline) error
-	DeleteAirlineById(string) error
+	DeleteAirline(string) error
 }
 
 var DEFAULT_PAGE_LIMIT int = 10
 
-func (sr *ServiceRepository) GetAirline(pageNum int) ([]models.Airline, error) {
+func (sr *ServiceRepository) GetAllAirlines(pageNum int) ([]models.Airline, error) {
 	var airline []models.Airline
 	result := sr.db.Limit(DEFAULT_PAGE_LIMIT).Offset(pageNum * DEFAULT_PAGE_LIMIT).Find(&airline)
 	if result.Error != nil {
@@ -22,7 +22,7 @@ func (sr *ServiceRepository) GetAirline(pageNum int) ([]models.Airline, error) {
 	return airline, nil
 }
 
-func (sr *ServiceRepository) GetAirlineById(id string) (*models.Airline, error) {
+func (sr *ServiceRepository) GetAirline(id string) (*models.Airline, error) {
 	var airline *models.Airline
 	result := sr.db.First(&airline, "id=?", id)
 	if result.Error != nil {
@@ -36,7 +36,7 @@ func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
 	return result.Error
 }
 
-func (sr *ServiceRepository) DeleteAirlineById(id string) error {
+func (sr *ServiceRepository) DeleteAirline(id string) error {
 	var airline *models.Airline
 	result := sr.db.Delete(&airline, "id=?", id)
 	return result.Error

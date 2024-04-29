@@ -13,14 +13,14 @@ func TestHandleFaviconRequests(t *testing.T) {
 	router := setupRouterFavicon()
 
 	responseRecorder := httptest.NewRecorder()
-	normalRequest, _ := http.NewRequest("GET", "/test", nil)
+	normalRequest, _ := http.NewRequest(http.MethodGet, "/test", nil)
 	router.ServeHTTP(responseRecorder, normalRequest)
 
 	assert.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.Equal(t, "test", responseRecorder.Body.String())
 
 	faviconResponseRecorder := httptest.NewRecorder()
-	faviconRequest, _ := http.NewRequest("GET", "/favicon.ico", nil)
+	faviconRequest, _ := http.NewRequest(http.MethodGet, "/favicon.ico", nil)
 	router.ServeHTTP(faviconResponseRecorder, faviconRequest)
 
 	assert.Equal(t, http.StatusNoContent, faviconResponseRecorder.Code)
