@@ -65,7 +65,19 @@ func TestHandleGetAllAirlines(t *testing.T) {
 	assert.Contains(t, airlinesFromResponse, airline3)
 }
 
-// TODO: InternalServerError scenario for GetAllAirlines
+func TestHandleGetAllAirlinesWhenServiceReturnsError(t *testing.T) {
+	beforeEachAirlineTest(t)
+	mockAirlineRepository.EXPECT().GetAllAirlines(gomock.Any()).Return(nil, errors.New("Invalid"))
+	airlineContext.Request, _ = http.NewRequest(http.MethodGet, GET_ALL_AIRLINES, nil)
+
+	airlineController.HandleGetAllAirlines(airlineContext)
+
+	response := airlineResponseRecorder.Result()
+	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Internal server error\"}", string(responseBody))	
+}
 
 func TestHandleGetAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
@@ -130,7 +142,6 @@ func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
 
 	responseBody, _ := io.ReadAll(response.Body)
 	assert.Equal(t, "{\"Error\":\"Key: 'Airline.Name' Error:Field validation for 'Name' failed on the 'required' tag\"}", string(responseBody))
-
 }
 
 func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
@@ -173,7 +184,6 @@ func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) 
 
 	responseBody, _ := io.ReadAll(response.Body)
 	assert.Equal(t, "{\"Error\":\"json: cannot unmarshal number into Go struct field Airline.name of type string\"}", string(responseBody))
-
 }
 
 func TestHandleCreateNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {

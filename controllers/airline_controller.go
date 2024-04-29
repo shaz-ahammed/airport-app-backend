@@ -42,7 +42,8 @@ func (acr *AirlineController) HandleGetAllAirlines(ctx *gin.Context) {
 
 	airlines, err := acr.repository.GetAllAirlines(page)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"Error": "Airlines not found"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"Error": "Internal server error"})
+		return
 	}
 	ctx.JSON(http.StatusOK, airlines)
 }
