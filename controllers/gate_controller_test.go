@@ -76,7 +76,7 @@ func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
 	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-	assert.Equal(t, fmt.Sprintf("{\"error\":\"Failed to fetch gates\"}"), string(responseBody))
+	assert.Equal(t, "{\"error\":\"Failed to fetch gates\"}", string(responseBody))
 }
 
 func TestHandleGetGate(t *testing.T) {
@@ -126,6 +126,9 @@ func TestHandleCreateNewGate(t *testing.T) {
 
 	response := gateResponseRecorder.Result()
 	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "\"Successfully created a gate\"", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenTheMandatoryValueIsAbsent(t *testing.T) {
@@ -159,7 +162,11 @@ func TestHandleCreateNewGateWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"Key: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
