@@ -176,7 +176,11 @@ func TestHandleCreateNewGateWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("{\"error\":\"json: cannot unmarshal string into Go struct field Gate.gate_number of type int\"}"), string(responseBody))
 }
 
 func TestHandleCreateNewGateWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
