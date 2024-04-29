@@ -138,7 +138,11 @@ func TestHandleCreateNewGateWhenTheMandatoryValueIsAbsent(t *testing.T) {
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"invalid character ',' looking for beginning of value\"}", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenTheRequestPayloadIsEmpty(t *testing.T) {
