@@ -127,7 +127,10 @@ func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
 
 	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-	// TODO: More assertions needed?
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Key: 'Airline.Name' Error:Field validation for 'Name' failed on the 'required' tag\"}", string(responseBody))
+
 }
 
 func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
