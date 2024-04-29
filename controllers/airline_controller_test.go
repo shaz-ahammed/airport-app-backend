@@ -181,24 +181,32 @@ func TestHandleCreateNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T)
 
 func TestHandleDeleteAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
-	mockAirlineRepository.EXPECT().DeleteAirline(gomock.Any()).Return(nil)
+	airlineId := "123"
+	mockAirlineRepository.EXPECT().DeleteAirline(airlineId).Return(nil)
 	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE_BY_ID, nil)
+	airlineContext.AddParam("id", airlineId)
 
 	airlineController.HandleDeleteAirline(airlineContext)
 
 	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusOK, response.StatusCode)
-	// TODO: More assertions needed?
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("\"Deleted the airline successfully\""), string(responseBody))
 }
 
 func TestHandleDeleteNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
-	mockAirlineRepository.EXPECT().DeleteAirline(gomock.Any()).Return(errors.New("invalid request"))
+	nonExistentAirlineId := "-23243"
+	mockAirlineRepository.EXPECT().DeleteAirline(nonExistentAirlineId).Return(errors.New("invalid request"))
 	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE_BY_ID, nil)
+	airlineContext.AddParam("id", nonExistentAirlineId)
 
 	airlineController.HandleDeleteAirline(airlineContext)
 
 	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
-	// TODO: More assertions needed?
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect airline id: %s\"}", nonExistentAirlineId), string(responseBody))
 }
