@@ -145,7 +145,11 @@ func TestHandleCreateNewGateWhenTheRequestPayloadIsEmpty(t *testing.T) {
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("{\"error\":\"Key: 'Gate.GateNumber' Error:Field validation for 'GateNumber' failed on the 'required' tag\\nKey: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}"), string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenTheMandatoryKeyIsAbsent(t *testing.T) {
