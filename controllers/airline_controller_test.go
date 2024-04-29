@@ -108,21 +108,14 @@ func TestHandleGetAirlineWhenRecordDoesntExist(t *testing.T) {
 func TestHandleCreateNewAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
-	airlineName := "XYZAirline"
-	airline = airline.SetName(airlineName)
+	reqBody, _ := json.Marshal(&airline)
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(string(reqBody)))
 	mockAirlineRepository.EXPECT().CreateNewAirline(&airline).Return(nil)
-	reqBody := fmt.Sprintf("{\"name\":\"%s\"}", airlineName)
-	var airlineFromResponse models.Airline
-	// TODO: How is this getting it from the response?
-	json.Unmarshal([]byte(reqBody), &airlineFromResponse)
-	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
 	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusCreated, response.StatusCode)
-
-	assert.Equal(t, airline.Name, airlineFromResponse.Name)
 }
 
 func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
