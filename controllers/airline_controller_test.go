@@ -84,7 +84,7 @@ func TestHandleGetAirline(t *testing.T) {
 	var airlineFromResponse models.Airline
 	json.Unmarshal([]byte(responseBody), &airlineFromResponse)
 
-	assert.Equal(t, airlineFromResponse, airline)
+	assert.Equal(t, airline, airlineFromResponse)
 }
 
 func TestHandleGetAirlineWhenRecordDoesntExist(t *testing.T) {
@@ -100,11 +100,11 @@ func TestHandleGetAirlineWhenRecordDoesntExist(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-
 	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect airline id: %s\"}", nonExistentAirlineId), string(responseBody))
 }
 
 // TODO: All tests beyond this line need to be verified/rewritten
+
 func TestHandleCreateNewAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
