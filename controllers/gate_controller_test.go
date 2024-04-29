@@ -64,18 +64,6 @@ func TestHandleGetAllGates(t *testing.T) {
 
 // TODO: All tests beyond this line need to be verified/rewritten
 
-// func TestHandleGetAllGates(t *testing.T) {
-// 	beforeEachGateTest(t)
-// 	mockGates := make([]models.Gate, 3)
-// 	mockGates = append(mockGates, models.Gate{FloorNumber: 2, GateNumber: 1})
-// 	gateContext.Request, _ = http.NewRequest(http.MethodGet, GET_ALL_GATES, nil)
-// 	mockGateRepository.EXPECT().GetAllGates(gomock.Any(), gomock.Any()).Return(mockGates, nil)
-
-// 	gateController.HandleGetAllGates(gateContext)
-
-// 	assert.Equal(t, http.StatusOK, gateContext.Writer.Status())
-// }
-
 func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
 	mockGateRepository.EXPECT().GetAllGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
@@ -83,7 +71,8 @@ func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
 
 	gateController.HandleGetAllGates(gateContext)
 
-	assert.Equal(t, http.StatusInternalServerError, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
 }
 
 func TestHandleGetGate(t *testing.T) {
@@ -108,22 +97,28 @@ func TestHandleGetGate(t *testing.T) {
 
 func TestHandleGetGateWhenGateIdDoesNotExist(t *testing.T) {
 	beforeEachGateTest(t)
-	mockGateRepository.EXPECT().GetGate(gomock.Any()).Return(nil, errors.New("SQLSTATE 22P02"))
+	gateId := "123"
+	mockGateRepository.EXPECT().GetGate(gateId).Return(nil, errors.New("SQLSTATE 22P02"))
 	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
+	gateContext.AddParam("id", gateId)
 
 	gateController.HandleGetGate(gateContext)
 
-	assert.Equal(t, http.StatusNotFound, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusNotFound, response.StatusCode)
 }
 
 func TestHandleGetGateWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
-	mockGateRepository.EXPECT().GetGate(gomock.Any()).Return(nil, errors.New("invalid"))
+	gateId := "123"
+	mockGateRepository.EXPECT().GetGate(gateId).Return(nil, errors.New("Invalid"))
 	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
+	gateContext.AddParam("id", gateId)
 
 	gateController.HandleGetGate(gateContext)
 
-	assert.Equal(t, http.StatusInternalServerError, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
 }
 
 func TestHandleCreateNewGate(t *testing.T) {
