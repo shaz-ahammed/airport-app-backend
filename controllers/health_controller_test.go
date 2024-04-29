@@ -16,7 +16,7 @@ func TestHandleHealth(t *testing.T) {
 	gomockController := gomock.NewController(t)
 	defer gomockController.Finish()
 	mockRepository := mocks.NewMockIHealthRepository(gomockController)
-	controllerRepo := NewControllerRepository(mockRepository)
+	controllerRepo := NewController(mockRepository)
 	appHealthMock := models.AppHealth{}
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	mockRepository.EXPECT().GetAppHealth().Return(appHealthMock)

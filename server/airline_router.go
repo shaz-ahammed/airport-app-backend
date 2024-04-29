@@ -9,10 +9,10 @@ import (
 
 func (srv *AppServer) AirlineRouter(db *gorm.DB) {
 	airlineRepository := repositories.NewServiceRepository(db)
-	airlineController := controllers.NewAirlineControllerRepository(airlineRepository)
+	airlineController := controllers.NewAirlineController(airlineRepository)
 
 	srv.router.GET("/airlines", airlineController.HandleGetAllAirlines)
-	srv.router.GET("/airline/:id", airlineController.HandleGetAirlineById)
+	srv.router.GET("/airline/:id", airlineController.HandleGetAirline)
 	srv.router.POST("/airline", airlineController.HandleCreateNewAirline)
-	srv.router.DELETE("/airline/:id", airlineController.HandleDeleteAirlineById)
+	srv.router.DELETE("/airline/:id", airlineController.HandleDeleteAirline)
 }

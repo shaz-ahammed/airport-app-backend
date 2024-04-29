@@ -23,6 +23,7 @@ test:
 	go test ./...
 	mkdir -p build/reports/go-test-report && go test ./... -json | go-test-report -o build/reports/go-test-report/index.html
 build:
+	go fmt ./...
 	go build main.go
 install:
 	go get .

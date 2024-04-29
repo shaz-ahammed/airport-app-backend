@@ -11,12 +11,12 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type AirlineControllerRepository struct {
+type AirlineController struct {
 	repository repositories.IAirlineRepository
 }
 
-func NewAirlineControllerRepository(repository repositories.IAirlineRepository) *AirlineControllerRepository {
-	return &AirlineControllerRepository{
+func NewAirlineController(repository repositories.IAirlineRepository) *AirlineController {
+	return &AirlineController{
 		repository: repository,
 	}
 }
@@ -30,7 +30,7 @@ func NewAirlineControllerRepository(repository repositories.IAirlineRepository) 
 // @Param   		page	query	int		false	"Page number (default = 0)"
 // @Success 		200		"ok"
 // @Failure 		500		"Internal server error"
-func (acr *AirlineControllerRepository) HandleGetAllAirlines(ctx *gin.Context) {
+func (acr *AirlineController) HandleGetAllAirlines(ctx *gin.Context) {
 	log.Debug().Msg("Getting application health information")
 
 	// TODO: Convert to using a pagination library to handle this and other edge cases
@@ -56,10 +56,10 @@ func (acr *AirlineControllerRepository) HandleGetAllAirlines(ctx *gin.Context) {
 // @Param   		id		path		string		true		"Airline Id"
 // @Success 		200		"ok"
 // @Failure 		400		"Airline not found"
-func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
+func (acr *AirlineController) HandleGetAirline(ctx *gin.Context) {
 	airlineId := ctx.Param("id")
 
-	airline, err := acr.repository.GetAirlineById(airlineId)
+	airline, err := acr.repository.GetAirline(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect airline id: " + airlineId})
 		return
@@ -76,7 +76,7 @@ func (acr *AirlineControllerRepository) HandleGetAirlineById(ctx *gin.Context) {
 // @Param   		airline		body		models.Airline		true		"Airline Object"
 // @Success 		200		"ok"
 // @Failure 		400		" Airline not found"
-func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context) {
+func (acr *AirlineController) HandleCreateNewAirline(ctx *gin.Context) {
 	var airline models.Airline
 
 	err := ctx.ShouldBindWith(&airline, binding.JSON)
@@ -102,9 +102,9 @@ func (acr *AirlineControllerRepository) HandleCreateNewAirline(ctx *gin.Context)
 // @Param id path string true "Airline Id"
 // @Success 200  "ok"
 // @Failure 400 "Airline not found"
-func (acr *AirlineControllerRepository) HandleDeleteAirlineById(ctx *gin.Context) {
+func (acr *AirlineController) HandleDeleteAirline(ctx *gin.Context) {
 	airlineId := ctx.Param("id")
-	err := acr.repository.DeleteAirlineById(airlineId)
+	err := acr.repository.DeleteAirline(airlineId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect airline id: " + airlineId})
 		return
