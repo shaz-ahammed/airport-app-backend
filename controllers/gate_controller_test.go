@@ -128,20 +128,15 @@ func TestHandleGetGateWhenRepositoryReturnsError(t *testing.T) {
 
 func TestHandleCreateNewGate(t *testing.T) {
 	beforeEachGateTest(t)
-	ExpectedGateNumber := 1
-	ExpectedFloorNumber := 1
+	gate := factory.ConstructGate()
+	reqBody, _ := json.Marshal(&gate)
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(string(reqBody)))
 	mockGateRepository.EXPECT().CreateNewGate(gomock.Any()).Return(nil)
-	reqBody := `{"gate_number" : 1, "floor_number" : 1}`
-	var gate models.Gate
-	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
-	err := json.Unmarshal([]byte(reqBody), &gate)
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusOK, gateContext.Writer.Status())
-	assert.NoError(t, err)
-	assert.Equal(t, ExpectedGateNumber, gate.GateNumber)
-	assert.Equal(t, ExpectedFloorNumber, gate.FloorNumber)
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
 }
 
 func TestHandleCreateNewGateWhenTheMandatoryValueIsAbsent(t *testing.T) {
