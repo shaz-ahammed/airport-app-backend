@@ -76,7 +76,7 @@ func TestHandleGetAllAirlinesWhenServiceReturnsError(t *testing.T) {
 	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-	assert.Equal(t, "{\"Error\":\"Internal server error\"}", string(responseBody))	
+	assert.Equal(t, "{\"Error\":\"Internal server error\"}", string(responseBody))
 }
 
 func TestHandleGetAirline(t *testing.T) {
