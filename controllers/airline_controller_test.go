@@ -115,8 +115,6 @@ func TestHandleGetAirlineWhenRecordDoesntExist(t *testing.T) {
 	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect airline id: %s\"}", nonExistentAirlineId), string(responseBody))
 }
 
-// TODO: All tests beyond this line need to be verified/rewritten
-
 func TestHandleCreateNewAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
