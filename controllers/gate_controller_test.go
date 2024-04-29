@@ -63,8 +63,6 @@ func TestHandleGetAllGates(t *testing.T) {
 	assert.Contains(t, gatesFromResponse, gate3)
 }
 
-// TODO: All tests beyond this line need to be verified/rewritten
-
 func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
 	mockGateRepository.EXPECT().GetAllGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
@@ -120,7 +118,7 @@ func TestHandleCreateNewGate(t *testing.T) {
 	gate := factory.ConstructGate()
 	reqBody, _ := json.Marshal(&gate)
 	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(string(reqBody)))
-	mockGateRepository.EXPECT().CreateNewGate(gomock.Any()).Return(nil)
+	mockGateRepository.EXPECT().CreateNewGate(&gate).Return(nil)
 
 	gateController.HandleCreateNewGate(gateContext)
 
@@ -156,7 +154,7 @@ func TestHandleCreateNewGateWhenTheRequestPayloadIsEmpty(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-	assert.Equal(t, fmt.Sprintf("{\"error\":\"Key: 'Gate.GateNumber' Error:Field validation for 'GateNumber' failed on the 'required' tag\\nKey: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}"), string(responseBody))
+	assert.Equal(t, "{\"error\":\"Key: 'Gate.GateNumber' Error:Field validation for 'GateNumber' failed on the 'required' tag\\nKey: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhenTheMandatoryKeyIsAbsent(t *testing.T) {
@@ -184,18 +182,23 @@ func TestHandleCreateNewGateWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-	assert.Equal(t, fmt.Sprintf("{\"error\":\"json: cannot unmarshal string into Go struct field Gate.gate_number of type int\"}"), string(responseBody))
+	assert.Equal(t, "{\"error\":\"json: cannot unmarshal string into Go struct field Gate.gate_number of type int\"}", string(responseBody))
 }
 
 func TestHandleCreateNewGateWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachGateTest(t)
-	reqBody := `{"gate_number":3, "floor_number":6}`
-	mockGateRepository.EXPECT().CreateNewGate(gomock.Any()).Return(errors.New("invalid Request"))
-	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gate := factory.ConstructGate()
+	reqBody, _ := json.Marshal(&gate)
+	mockGateRepository.EXPECT().CreateNewGate(&gate).Return(errors.New("invalid Request"))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(string(reqBody)))
 
 	gateController.HandleCreateNewGate(gateContext)
 
-	assert.Equal(t, http.StatusBadRequest, gateContext.Writer.Status())
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"invalid Request\"}", string(responseBody))
 }
 
 func TestHandleUpdateGate(t *testing.T) {
@@ -211,6 +214,9 @@ func TestHandleUpdateGate(t *testing.T) {
 
 	response := gateResponseRecorder.Result()
 	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "\"Successfully updated gate details\"", string(responseBody))
 }
 
 func TestHandleUpdateGateWhenRequiredFieldIsNotGiven(t *testing.T) {
@@ -224,12 +230,12 @@ func TestHandleUpdateGateWhenRequiredFieldIsNotGiven(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
-	assert.Equal(t, fmt.Sprintf("{\"error\":\"Key: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}"), string(responseBody))
+	assert.Equal(t, "{\"error\":\"Key: 'Gate.FloorNumber' Error:Field validation for 'FloorNumber' failed on the 'required' tag\"}", string(responseBody))
 }
 
 func TestHandleUpdateGateWhenRepositoryThrowsError(t *testing.T) {
 	beforeEachGateTest(t)
-	invalidId := "1"
+	invalidId := "-1"
 	gate := factory.ConstructGate()
 	gateContext.AddParam("id", invalidId)
 	reqBody, _ := json.Marshal(gate)
@@ -240,4 +246,7 @@ func TestHandleUpdateGateWhenRepositoryThrowsError(t *testing.T) {
 
 	response := gateResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"Invalid\"}", string(responseBody))
 }
