@@ -22,19 +22,19 @@ var GET_ALL_AIRLINES = "/airlines"
 var AIRLINE_BY_ID = "/airline/123"
 var POST_AIRLINE = "/airline"
 
-var airlineMockRepository *mocks.MockIAirlineRepository
+var mockAirlineRepository *mocks.MockIAirlineRepository
 var airlineController *AirlineController
 var airlineContext *gin.Context
-var responseRecorder *httptest.ResponseRecorder
+var airlineResponseRecorder *httptest.ResponseRecorder
 
 func beforeEachAirlineTest(t *testing.T) {
 	gomockController := gomock.NewController(t)
 	defer gomockController.Finish()
 
-	airlineMockRepository = mocks.NewMockIAirlineRepository(gomockController)
-	airlineController = NewAirlineController(airlineMockRepository)
-	responseRecorder = httptest.NewRecorder()
-	airlineContext, _ = gin.CreateTestContext(responseRecorder)
+	mockAirlineRepository = mocks.NewMockIAirlineRepository(gomockController)
+	airlineController = NewAirlineController(mockAirlineRepository)
+	airlineResponseRecorder = httptest.NewRecorder()
+	airlineContext, _ = gin.CreateTestContext(airlineResponseRecorder)
 }
 
 func TestHandleGetAllAirlines(t *testing.T) {
@@ -47,12 +47,12 @@ func TestHandleGetAllAirlines(t *testing.T) {
 	airline3 := factory.ConstructAirline()
 	airlines = append(airlines, airline3)
 
-	airlineMockRepository.EXPECT().GetAllAirlines(gomock.Any()).Return(airlines, nil)
+	mockAirlineRepository.EXPECT().GetAllAirlines(gomock.Any()).Return(airlines, nil)
 	airlineContext.Request, _ = http.NewRequest(http.MethodGet, GET_ALL_AIRLINES, nil)
 
 	airlineController.HandleGetAllAirlines(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
@@ -71,13 +71,13 @@ func TestHandleGetAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
 	airlineId := "123"
-	airlineMockRepository.EXPECT().GetAirline(airlineId).Return(&airline, nil)
+	mockAirlineRepository.EXPECT().GetAirline(airlineId).Return(&airline, nil)
 	airlineContext.Request, _ = http.NewRequest(http.MethodGet, AIRLINE_BY_ID, nil)
 	airlineContext.AddParam("id", airlineId)
 
 	airlineController.HandleGetAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
@@ -90,13 +90,13 @@ func TestHandleGetAirline(t *testing.T) {
 func TestHandleGetAirlineWhenRecordDoesntExist(t *testing.T) {
 	beforeEachAirlineTest(t)
 	nonExistentAirlineId := "-23243"
-	airlineMockRepository.EXPECT().GetAirline(nonExistentAirlineId).Return(nil, errors.New("foo bar"))
+	mockAirlineRepository.EXPECT().GetAirline(nonExistentAirlineId).Return(nil, errors.New("foo bar"))
 	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
 	airlineContext.AddParam("id", nonExistentAirlineId)
 
 	airlineController.HandleGetAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 
 	responseBody, _ := io.ReadAll(response.Body)
@@ -104,13 +104,13 @@ func TestHandleGetAirlineWhenRecordDoesntExist(t *testing.T) {
 	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect airline id: %s\"}", nonExistentAirlineId), string(responseBody))
 }
 
-// TODO: All tests beyond this line have to be reviewed
+// TODO: All tests beyond this line need to be verified/rewritten
 func TestHandleCreateNewAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
 	airlineName := "XYZAirline"
 	airline = airline.SetName(airlineName)
-	airlineMockRepository.EXPECT().CreateNewAirline(&airline).Return(nil)
+	mockAirlineRepository.EXPECT().CreateNewAirline(&airline).Return(nil)
 	reqBody := fmt.Sprintf("{\"name\":\"%s\"}", airlineName)
 	var airlineFromResponse models.Airline
 	// TODO: How is this getting it from the response?
@@ -119,7 +119,7 @@ func TestHandleCreateNewAirline(t *testing.T) {
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusCreated, response.StatusCode)
 
 	assert.Equal(t, airline.Name, airlineFromResponse.Name)
@@ -132,7 +132,7 @@ func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 	// TODO: More assertions needed?
 }
@@ -144,7 +144,7 @@ func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 	// TODO: More assertions needed?
 }
@@ -156,7 +156,7 @@ func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 	// TODO: More assertions needed?
 }
@@ -168,7 +168,7 @@ func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) 
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 	// TODO: More assertions needed?
 }
@@ -176,36 +176,36 @@ func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) 
 func TestHandleCreateNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"name":"Test"}`
-	airlineMockRepository.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid request"))
+	mockAirlineRepository.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid request"))
 	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 	// TODO: More assertions needed?
 }
 
 func TestHandleDeleteAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
-	airlineMockRepository.EXPECT().DeleteAirline(gomock.Any()).Return(nil)
+	mockAirlineRepository.EXPECT().DeleteAirline(gomock.Any()).Return(nil)
 	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE_BY_ID, nil)
 
 	airlineController.HandleDeleteAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 	// TODO: More assertions needed?
 }
 
 func TestHandleDeleteNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	beforeEachAirlineTest(t)
-	airlineMockRepository.EXPECT().DeleteAirline(gomock.Any()).Return(errors.New("invalid request"))
+	mockAirlineRepository.EXPECT().DeleteAirline(gomock.Any()).Return(errors.New("invalid request"))
 	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE_BY_ID, nil)
 
 	airlineController.HandleDeleteAirline(airlineContext)
 
-	response := responseRecorder.Result()
+	response := airlineResponseRecorder.Result()
 	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
 	// TODO: More assertions needed?
 }

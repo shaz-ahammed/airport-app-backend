@@ -17,7 +17,7 @@ type GateController struct {
 	repository repositories.IGateRepository
 }
 
-func NewGateRepository(repository repositories.IGateRepository) *GateController {
+func NewGateController(repository repositories.IGateRepository) *GateController {
 	return &GateController{
 		repository: repository,
 	}
