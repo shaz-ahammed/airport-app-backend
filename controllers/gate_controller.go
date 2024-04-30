@@ -33,7 +33,7 @@ func NewGateController(repository repositories.IGateRepository) *GateController 
 // @Param   floor       query    int     false        "filter by floor (default = all floor)"
 // @Success 200  "ok"
 // @Failure 500 "Internal server error"
-func (gcr *GateController) HandleGetAllGates(ctx *gin.Context) {
+func (gc *GateController) HandleGetAllGates(ctx *gin.Context) {
 	log.Debug().Msg("Getting list of gates")
 
 	pageStr := ctx.Query("page")
@@ -46,7 +46,7 @@ func (gcr *GateController) HandleGetAllGates(ctx *gin.Context) {
 	if err != nil || floor < 0 {
 		floor = -1
 	}
-	gates, err := gcr.repository.GetAllGates(page, floor)
+	gates, err := gc.repository.GetAllGates(page, floor)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gates"})
 		return
@@ -63,11 +63,11 @@ func (gcr *GateController) HandleGetAllGates(ctx *gin.Context) {
 // @Param id path string true "Gate Id"
 // @Success 200  "ok"
 // @Failure 400  "Gate not found"
-func (gcr *GateController) HandleGetGate(ctx *gin.Context) {
+func (gc *GateController) HandleGetGate(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for retrieving gate details by id")
 
 	gateId := ctx.Param("id")
-	gate, err := gcr.repository.GetGate(gateId)
+	gate, err := gc.repository.GetGate(gateId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect gate id: " + gateId})
 		return
@@ -85,7 +85,7 @@ func (gcr *GateController) HandleGetGate(ctx *gin.Context) {
 // @Param gate body models.Gate true "New gate object"
 // @Success 200  "ok"
 // @Failure 400  "Bad request"
-func (gcr *GateController) HandleCreateNewGate(ctx *gin.Context) {
+func (gc *GateController) HandleCreateNewGate(ctx *gin.Context) {
 	var gate models.Gate
 
 	err := ctx.ShouldBindWith(&gate, binding.JSON)
@@ -94,7 +94,7 @@ func (gcr *GateController) HandleCreateNewGate(ctx *gin.Context) {
 		return
 	}
 
-	repositoryError := gcr.repository.CreateNewGate(&gate)
+	repositoryError := gc.repository.CreateNewGate(&gate)
 	if repositoryError != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": repositoryError.Error()})
 		return
@@ -113,7 +113,7 @@ func (gcr *GateController) HandleCreateNewGate(ctx *gin.Context) {
 // @Param id path string true "Gate Id"
 // @Success 200  "ok"
 // @Failure 400  "Gate not found"
-func (gcr *GateController) HandleUpdateGate(ctx *gin.Context) {
+func (gc *GateController) HandleUpdateGate(ctx *gin.Context) {
 	log.Debug().Msg("controller layer for updating gate info")
 
 	var gate models.Gate
@@ -124,7 +124,7 @@ func (gcr *GateController) HandleUpdateGate(ctx *gin.Context) {
 		return
 	}
 
-	err = gcr.repository.UpdateGate(gateId, gate)
+	err = gc.repository.UpdateGate(gateId, gate)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
