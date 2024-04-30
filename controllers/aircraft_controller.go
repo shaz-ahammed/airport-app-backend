@@ -10,6 +10,12 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
+var (
+	START_YEAR = 1970
+	NO_FILTER = -1
+)
+
+
 type AircraftController struct {
 	repository repositories.IAircraftRepository
 }
@@ -39,12 +45,12 @@ func (ac *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
 		return
 	}
 	year, _ := strconv.Atoi(ctx.Query("year"))
-	if year < 1970 {
-		year = -1
+	if year < START_YEAR {
+		year = NO_FILTER
 	}
 	capacity, _ := strconv.Atoi(ctx.Query("capacity"))
 	if capacity < 0 {
-		capacity = -1
+		capacity = NO_FILTER
 	}
 
 	aircrafts, err := ac.repository.RetrieveAllAircrafts(page, capacity, year)
