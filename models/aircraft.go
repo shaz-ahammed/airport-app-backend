@@ -16,3 +16,13 @@ type Aircraft struct {
 	// CreatedAt         time.Time    `json:"created_at"`
 	AirlineId string `json:"airline_id" gorm:"foreignKey:Airline"`
 }
+
+func (aircraft *Aircraft) SetTailNumber(tailNumber string) Aircraft {
+	(*aircraft).TailNumber = tailNumber
+	return *aircraft
+}
+
+func (aircraft *Aircraft) SetCapacity(tailNumber string) Aircraft {
+	(*aircraft).TailNumber = tailNumber
+	return *aircraft
+}

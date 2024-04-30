@@ -13,5 +13,5 @@ func (srv *AppServer) AircraftRouter(db *gorm.DB) {
 
 	srv.router.GET("/aircrafts", aircraftController.HandleGetAllAircrafts)
 	srv.router.GET("/aircraft/:id", aircraftController.HandleGetAircraft)
-	srv.router.POST("/airline/:airline_id/aircraft", aircraftController.HandleCreateAircraft)
+	srv.router.POST("/airline/:airline_id/aircraft", aircraftController.HandleCreateNewAircraft)
 }

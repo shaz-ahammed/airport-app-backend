@@ -90,7 +90,7 @@ func (ac *AircraftController) HandleGetAircraft(ctx *gin.Context) {
 // @Param gate body models.Aircraft true "New Aircraft object"
 // @Success 201  "Aircraft created"
 // @Failure 500 "Internal server error"
-func (ac *AircraftController) HandleCreateAircraft(ctx *gin.Context) {
+func (ac *AircraftController) HandleCreateNewAircraft(ctx *gin.Context) {
 	var aircraft models.Aircraft
 
 	airlineId := ctx.Param("airline_id")
