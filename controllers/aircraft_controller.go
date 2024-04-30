@@ -15,7 +15,6 @@ var (
 	NO_FILTER = -1
 )
 
-
 type AircraftController struct {
 	repository repositories.IAircraftRepository
 }
