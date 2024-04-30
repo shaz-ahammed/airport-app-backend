@@ -5,6 +5,7 @@ import (
 	"airport-app-backend/models"
 	"airport-app-backend/models/factory"
 	"fmt"
+	"strings"
 
 	"encoding/json"
 	"errors"
@@ -14,6 +15,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-faker/faker/v4"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -112,4 +114,82 @@ func TestHandleGetAircraftWhenRecordDoesntExist(t *testing.T) {
 
 	responseBody, _ := io.ReadAll(response.Body)
 	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect aircraft id: %s\"}", nonExistentAircraftId), string(responseBody))
+}
+
+func TestHandleCreateNewAircraft(t *testing.T) {
+	beforeEachAircraftTest(t)
+	airlineId := faker.UUIDHyphenated()
+	aircraft := factory.ConstructAircraft()
+	reqBody, _ := json.Marshal(&aircraft)
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPost, AIRCRAFT, strings.NewReader(string(reqBody)))
+	mockAircraftRepository.EXPECT().InsertAircraft(aircraft, airlineId).Return(nil)
+	aircraftContext.AddParam("airline_id", airlineId)
+
+	aircraftController.HandleCreateNewAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusCreated, response.StatusCode)
+}
+
+func TestHandleCreateNewAircraftWhenTheRequestPayloadIsEmpty(t *testing.T) {
+	beforeEachAircraftTest(t)
+	reqBody := `{}`
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPost, AIRCRAFT, strings.NewReader(reqBody))
+
+	aircraftController.HandleCreateNewAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, `{"error":"Key: 'Aircraft.TailNumber' Error:Field validation for 'TailNumber' failed on the 'required' tag\nKey: 'Aircraft.Capacity' Error:Field validation for 'Capacity' failed on the 'required' tag"}`,
+		string(responseBody))
+}
+
+func TestHandleCreateNewAircraftWhenTheMandatoryValueIsNull(t *testing.T) {
+	beforeEachAircraftTest(t)
+	aircraft := factory.ConstructAircraft()
+	aircraft.SetTailNumber("")
+	reqBody, _ := json.Marshal(&aircraft)
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPost, AIRCRAFT, strings.NewReader(string(reqBody)))
+
+	aircraftController.HandleCreateNewAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"Key: 'Aircraft.TailNumber' Error:Field validation for 'TailNumber' failed on the 'required' tag\"}", string(responseBody))
+}
+
+func TestHandleCreateNewAircraftWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
+	beforeEachAircraftTest(t)
+	reqBody := `{"tail_number":123, "capacity":"eleven"}`
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPost, AIRCRAFT, strings.NewReader(reqBody))
+
+	aircraftController.HandleCreateNewAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"json: cannot unmarshal number into Go struct field Aircraft.tail_number of type string\"}", string(responseBody))
+}
+
+func TestHandleCreateNewAircraftWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
+	beforeEachAircraftTest(t)
+	airlineId := faker.UUIDHyphenated()
+	aircraft := factory.ConstructAircraft()
+	reqBody, _ := json.Marshal(&aircraft)
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPost, AIRCRAFT, strings.NewReader(string(reqBody)))
+	mockAircraftRepository.EXPECT().InsertAircraft(aircraft, airlineId).Return(errors.New("invalid request"))
+	aircraftContext.AddParam("airline_id", airlineId)
+
+	aircraftController.HandleCreateNewAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusInternalServerError, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"error\":\"invalid request\"}", string(responseBody))
 }

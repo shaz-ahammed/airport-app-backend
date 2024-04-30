@@ -5,3 +5,4 @@
 * rename ctx to context (verbally agreed after bala's research)
 * have created_at for all entitiy table
 * move generateRandomInt to helper?
+* Have proper error mesage - (airlineid not found for creating aircraft)
