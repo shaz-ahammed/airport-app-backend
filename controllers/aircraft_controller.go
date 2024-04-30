@@ -25,7 +25,6 @@ func NewAircraftController(repository repositories.IAircraftRepository) *Aircraf
 // @Tags aircraft
 // @Produce  json
 // @Param   page        query    int     false        "Page number (default = 1)"
-// @Param   type       query    int     false        "filter by type of aircraft (default = all type) options : [passenger, cargo, helicopter]"
 // @Param   year       query    int     false        "filter by manufacturing (default = all year)"
 // @Param   capacity       query    int     false        "condition by capacity grater than given value (default = 0)"
 // @Success 200  "ok"
@@ -37,16 +36,16 @@ func (ac *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
-	// year, err := strconv.Atoi(ctx.Query("year"))
-	// if err != nil || year < 1970 {
-	// 	year = -1
-	// }
-	// capacity, err := strconv.Atoi(ctx.Query("capacity"))
-	// if err != nil || capacity < 0 {
-	// 	capacity = -1
-	// }
+	year, err := strconv.Atoi(ctx.Query("year"))
+	if err != nil || year < 1970 {
+		year = -1
+	}
+	capacity, err := strconv.Atoi(ctx.Query("capacity"))
+	if err != nil || capacity < 0 {
+		capacity = -1
+	}
 
-	aircrafts, err := ac.repository.RetrieveAllAircrafts(page)
+	aircrafts, err := ac.repository.RetrieveAllAircrafts(page, capacity, year)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"Error": "Internal server error"})
 		return

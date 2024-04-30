@@ -1,8 +1,9 @@
-INSERT INTO aircrafts (airline_id, tail_number, year_of_manufacture)
+INSERT INTO aircrafts (airline_id, tail_number, year_of_manufacture, capacity)
 SELECT
     (SELECT id FROM airlines ORDER BY RANDOM() LIMIT 1),
     substr(md5(random()::text), 1, 10),
-    FLOOR(random() * 50) + 1974
+    FLOOR(random() * 50) + 1974,
+    FLOOR(random() * 50) + 30
 FROM generate_series(1, 24);
 
 
