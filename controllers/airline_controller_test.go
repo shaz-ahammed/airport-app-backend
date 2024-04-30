@@ -251,7 +251,6 @@ func TestHandleUpdateAirline(t *testing.T) {
 func TestHandleUpdateAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{}`
-
 	airlineContext.Request, _ = http.NewRequest(http.MethodPut, AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleUpdateAirline(airlineContext)
