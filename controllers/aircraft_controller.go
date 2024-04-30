@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"airport-app-backend/models"
 	"airport-app-backend/repositories"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 type AircraftController struct {
@@ -36,12 +38,12 @@ func (ac *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
 		return
 	}
-	year, err := strconv.Atoi(ctx.Query("year"))
-	if err != nil || year < 1970 {
+	year, _ := strconv.Atoi(ctx.Query("year"))
+	if year < 1970 {
 		year = -1
 	}
-	capacity, err := strconv.Atoi(ctx.Query("capacity"))
-	if err != nil || capacity < 0 {
+	capacity, _ := strconv.Atoi(ctx.Query("capacity"))
+	if capacity < 0 {
 		capacity = -1
 	}
 
@@ -70,4 +72,32 @@ func (ac *AircraftController) HandleGetAircraft(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, aircraft)
+}
+
+// @Summary Create aircraft
+// @Router /airline/{airline_id}/aircraft [post]
+// @Description Create a new aircraft for the given airline
+// @ID create-aircraft
+// @Tags aircraft
+// @Produce  json
+// @Param   airline_id        path    string     true        "Airline ID"
+// @Param gate body models.Aircraft true "New Aircraft object"
+// @Success 201  "Aircraft created"
+// @Failure 500 "Internal server error"
+func (ac *AircraftController) HandleCreateAircraft(ctx *gin.Context) {
+	var aircraft models.Aircraft
+
+	airlineId := ctx.Param("airline_id")
+	err := ctx.ShouldBindWith(&aircraft, binding.JSON)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = ac.repository.InsertAircraft(aircraft, airlineId)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusCreated, "Aircraft created Successfully")
 }
