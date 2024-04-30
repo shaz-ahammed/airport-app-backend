@@ -18,9 +18,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var GET_ALL_AIRLINES = "/airlines"
-var AIRLINE_BY_ID = "/airline/123"
-var POST_AIRLINE = "/airline"
+var AIRLINES = "/airlines"
+var AIRLINE = "/airline"
 
 var mockAirlineRepository *mocks.MockIAirlineRepository
 var airlineController *AirlineController
@@ -48,7 +47,7 @@ func TestHandleGetAllAirlines(t *testing.T) {
 	airlines = append(airlines, airline3)
 
 	mockAirlineRepository.EXPECT().GetAllAirlines(gomock.Any()).Return(airlines, nil)
-	airlineContext.Request, _ = http.NewRequest(http.MethodGet, GET_ALL_AIRLINES, nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodGet, AIRLINES, nil)
 
 	airlineController.HandleGetAllAirlines(airlineContext)
 
@@ -68,7 +67,7 @@ func TestHandleGetAllAirlines(t *testing.T) {
 func TestHandleGetAllAirlinesWhenServiceReturnsError(t *testing.T) {
 	beforeEachAirlineTest(t)
 	mockAirlineRepository.EXPECT().GetAllAirlines(gomock.Any()).Return(nil, errors.New("Invalid"))
-	airlineContext.Request, _ = http.NewRequest(http.MethodGet, GET_ALL_AIRLINES, nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodGet, AIRLINES, nil)
 
 	airlineController.HandleGetAllAirlines(airlineContext)
 
@@ -84,7 +83,7 @@ func TestHandleGetAirline(t *testing.T) {
 	airline := factory.ConstructAirline()
 	airlineId := "123"
 	mockAirlineRepository.EXPECT().GetAirline(airlineId).Return(&airline, nil)
-	airlineContext.Request, _ = http.NewRequest(http.MethodGet, AIRLINE_BY_ID, nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodGet, AIRLINE, nil)
 	airlineContext.AddParam("id", airlineId)
 
 	airlineController.HandleGetAirline(airlineContext)
@@ -103,7 +102,7 @@ func TestHandleGetAirlineWhenRecordDoesntExist(t *testing.T) {
 	beforeEachAirlineTest(t)
 	nonExistentAirlineId := "-23243"
 	mockAirlineRepository.EXPECT().GetAirline(nonExistentAirlineId).Return(nil, errors.New("foo bar"))
-	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE_BY_ID, nil)
+	airlineContext.Request, _ = http.NewRequest("GET", AIRLINE, nil)
 	airlineContext.AddParam("id", nonExistentAirlineId)
 
 	airlineController.HandleGetAirline(airlineContext)
@@ -119,7 +118,7 @@ func TestHandleCreateNewAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airline := factory.ConstructAirline()
 	reqBody, _ := json.Marshal(&airline)
-	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(string(reqBody)))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, AIRLINE, strings.NewReader(string(reqBody)))
 	mockAirlineRepository.EXPECT().CreateNewAirline(&airline).Return(nil)
 
 	airlineController.HandleCreateNewAirline(airlineContext)
@@ -131,7 +130,7 @@ func TestHandleCreateNewAirline(t *testing.T) {
 func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{}`
-	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
@@ -145,7 +144,7 @@ func TestHandleCreateNewAirlineWhenTheRequestPayloadIsEmpty(t *testing.T) {
 func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"Name":""}`
-	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
@@ -159,7 +158,7 @@ func TestHandleCreateNewAirlineWhenTheMandatoryValueIsAbsent(t *testing.T) {
 func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"Count":2}`
-	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
@@ -173,7 +172,7 @@ func TestHandleCreateNewAirlineWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 func TestHandleCreateNewAirlineWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"name":123}`
-	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
@@ -188,7 +187,7 @@ func TestHandleCreateNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T)
 	beforeEachAirlineTest(t)
 	reqBody := `{"name":"Test"}`
 	mockAirlineRepository.EXPECT().CreateNewAirline(gomock.Any()).Return(errors.New("invalid request"))
-	airlineContext.Request, _ = http.NewRequest(http.MethodPost, POST_AIRLINE, strings.NewReader(reqBody))
+	airlineContext.Request, _ = http.NewRequest(http.MethodPost, AIRLINE, strings.NewReader(reqBody))
 
 	airlineController.HandleCreateNewAirline(airlineContext)
 
@@ -203,7 +202,7 @@ func TestHandleDeleteAirline(t *testing.T) {
 	beforeEachAirlineTest(t)
 	airlineId := "123"
 	mockAirlineRepository.EXPECT().DeleteAirline(airlineId).Return(nil)
-	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE_BY_ID, nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE, nil)
 	airlineContext.AddParam("id", airlineId)
 
 	airlineController.HandleDeleteAirline(airlineContext)
@@ -219,7 +218,7 @@ func TestHandleDeleteNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T)
 	beforeEachAirlineTest(t)
 	nonExistentAirlineId := "-23243"
 	mockAirlineRepository.EXPECT().DeleteAirline(nonExistentAirlineId).Return(errors.New("invalid request"))
-	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE_BY_ID, nil)
+	airlineContext.Request, _ = http.NewRequest(http.MethodDelete, AIRLINE, nil)
 	airlineContext.AddParam("id", nonExistentAirlineId)
 
 	airlineController.HandleDeleteAirline(airlineContext)

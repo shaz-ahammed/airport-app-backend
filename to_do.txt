@@ -1,5 +1,7 @@
-Change Repository functions prefix to Retrive/Fetch
-rename airlineRepository and gateRepository to repository
-rename ctx to context (verbally agreed after bala's research)
-fix pagination logic in controller index calls (move to a helper func?)
-have created_at for all entitiy table
+* add tests in same PR
+* Resurect extra attributes (commented out)
+* fix pagination logic in controller index calls (move to a helper func?)
+* rename airlineRepository and gateRepository to repository
+* Change Repository functions prefix to Retrive/Fetch
+* rename ctx to context (verbally agreed after bala's research)
+* have created_at for all entitiy table

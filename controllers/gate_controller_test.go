@@ -18,9 +18,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var GATE_BY_ID = "/gate/123"
-var GET_ALL_GATES = "gates"
-var CREATE_NEW_GATE = "/gate"
+var GATE = "/gate"
+var GATES = "/gates"
 
 var mockGateRepository *mocks.MockIGateRepository
 var gateController *GateController
@@ -66,7 +65,7 @@ func TestHandleGetAllGates(t *testing.T) {
 func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
 	mockGateRepository.EXPECT().GetAllGates(gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
-	gateContext.Request, _ = http.NewRequest(http.MethodGet, GET_ALL_GATES, nil)
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATES, nil)
 
 	gateController.HandleGetAllGates(gateContext)
 
@@ -82,7 +81,7 @@ func TestHandleGetGate(t *testing.T) {
 	gateId := "123"
 	gate := factory.ConstructGate()
 	mockGateRepository.EXPECT().GetGate(gateId).Return(&gate, nil)
-	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE, nil)
 	gateContext.AddParam("id", gateId)
 
 	gateController.HandleGetGate(gateContext)
@@ -101,7 +100,7 @@ func TestHandleGetGateWhenRepositoryReturnsError(t *testing.T) {
 	beforeEachGateTest(t)
 	InvalidGateId := "123"
 	mockGateRepository.EXPECT().GetGate(InvalidGateId).Return(nil, errors.New("Invalid"))
-	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE_BY_ID, nil)
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATE, nil)
 	gateContext.AddParam("id", InvalidGateId)
 
 	gateController.HandleGetGate(gateContext)
@@ -117,7 +116,7 @@ func TestHandleCreateNewGate(t *testing.T) {
 	beforeEachGateTest(t)
 	gate := factory.ConstructGate()
 	reqBody, _ := json.Marshal(&gate)
-	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(string(reqBody)))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, GATE, strings.NewReader(string(reqBody)))
 	mockGateRepository.EXPECT().CreateNewGate(&gate).Return(nil)
 
 	gateController.HandleCreateNewGate(gateContext)
@@ -132,7 +131,7 @@ func TestHandleCreateNewGate(t *testing.T) {
 func TestHandleCreateNewGateWhenTheMandatoryValueIsAbsent(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":, "floor_number":2}`
-	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
 
@@ -146,7 +145,7 @@ func TestHandleCreateNewGateWhenTheMandatoryValueIsAbsent(t *testing.T) {
 func TestHandleCreateNewGateWhenTheRequestPayloadIsEmpty(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{}`
-	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
 
@@ -160,7 +159,7 @@ func TestHandleCreateNewGateWhenTheRequestPayloadIsEmpty(t *testing.T) {
 func TestHandleCreateNewGateWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":2}`
-	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
 
@@ -174,7 +173,7 @@ func TestHandleCreateNewGateWhenTheMandatoryKeyIsAbsent(t *testing.T) {
 func TestHandleCreateNewGateWhenDataOfDifferentDatatypeIsGiven(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":"one", "floor_number":20}`
-	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, GATE, strings.NewReader(reqBody))
 
 	gateController.HandleCreateNewGate(gateContext)
 
@@ -190,7 +189,7 @@ func TestHandleCreateNewGateWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	gate := factory.ConstructGate()
 	reqBody, _ := json.Marshal(&gate)
 	mockGateRepository.EXPECT().CreateNewGate(&gate).Return(errors.New("invalid Request"))
-	gateContext.Request, _ = http.NewRequest(http.MethodPost, CREATE_NEW_GATE, strings.NewReader(string(reqBody)))
+	gateContext.Request, _ = http.NewRequest(http.MethodPost, GATE, strings.NewReader(string(reqBody)))
 
 	gateController.HandleCreateNewGate(gateContext)
 
@@ -208,7 +207,7 @@ func TestHandleUpdateGate(t *testing.T) {
 	reqBody, _ := json.Marshal(gate)
 	gateContext.AddParam("id", gateId)
 	mockGateRepository.EXPECT().UpdateGate(gateId, gate).Return(nil)
-	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE_BY_ID, strings.NewReader(string(reqBody)))
+	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE, strings.NewReader(string(reqBody)))
 
 	gateController.HandleUpdateGate(gateContext)
 
@@ -222,7 +221,7 @@ func TestHandleUpdateGate(t *testing.T) {
 func TestHandleUpdateGateWhenRequiredFieldIsNotGiven(t *testing.T) {
 	beforeEachGateTest(t)
 	reqBody := `{"gate_number":3}`
-	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE_BY_ID, strings.NewReader(reqBody))
+	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE, strings.NewReader(reqBody))
 
 	gateController.HandleUpdateGate(gateContext)
 
@@ -240,7 +239,7 @@ func TestHandleUpdateGateWhenRepositoryThrowsError(t *testing.T) {
 	gateContext.AddParam("id", invalidId)
 	reqBody, _ := json.Marshal(gate)
 	mockGateRepository.EXPECT().UpdateGate(invalidId, gate).Return(errors.New("Invalid"))
-	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE_BY_ID, strings.NewReader(string(reqBody)))
+	gateContext.Request, _ = http.NewRequest(http.MethodPut, GATE, strings.NewReader(string(reqBody)))
 
 	gateController.HandleUpdateGate(gateContext)
 
