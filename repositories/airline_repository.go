@@ -8,6 +8,7 @@ type IAirlineRepository interface {
 	GetAllAirlines(int) ([]models.Airline, error)
 	GetAirline(string) (*models.Airline, error)
 	CreateNewAirline(*models.Airline) error
+	UpdateAirline(airline *models.Airline, airlineId string) error
 	DeleteAirline(string) error
 }
 
@@ -33,6 +34,11 @@ func (sr *ServiceRepository) GetAirline(id string) (*models.Airline, error) {
 
 func (sr *ServiceRepository) CreateNewAirline(airline *models.Airline) error {
 	result := sr.db.Save(airline)
+	return result.Error
+}
+
+func (sr *ServiceRepository) UpdateAirline(airline *models.Airline, airlineId string) error {
+	result := sr.db.Where("id = ?", airlineId).Updates(airline)
 	return result.Error
 }
 
