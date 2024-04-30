@@ -6,6 +6,8 @@ import (
 	"github.com/go-faker/faker/v4"
 )
 
+var DEFAULT_CAPACITY = 30
+
 func ConstructAircraft() models.Aircraft {
-	return models.Aircraft{TailNumber: faker.CCType()}
+	return models.Aircraft{TailNumber: faker.CCType(), Capacity: GenerateRandomInt() + DEFAULT_CAPACITY}
 }

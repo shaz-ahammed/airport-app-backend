@@ -45,7 +45,7 @@ func TestHandleGetAllAircrafts(t *testing.T) {
 	aircraft3 := factory.ConstructAircraft()
 	aircrafts = append(aircrafts, aircraft3)
 
-	mockAircraftRepository.EXPECT().RetrieveAllAircrafts(gomock.Any()).Return(aircrafts, nil)
+	mockAircraftRepository.EXPECT().RetrieveAllAircrafts(gomock.Any(), gomock.Any(), gomock.Any()).Return(aircrafts, nil)
 	aircraftContext.Request, _ = http.NewRequest(http.MethodGet, AIRCRAFTS, nil)
 
 	aircraftController.HandleGetAllAircrafts(aircraftContext)
@@ -65,7 +65,7 @@ func TestHandleGetAllAircrafts(t *testing.T) {
 
 func TestHandleGetAllAircraftsWhenServiceReturnsError(t *testing.T) {
 	beforeEachAircraftTest(t)
-	mockAircraftRepository.EXPECT().RetrieveAllAircrafts(gomock.Any()).Return(nil, errors.New("Invalid"))
+	mockAircraftRepository.EXPECT().RetrieveAllAircrafts(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, errors.New("Invalid"))
 	aircraftContext.Request, _ = http.NewRequest(http.MethodGet, AIRCRAFTS, nil)
 
 	aircraftController.HandleGetAllAircrafts(aircraftContext)
