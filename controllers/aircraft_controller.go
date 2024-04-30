@@ -3,16 +3,16 @@ package controllers
 import (
 	"airport-app-backend/models"
 	"airport-app-backend/repositories"
+	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 )
 
 var (
 	START_YEAR = 1970
-	NO_FILTER = -1
+	NO_FILTER  = -1
 )
 
 type AircraftController struct {
@@ -105,4 +105,33 @@ func (ac *AircraftController) HandleCreateNewAircraft(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusCreated, "Aircraft created Successfully")
+}
+
+// @Router /airline/{airline_id}/aircraft/{id} [put]
+// @Summary Update aircraft by ID
+// @Description update the aircraft details by its ID
+// @ID update-aircraft
+// @Tags aircraft
+// @Produce  json
+// @Param id path string true "Aircraft ID"
+// @Param airline_id path string true "Airlines ID"
+// @Param aircraft body models.Aircraft true "Updated aircraft object"
+// @Success 200  "ok"
+// @Failure 400 "Bad request"
+func (ac *AircraftController) HandleUpdateAircraft(ctx *gin.Context) {
+	var aircraft models.Aircraft
+	airlineId := ctx.Param(`airline_id`)
+	aircraftId := ctx.Param(`id`)
+
+	err := ctx.ShouldBindWith(&aircraft, binding.JSON)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+		return
+	}
+	repositoryError := ac.repository.UpdateAircraft(&aircraft, aircraftId, airlineId)
+	if repositoryError != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": repositoryError.Error()})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{"message": "update success"})
 }

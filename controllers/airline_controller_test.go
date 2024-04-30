@@ -294,7 +294,7 @@ func TestHandleUpdateAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	assert.Equal(t, "{\"Error\":\"invalid Request\"}", string(responseBody))
 }
 
-func TestHandleUpdateAirlineWhereErrorIsThrownWhenIdIsUpdates(t *testing.T) {
+func TestHandleUpdateAirlineWhereErrorIsThrownWhenIdIsUpdated(t *testing.T) {
 	beforeEachAirlineTest(t)
 	reqBody := `{"name":"Test", "id":"56yfh"}`
 	mockAirlineRepository.EXPECT().UpdateAirline(gomock.Any(), gomock.Any()).Return(nil)

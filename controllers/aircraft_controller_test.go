@@ -193,3 +193,85 @@ func TestHandleCreateNewAircraftWhereErrorIsThrownInRepositoryLayer(t *testing.T
 	responseBody, _ := io.ReadAll(response.Body)
 	assert.Equal(t, "{\"error\":\"invalid request\"}", string(responseBody))
 }
+
+func TestHandleUpdateAircraft(t *testing.T) {
+	beforeEachAircraftTest(t)
+	airlineId := "1"
+	aircraftId := "12"
+	aircraft := factory.ConstructAircraft()
+	reqBody, _ := json.Marshal(aircraft)
+	aircraftContext.AddParam("id", aircraftId)
+	aircraftContext.AddParam("airline_id", airlineId)
+	mockAircraftRepository.EXPECT().UpdateAircraft(&aircraft, aircraftId, airlineId).Return(nil)
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPut, AIRCRAFT, strings.NewReader(string(reqBody)))
+
+	aircraftController.HandleUpdateAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusCreated, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"message\":\"update success\"}", string(responseBody))
+}
+
+func TestHandleUpdateAircraftWhenTheRequestPayloadIsEmpty(t *testing.T) {
+	beforeEachAircraftTest(t)
+	reqBody := `{}`
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPut, AIRCRAFT, strings.NewReader(string(reqBody)))
+
+	aircraftController.HandleUpdateAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Key: 'Aircraft.TailNumber' Error:Field validation for 'TailNumber' failed on the 'required' tag\\nKey: 'Aircraft.Capacity' Error:Field validation for 'Capacity' failed on the 'required' tag\"}", string(responseBody))
+}
+
+func TestHandleUpdateAircraftWhenTheMandatoryValueIsAbsent(t *testing.T) {
+	beforeEachAircraftTest(t)
+	reqBody := `{"capacity":}`
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPut, AIRCRAFT, strings.NewReader(string(reqBody)))
+
+	aircraftController.HandleUpdateAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"invalid character '}' looking for beginning of value\"}", string(responseBody))
+}
+
+func TestHandleUpdateAircraftWhenTheMandatoryKeyIsAbsent(t *testing.T) {
+	beforeEachAircraftTest(t)
+	reqBody := `{"year_of_manufacture":1990}`
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPut, AIRCRAFT, strings.NewReader(string(reqBody)))
+
+	aircraftController.HandleUpdateAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"Key: 'Aircraft.TailNumber' Error:Field validation for 'TailNumber' failed on the 'required' tag\\nKey: 'Aircraft.Capacity' Error:Field validation for 'Capacity' failed on the 'required' tag\"}", string(responseBody))
+}
+
+func TestHandleUpdateAircraftWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
+	beforeEachAircraftTest(t)
+	invalidAircraftId := "-1"
+	airlineId := "123"
+	aircraft := factory.ConstructAircraft()
+	aircraftContext.AddParam("id", invalidAircraftId)
+	aircraftContext.AddParam("airline_id", airlineId)
+	reqBody, _ := json.Marshal(&aircraft)
+	mockAircraftRepository.EXPECT().UpdateAircraft(&aircraft, invalidAircraftId, airlineId).Return(errors.New("invalid Request"))
+	aircraftContext.Request, _ = http.NewRequest(http.MethodPut, AIRCRAFT, strings.NewReader(string(reqBody)))
+
+	aircraftController.HandleUpdateAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "{\"Error\":\"invalid Request\"}", string(responseBody))
+}
