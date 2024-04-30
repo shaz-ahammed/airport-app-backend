@@ -4,6 +4,7 @@ import (
 	"airport-app-backend/mocks"
 	"airport-app-backend/models"
 	"airport-app-backend/models/factory"
+	"fmt"
 
 	"encoding/json"
 	"errors"
@@ -75,4 +76,40 @@ func TestHandleGetAllAircraftsWhenServiceReturnsError(t *testing.T) {
 
 	responseBody, _ := io.ReadAll(response.Body)
 	assert.Equal(t, "{\"Error\":\"Internal server error\"}", string(responseBody))
+}
+
+func TestHandleGetAircraft(t *testing.T) {
+	beforeEachAircraftTest(t)
+	aircraft := factory.ConstructAircraft()
+	aircraftId := "123"
+	mockAircraftRepository.EXPECT().RetrieveAircraft(aircraftId).Return(&aircraft, nil)
+	aircraftContext.Request, _ = http.NewRequest(http.MethodGet, AIRCRAFT, nil)
+	aircraftContext.AddParam("id", aircraftId)
+
+	aircraftController.HandleGetAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var aircraftFromResponse models.Aircraft
+	json.Unmarshal([]byte(responseBody), &aircraftFromResponse)
+
+	assert.Equal(t, aircraft, aircraftFromResponse)
+}
+
+func TestHandleGetAircraftWhenRecordDoesntExist(t *testing.T) {
+	beforeEachAircraftTest(t)
+	nonExistentAircraftId := "-23243"
+	mockAircraftRepository.EXPECT().RetrieveAircraft(nonExistentAircraftId).Return(nil, errors.New("foo bar"))
+	aircraftContext.Request, _ = http.NewRequest("GET", AIRCRAFT, nil)
+	aircraftContext.AddParam("id", nonExistentAircraftId)
+
+	aircraftController.HandleGetAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect aircraft id: %s\"}", nonExistentAircraftId), string(responseBody))
 }
