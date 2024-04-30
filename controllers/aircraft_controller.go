@@ -52,3 +52,23 @@ func (ac *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, aircrafts)
 }
+
+// @Summary			Get aircraft by Id
+// @Router			/aircraft/{id} [get]
+// @Description 	Gets aircraft by Id
+// @ID 				get-aircraft-by-id
+// @Tags 			aircraft
+// @Produce  		json
+// @Param   		id		path		string		true		"Aircraft Id"
+// @Success 		200		"ok"
+// @Failure 		400		"Aircraft not found"
+func (ac *AircraftController) HandleGetAircraft(ctx *gin.Context) {
+	aircraftId := ctx.Param("id")
+	aircraft, err := ac.repository.RetrieveAircraft(aircraftId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect aircraft id: " + aircraftId})
+		return
+	}
+	ctx.JSON(http.StatusOK, aircraft)
+
+}

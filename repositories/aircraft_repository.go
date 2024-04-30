@@ -2,10 +2,12 @@ package repositories
 
 import (
 	"airport-app-backend/models"
+	"fmt"
 )
 
 type IAircraftRepository interface {
 	RetrieveAllAircrafts(int, int, int) ([]models.Aircraft, error)
+	RetrieveAircraft(id string) (*models.Aircraft, error)
 }
 
 func (sr *ServiceRepository) RetrieveAllAircrafts(page, capacity, year int) ([]models.Aircraft, error) {
@@ -21,4 +23,13 @@ func (sr *ServiceRepository) RetrieveAllAircrafts(page, capacity, year int) ([]m
 		return nil, err
 	}
 	return aircrafts, nil
+}
+func (sr ServiceRepository) RetrieveAircraft(id string) (*models.Aircraft, error) {
+	var aircraft *models.Aircraft
+	result := sr.db.First(&aircraft, "id=?", id)
+	fmt.Println(aircraft)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return aircraft, nil
 }
