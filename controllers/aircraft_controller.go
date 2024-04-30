@@ -70,5 +70,4 @@ func (ac *AircraftController) HandleGetAircraft(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, aircraft)
-
 }

@@ -24,6 +24,7 @@ func (sr *ServiceRepository) RetrieveAllAircrafts(page, capacity, year int) ([]m
 	}
 	return aircrafts, nil
 }
+
 func (sr ServiceRepository) RetrieveAircraft(id string) (*models.Aircraft, error) {
 	var aircraft *models.Aircraft
 	result := sr.db.First(&aircraft, "id=?", id)
