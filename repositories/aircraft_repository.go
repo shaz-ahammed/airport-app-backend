@@ -8,6 +8,7 @@ type IAircraftRepository interface {
 	RetrieveAllAircrafts(int, int, int) ([]models.Aircraft, error)
 	RetrieveAircraft(id string) (*models.Aircraft, error)
 	InsertAircraft(models.Aircraft, string) error
+	UpdateAircraft(*models.Aircraft, string, string) error
 }
 
 func (sr *ServiceRepository) RetrieveAllAircrafts(page, capacity, year int) ([]models.Aircraft, error) {
@@ -37,5 +38,12 @@ func (sr ServiceRepository) RetrieveAircraft(id string) (*models.Aircraft, error
 func (sr *ServiceRepository) InsertAircraft(aircraft models.Aircraft, airlineId string) error {
 	aircraft.AirlineId = airlineId
 	result := sr.db.Save(&aircraft)
+	return result.Error
+}
+
+func (sr ServiceRepository) UpdateAircraft(aircraft *models.Aircraft, aircraftId string, airlineId string) error {
+	aircraft.Id = aircraftId
+	aircraft.AirlineId = airlineId
+	result := sr.db.Updates(aircraft)
 	return result.Error
 }
