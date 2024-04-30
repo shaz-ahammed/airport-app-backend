@@ -1,14 +1,10 @@
-DO $$
-BEGIN
-    FOR i IN 1..21 LOOP
-        INSERT INTO aircrafts (airline_id, wing_number, year_of_manufacture)
-        VALUES (
-            (SELECT id FROM airlines ORDER BY RANDOM() LIMIT 1),
-            'Wing' || i,
-            FLOOR(random() * 50) + 1974
-        );
-    END LOOP;
-END $$;
+INSERT INTO aircrafts (airline_id, tail_number, year_of_manufacture)
+SELECT
+    (SELECT id FROM airlines ORDER BY RANDOM() LIMIT 1),
+    substr(md5(random()::text), 1, 10),
+    FLOOR(random() * 50) + 1974
+FROM generate_series(1, 24);
+
 
 -- DO $$
 -- BEGIN

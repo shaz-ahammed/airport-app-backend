@@ -30,7 +30,7 @@ func NewAircraftController(repository repositories.IAircraftRepository) *Aircraf
 // @Param   capacity       query    int     false        "condition by capacity grater than given value (default = 0)"
 // @Success 200  "ok"
 // @Failure 500 "Internal server error"
-func (acr *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
+func (ac *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
 	// TODO: Convert to using a pagination library to handle this and other edge cases
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	if page < 0 {
@@ -46,7 +46,7 @@ func (acr *AircraftController) HandleGetAllAircrafts(ctx *gin.Context) {
 	// 	capacity = -1
 	// }
 
-	aircrafts, err := acr.repository.RetrieveAllAircrafts(page)
+	aircrafts, err := ac.repository.RetrieveAllAircrafts(page)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"Error": "Internal server error"})
 		return

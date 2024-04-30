@@ -1,4 +1,3 @@
-* add tests in same PR
 * Resurect extra attributes (commented out)
 * fix pagination logic in controller index calls (move to a helper func?)
 * rename airlineRepository and gateRepository to repository
