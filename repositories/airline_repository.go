@@ -8,7 +8,6 @@ type IAirlineRepository interface {
 	GetAllAirlines(int) ([]models.Airline, error)
 	GetAirline(string) (*models.Airline, error)
 	CreateNewAirline(*models.Airline) error
-
 	UpdateAirline(airline *models.Airline, airlineId string) error
 	DeleteAirline(string) error
 }

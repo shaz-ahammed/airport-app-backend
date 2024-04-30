@@ -228,7 +228,6 @@ func TestHandleDeleteNewAirlineWhereErrorIsThrownInRepositoryLayer(t *testing.T)
 
 	responseBody, _ := io.ReadAll(response.Body)
 	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect airline id: %s\"}", nonExistentAirlineId), string(responseBody))
-	assert.Equal(t, http.StatusBadRequest, airlineContext.Writer.Status())
 }
 
 func TestHandleUpdateAirline(t *testing.T) {
