@@ -107,7 +107,7 @@ func (ac *AircraftController) HandleCreateNewAircraft(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, "Aircraft created Successfully")
 }
 
-// @Router /airline/{airline_id}/aircraft/{id} [put]
+// @Router /airlines/{airline_id}/aircraft/{id} [put]
 // @Summary Update aircraft by ID
 // @Description update the aircraft details by its ID
 // @ID update-aircraft
