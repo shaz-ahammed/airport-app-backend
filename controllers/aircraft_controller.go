@@ -135,3 +135,22 @@ func (ac *AircraftController) HandleUpdateAircraft(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, gin.H{"message": "update success"})
 }
+
+// @Summary Delete aircraft by Id
+// @Router /aircraft/{id} [delete]
+// @Summary Delete aircraft by Id
+// @Description Delete the aircraft details of the particular id
+// @ID delete-aircraft-by-id
+// @Tags aircraft
+// @Param id path string true "Aircraft Id"
+// @Success 200  "ok"
+// @Failure 400 "Aircraft not found"
+func (ac *AircraftController) HandleDeleteAircraft(ctx *gin.Context) {
+	aircraftId := ctx.Param("id")
+	err := ac.repository.DeleteAircraft(aircraftId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"Error": "Incorrect aircraft id: " + aircraftId})
+		return
+	}
+	ctx.JSON(http.StatusOK, "Deleted the aircraft successfully")
+}
