@@ -36,14 +36,13 @@ func NewGateController(repository repositories.IGateRepository) *GateController 
 func (gc *GateController) HandleGetAllGates(ctx *gin.Context) {
 	log.Debug().Msg("Getting list of gates")
 
-	pageStr := ctx.Query("page")
-	floorStr := ctx.Query("floor")
-	page, err := strconv.Atoi(pageStr)
-	if err != nil || page < 0 {
+	// TODO: Convert to using a pagination library to handle this and other edge cases
+	page, _ := strconv.Atoi(ctx.Query("page"))
+	if page < 0 {
 		page = 0
 	}
-	floor, err := strconv.Atoi(floorStr)
-	if err != nil || floor < 0 {
+	floor, _ := strconv.Atoi(ctx.Query("floor"))
+	if floor < 0 {
 		floor = -1
 	}
 	gates, err := gc.repository.GetAllGates(page, floor)
