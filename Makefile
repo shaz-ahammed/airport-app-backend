@@ -1,5 +1,6 @@
 bootrun:
 	direnv allow
+	go fmt ./...
 	make clean
 	make swagger
 	make mock
@@ -7,6 +8,7 @@ bootrun:
 	make start-dependencies
 	make run
 all:
+	go fmt ./...
 	make clean
 	make swagger
 	make mock
