@@ -31,6 +31,7 @@ func (srv *AppServer) setupRoutesAndMiddleware() {
 	srv.GateRouter(DB)
 	srv.AirlineRouter(DB)
 	srv.AircraftRouter(DB)
+	srv.SlotRouter(DB)
 
 	// Middleware
 	log.Info().Msg("Configuring GIN middleware")

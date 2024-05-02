@@ -5,3 +5,8 @@ type Gate struct {
 	GateNumber  int    `json:"gate_number" binding:"required" gorm:"unique;not null"`
 	FloorNumber int    `json:"floor_number" binding:"required" gorm:"not null"`
 }
+
+func (gate *Gate) SetFloor(floor int) Gate {
+	(*gate).FloorNumber = floor
+	return *gate
+}

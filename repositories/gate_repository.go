@@ -2,25 +2,28 @@ package repositories
 
 import (
 	"airport-app-backend/models"
+	"strconv"
+
 	"github.com/rs/zerolog/log"
 )
 
 var DEFAULT_PAGE_SIZE = 10
 
 type IGateRepository interface {
-	GetAllGates(page int, floor int) ([]models.Gate, error)
+	GetAllGates(page int, floor string) ([]models.Gate, error)
 	GetGate(string) (*models.Gate, error)
 	CreateNewGate(*models.Gate) error
 	UpdateGate(string, models.Gate) error
 }
 
-func (sr *ServiceRepository) GetAllGates(page, floor int) ([]models.Gate, error) {
+func (sr *ServiceRepository) GetAllGates(page int, floorStr string) ([]models.Gate, error) {
 	log.Debug().Msg("Fetching list of gates")
 
 	var gates []models.Gate
 	offset := page * DEFAULT_PAGE_SIZE
 	query := sr.db.Offset(offset).Limit(DEFAULT_PAGE_SIZE)
-	if floor != -1 {
+	if floorStr != "*" {
+		floor, _ := strconv.Atoi(floorStr)
 		query = query.Where("floor_number = ?", floor)
 	}
 	if err := query.Find(&gates).Error; err != nil {

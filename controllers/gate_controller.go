@@ -13,6 +13,8 @@ import (
 	"airport-app-backend/repositories"
 )
 
+var ALL_FLOOR = "*"
+
 type GateController struct {
 	repository repositories.IGateRepository
 }
@@ -39,12 +41,14 @@ func (gc *GateController) HandleGetAllGates(ctx *gin.Context) {
 	// TODO: Convert to using a pagination library to handle this and other edge cases
 	page, _ := strconv.Atoi(ctx.Query("page"))
 	if page < 0 {
-		page = 0
+		ctx.JSON(400, gin.H{"msg": "Page number must be greater than 0"})
+		return
 	}
-	floor, _ := strconv.Atoi(ctx.Query("floor"))
-	if floor < 0 {
-		floor = -1
+	floor := ctx.Query("floor")
+	if len(floor) <= 0 {
+		floor = ALL_FLOOR
 	}
+
 	gates, err := gc.repository.GetAllGates(page, floor)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch gates"})

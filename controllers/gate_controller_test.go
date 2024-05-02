@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -60,6 +61,92 @@ func TestHandleGetAllGates(t *testing.T) {
 	assert.Contains(t, gatesFromResponse, gate1)
 	assert.Contains(t, gatesFromResponse, gate2)
 	assert.Contains(t, gatesFromResponse, gate3)
+}
+
+func TestHandleGetAllGatesWhenPageAndFloorIsGiven(t *testing.T) {
+	beforeEachGateTest(t)
+	var gates []models.Gate
+	floor, page := 1, 1
+	gate1 := factory.ConstructGate()
+	gate1.SetFloor(floor)
+	gates = append(gates, gate1)
+	gate2 := factory.ConstructGate()
+	gate2.SetFloor(floor)
+	gates = append(gates, gate2)
+
+	mockGateRepository.EXPECT().GetAllGates(page, strconv.Itoa((floor))).Return(gates, nil)
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATES+"?page=1&floor=1", nil)
+
+	gateController.HandleGetAllGates(gateContext)
+
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var gatesFromResponse []models.Gate
+	json.Unmarshal([]byte(responseBody), &gatesFromResponse)
+
+	assert.Equal(t, 2, len(gatesFromResponse))
+	assert.Contains(t, gatesFromResponse, gate1)
+	assert.Equal(t, gatesFromResponse[0].FloorNumber, floor)
+	assert.Contains(t, gatesFromResponse, gate2)
+	assert.Equal(t, gatesFromResponse[1].FloorNumber, floor)
+}
+
+func TestHandleGetAllGatesWhenFloorIsGiven(t *testing.T) {
+	beforeEachGateTest(t)
+	var gates []models.Gate
+	floor := 1
+	gate1 := factory.ConstructGate()
+	gate1.SetFloor(floor)
+	gates = append(gates, gate1)
+	gate2 := factory.ConstructGate()
+	gate2.SetFloor(floor)
+	gates = append(gates, gate2)
+
+	mockGateRepository.EXPECT().GetAllGates(gomock.Any(), strconv.Itoa((floor))).Return(gates, nil)
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATES+"?floor=1", nil)
+
+	gateController.HandleGetAllGates(gateContext)
+
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var gatesFromResponse []models.Gate
+	json.Unmarshal([]byte(responseBody), &gatesFromResponse)
+
+	assert.Equal(t, 2, len(gatesFromResponse))
+	assert.Contains(t, gatesFromResponse, gate1)
+	assert.Equal(t, gatesFromResponse[0].FloorNumber, floor)
+	assert.Contains(t, gatesFromResponse, gate2)
+	assert.Equal(t, gatesFromResponse[1].FloorNumber, floor)
+}
+
+func TestHandleGetAllGatesWhenPageIsGiven(t *testing.T) {
+	beforeEachGateTest(t)
+	var gates []models.Gate
+	page := 1
+	gate1 := factory.ConstructGate()
+	gates = append(gates, gate1)
+	gate2 := factory.ConstructGate()
+	gates = append(gates, gate2)
+
+	mockGateRepository.EXPECT().GetAllGates(page, "*").Return(gates, nil)
+	gateContext.Request, _ = http.NewRequest(http.MethodGet, GATES+"?page=1", nil)
+
+	gateController.HandleGetAllGates(gateContext)
+
+	response := gateResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	var gatesFromResponse []models.Gate
+	json.Unmarshal([]byte(responseBody), &gatesFromResponse)
+
+	assert.Equal(t, 2, len(gatesFromResponse))
+	assert.Contains(t, gatesFromResponse, gate1)
+	assert.Contains(t, gatesFromResponse, gate2)
 }
 
 func TestHandleGetAllGatesWhenRepositoryReturnsError(t *testing.T) {
