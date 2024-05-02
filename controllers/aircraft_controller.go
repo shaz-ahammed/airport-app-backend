@@ -80,7 +80,7 @@ func (ac *AircraftController) HandleGetAircraft(ctx *gin.Context) {
 }
 
 // @Summary Create aircraft
-// @Router /airline/{airline_id}/aircraft [post]
+// @Router /airlines/{airline_id}/aircraft [post]
 // @Description Create a new aircraft for the given airline
 // @ID create-aircraft
 // @Tags aircraft
