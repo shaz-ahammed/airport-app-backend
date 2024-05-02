@@ -3,7 +3,6 @@ bootrun:
 	go fmt ./...
 	make clean
 	make swagger
-	make mock
 	make install
 	make start-dependencies
 	make run
@@ -38,6 +37,7 @@ mock:
 	mockgen -destination=mocks/health_repository_mock.go -package=mocks airport-app-backend/repositories IHealthRepository
 	mockgen -destination=mocks/airline_repository_mock.go -package=mocks airport-app-backend/repositories IAirlineRepository
 	mockgen -destination=mocks/aircraft_repository_mock.go -package=mocks airport-app-backend/repositories IAircraftRepository
+	mockgen -destination=mocks/slot_repository_mock.go -package=mocks airport-app-backend/repositories ISlotRepository
 sonar-scan:
 	go test ./... -coverprofile=coverage.out
 	sonar-scanner -X \
