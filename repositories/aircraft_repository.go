@@ -9,7 +9,7 @@ type IAircraftRepository interface {
 	RetrieveAircraft(id string) (*models.Aircraft, error)
 	InsertAircraft(models.Aircraft, string) error
 	UpdateAircraft(*models.Aircraft, string, string) error
-	DeleteAircraft(id string) error
+	DeleteAircraft(string) error
 }
 
 func (sr *ServiceRepository) RetrieveAllAircrafts(page, capacity, year int) ([]models.Aircraft, error) {

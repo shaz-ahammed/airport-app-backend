@@ -275,3 +275,35 @@ func TestHandleUpdateAircraftWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
 	responseBody, _ := io.ReadAll(response.Body)
 	assert.Equal(t, "{\"Error\":\"invalid Request\"}", string(responseBody))
 }
+
+func TestHandleDeleteAircraft(t *testing.T) {
+	beforeEachAircraftTest(t)
+	aircraftId := "1234"
+	mockAircraftRepository.EXPECT().DeleteAircraft(aircraftId).Return(nil)
+	aircraftContext.Request, _ = http.NewRequest(http.MethodDelete, AIRCRAFT, nil)
+	aircraftContext.AddParam("id", aircraftId)
+
+	aircraftController.HandleDeleteAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, "\"Deleted the aircraft successfully\"", string(responseBody))
+}
+
+func TestHandleDeleteNewAircraftWhereErrorIsThrownInRepositoryLayer(t *testing.T) {
+	beforeEachAircraftTest(t)
+	nonExistentAircraftId := "-23243"
+	mockAircraftRepository.EXPECT().DeleteAircraft(nonExistentAircraftId).Return(errors.New("invalid request"))
+	aircraftContext.Request, _ = http.NewRequest(http.MethodDelete, AIRCRAFT, nil)
+	aircraftContext.AddParam("id", nonExistentAircraftId)
+
+	aircraftController.HandleDeleteAircraft(aircraftContext)
+
+	response := aircraftResponseRecorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	assert.Equal(t, fmt.Sprintf("{\"Error\":\"Incorrect aircraft id: %s\"}", nonExistentAircraftId), string(responseBody))
+}
