@@ -44,5 +44,9 @@ jobs:
         with:
           branch: gh-pages
           folder: build/reports/go-test-report
+          target-folder: test-reports/${{github.sha}}/${{github.run_id}}/${{github.run_attempt}}
+          force: false
           clean: true
 
+      - name: URL for test report
+        run: echo "[TEST REPORT](https://shaz-ahammed.github.io/airport-app-backend/test-reports/${{github.sha}}/${{github.run_id}}/${{github.run_attempt}}/index.html)" >> $GITHUB_STEP_SUMMARY
