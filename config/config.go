@@ -11,7 +11,7 @@ import (
 var ProductionMode = getEnvOrSetFallbackBool("APP_PRODUCTION_MODE", false)
 var EnableDetailedRequestLogging = getEnvOrSetFallbackBool("APP_DETAILED_REQUEST_LOGGING", true)
 
-var EnableTls = getEnvOrSetFallbackBool("APP_ENABLE_TLS", true)
+var EnableTls = getEnvOrSetFallbackBool("APP_ENABLE_TLS", false)
 var GenerateSelfSignedCert = getEnvOrSetFallbackBool("APP_TLS_GENERATE_SELF_SIGNED_CERTs", true)
 var CertValidityDays = getEnvOrSetFallbackInt("APP_SELF_SIGNED_CERT_VALIDITY_DAYS", 30)
 var CertPath = getEnvOrSetFallbackString("APP_TLS_CERT_PATH", "./cert.pem")
