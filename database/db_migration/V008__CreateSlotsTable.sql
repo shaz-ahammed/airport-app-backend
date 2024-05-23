@@ -3,6 +3,6 @@ CREATE TABLE slots (
     start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     end_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     status VARCHAR(255) DEFAULT 'Available' NOT NULL,
-    aircraft_id UUID  REFERENCES airlines (id),
-    gate_id UUID REFERENCES gates (id)
+    aircraft_id UUID  REFERENCES aircrafts (id) ON DELETE CASCADE,
+    gate_id UUID REFERENCES gates (id) ON DELETE CASCADE
 );
