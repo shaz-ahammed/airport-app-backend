@@ -26,6 +26,7 @@ func (sr *ServiceRepository) GetAllGates(page int, floorStr string) ([]models.Ga
 		floor, _ := strconv.Atoi(floorStr)
 		query = query.Where("floor_number = ?", floor)
 	}
+	query = query.Order("gate_number ASC")
 	if err := query.Find(&gates).Error; err != nil {
 		return nil, err
 	}
